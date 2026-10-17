@@ -1,0 +1,8 @@
+{
+  "context": {"store_code": "DEMO", "channel": "pickup", "meal_time": "demo-time"},
+  "budget_cents": 5000,
+  "people": [
+    {"id": "A", "hard": {"non_spicy": true, "sugar_free_drink": true}, "prefer": {"main_meat": "chicken"}},
+    {"id": "B", "hard": {"non_spicy": true, "sugar_free_drink": true}, "prefer": {"main_meat": "chicken"}}
+  ]
+}

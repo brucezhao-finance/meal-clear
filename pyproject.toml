@@ -1,0 +1,16 @@
+[project]
+name = "meal-clear"
+version = "0.1.0"
+description = "麦麦明白点：约束选餐、报价核对与增量调整"
+requires-python = ">=3.9"
+dependencies = []
+
+[tool.black]
+line-length = 88
+target-version = ["py39"]
+
+[tool.ruff]
+target-version = "py39"
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*.py" = ["E402"]

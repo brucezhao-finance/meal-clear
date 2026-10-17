@@ -1,0 +1,23 @@
+{
+  "package": "meal-clear.skill",
+  "file_count": 24,
+  "bytes": 42650,
+  "sha256": "ad6cb9f0506f7f3090d8340c95a9aaf5cfb1aba8146f92cbc05d79ce50d66065",
+  "secret_scan": "passed",
+  "excluded": [
+    "local-state",
+    "Token/凭证",
+    "缓存"
+  ],
+  "offline_behavior_tests": 27,
+  "skill_structure": "passed",
+  "ruff": "passed",
+  "black": "passed",
+  "live": {
+    "read_only": true,
+    "order_created": false,
+    "before_cents": 2290,
+    "after_cents": 3800,
+    "coupon_pricing_live_verified": false
+  }
+}

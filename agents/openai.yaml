@@ -1,0 +1,4 @@
+interface:
+  display_name: "麦麦明白点"
+  short_description: "按人数口味与预算选餐，核对优惠和完整花费，改一句就重新比较"
+  default_prompt: "用 $meal-clear 帮我选好并买明白这顿饭，比较符合要求的组合与实际花费。"

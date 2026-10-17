@@ -1,0 +1,5 @@
+{
+  "context": {"store_code": "1450002", "channel": "pickup", "meal_time": "now"},
+  "budget_cents": 10000,
+  "people": [{"id": "A", "hard": {"sugar_free_drink": true}, "prefer": {}}]
+}

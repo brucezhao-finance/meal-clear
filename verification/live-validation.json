@@ -1,0 +1,191 @@
+{
+  "date": "2026-10-17",
+  "purpose": "工程只读联调，不是用户默认就餐门店",
+  "store_code": "1450002",
+  "store_name": "麦当劳上海静安寺餐厅",
+  "server_tool_count": 35,
+  "before": {
+    "as_of": "2026-10-17T11:32:43.146179+00:00",
+    "coverage": {
+      "menu_entries": 126,
+      "detail_queries": 6,
+      "skipped_errors": 0,
+      "coupon_count": 0,
+      "note": "有界单人套餐搜索，未穷尽全菜单；辣度等缺失仍未知"
+    },
+    "total_cents": 2290,
+    "quoted_at": "2026-10-17T11:32:43.769787+00:00",
+    "assignments": [
+      {
+        "person_id": "A",
+        "offer_id": "9900015602-edf93d28",
+        "name": "大堡口福三件套（无糖饮料选项）",
+        "items": [
+          {
+            "code": "521147",
+            "name": "Hold不住鸡排堡（椒盐风味）",
+            "quantity": 1,
+            "role": "main"
+          },
+          {
+            "code": "4810",
+            "name": "中薯条",
+            "quantity": 1,
+            "role": "side"
+          },
+          {
+            "code": "3071",
+            "name": "无糖可口可乐中杯",
+            "quantity": 1,
+            "role": "drink"
+          }
+        ],
+        "checks": [
+          {
+            "attribute": "sugar_free_drink",
+            "expected": true,
+            "status": "verified",
+            "source": "官方query-meal-detail／饮品官方名称明确标注无糖"
+          }
+        ]
+      }
+    ],
+    "fee_breakdown": {
+      "productPrice": 2290,
+      "deliveryPrice": null,
+      "packingPrice": null,
+      "tablewarePrice": null
+    }
+  },
+  "after": {
+    "as_of": "2026-10-17T11:34:43.449229+00:00",
+    "total_cents": 3800,
+    "quoted_at": "2026-10-17T11:34:43.799730+00:00",
+    "assignments": [
+      {
+        "person_id": "A",
+        "offer_id": "9900005411-09265deb",
+        "name": "不素之霸双层牛堡三件套（无糖饮料选项）",
+        "items": [
+          {
+            "code": "4648",
+            "name": "不素之霸双层牛堡",
+            "quantity": 1,
+            "role": "main"
+          },
+          {
+            "code": "4810",
+            "name": "中薯条",
+            "quantity": 1,
+            "role": "side"
+          },
+          {
+            "code": "3071",
+            "name": "无糖可口可乐中杯",
+            "quantity": 1,
+            "role": "drink"
+          }
+        ],
+        "checks": [
+          {
+            "attribute": "sugar_free_drink",
+            "expected": true,
+            "status": "verified",
+            "source": "官方query-meal-detail／饮品官方名称明确标注无糖"
+          },
+          {
+            "attribute": "main_meat",
+            "expected": "beef",
+            "status": "verified",
+            "source": "官方query-meal-detail／主食名称明确含牛"
+          }
+        ]
+      }
+    ],
+    "fee_breakdown": {
+      "productPrice": 3800,
+      "deliveryPrice": null,
+      "packingPrice": null,
+      "tablewarePrice": null
+    }
+  },
+  "difference": {
+    "before_request_id": "4d8ab715f08b7d00",
+    "after_request_id": "c81827719978cbf8",
+    "changes": [
+      {
+        "person_id": "A",
+        "before": "大堡口福三件套（无糖饮料选项）",
+        "after": "不素之霸双层牛堡三件套（无糖饮料选项）"
+      }
+    ],
+    "delta_cents": 1510,
+    "new_status": "ready",
+    "old_quote_reused": false
+  },
+  "audit": [
+    {
+      "tool": "query-meals",
+      "success": true,
+      "elapsed_ms": 350
+    },
+    {
+      "tool": "query-store-coupons",
+      "success": true,
+      "elapsed_ms": 133
+    },
+    {
+      "tool": "query-meal-detail",
+      "success": true,
+      "elapsed_ms": 213
+    },
+    {
+      "tool": "query-meal-detail",
+      "success": true,
+      "elapsed_ms": 169
+    },
+    {
+      "tool": "query-meal-detail",
+      "success": true,
+      "elapsed_ms": 154
+    },
+    {
+      "tool": "query-meal-detail",
+      "success": true,
+      "elapsed_ms": 229
+    },
+    {
+      "tool": "query-meal-detail",
+      "success": true,
+      "elapsed_ms": 129
+    },
+    {
+      "tool": "query-meal-detail",
+      "success": true,
+      "elapsed_ms": 166
+    },
+    {
+      "tool": "calculate-price",
+      "success": true,
+      "elapsed_ms": 178
+    },
+    {
+      "tool": "calculate-price",
+      "success": true,
+      "elapsed_ms": 172
+    },
+    {
+      "tool": "calculate-price",
+      "success": true,
+      "elapsed_ms": 1384
+    }
+  ],
+  "offline_tests": 27,
+  "not_executed": [
+    "下单",
+    "领券",
+    "支付",
+    "有券账户真实核价",
+    "医疗/过敏验证"
+  ]
+}
