@@ -74,7 +74,7 @@ class ReadmeAssetTests(unittest.TestCase):
     """README 引用的图片必须随包提供。"""
 
     def test_readme_assets_in_package(self) -> None:
-        """包内 README 的相对图片/链接目标存在，4 张 SVG 均在且小于100KB。"""
+        """包内 README 的相对图片/链接目标存在，5 张 SVG 均在且小于100KB。"""
         import re
         with zipfile.ZipFile(SKILL) as archive:
             names = set(archive.namelist())
@@ -92,8 +92,57 @@ class ReadmeAssetTests(unittest.TestCase):
             "02-terminal-demo.svg",
             "03-change-one-line.svg",
             "04-safety-boundary.svg",
+            "05-ranking.svg",
         ):
             key = "meal-clear/docs/images/" + svg
             with self.subTest(svg=svg):
                 self.assertIn(key, names)
                 self.assertLess(infos[key].file_size, 100 * 1024)
+
+
+@unittest.skipUnless(SKILL.exists(), "源码仓库外无dist包")
+class PackageLinkTests(unittest.TestCase):
+    """包内文档链接、缓存目录与验证记录断言。"""
+
+    def test_markdown_relative_links_valid(self) -> None:
+        """包内所有 .md 的相对链接目标都在包内。"""
+        import posixpath
+        import re
+
+        with zipfile.ZipFile(SKILL) as archive:
+            names = set(archive.namelist())
+            docs = [n for n in names if n.endswith(".md")]
+            for doc in docs:
+                text = archive.read(doc).decode("utf-8")
+                for target in re.findall(r"\]\(([^)\s]+)", text):
+                    if target.startswith(("http://", "https://", "#", "mailto:")):
+                        continue
+                    path = target.split("#")[0]
+                    if not path:
+                        continue
+                    resolved = posixpath.normpath(
+                        posixpath.join(posixpath.dirname(doc), path)
+                    )
+                    with self.subTest(doc=doc, target=target):
+                        self.assertIn(resolved, names)
+
+    def test_no_ruff_cache_or_verification(self) -> None:
+        """包内没有 .ruff_cache 与 verification 条目。"""
+        with zipfile.ZipFile(SKILL) as archive:
+            for name in archive.namelist():
+                self.assertNotIn(".ruff_cache", name)
+                self.assertNotIn("/verification/", name)
+
+    def test_v2_examples_in_package(self) -> None:
+        """外送与得来速示例随包提供，且能通过 v2 校验。"""
+        import sys
+
+        sys.path.insert(0, str(ROOT / "scripts"))
+        from meal_clear.request_v2 import validate_request_v2
+
+        with zipfile.ZipFile(SKILL) as archive:
+            for name in ("request-delivery.json", "request-drive-thru.json"):
+                raw = archive.read("meal-clear/examples/" + name).decode("utf-8")
+                self.assertNotIn("/Users/", raw)
+                req = validate_request_v2(json.loads(raw))
+                self.assertIn(req["fulfillment"]["type"], ("delivery", "drive_thru"))
