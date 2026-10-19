@@ -37,27 +37,10 @@ def integer(value: Any, label: str, minimum: int = 0) -> int:
     return value
 
 
-def validate_request(request: Dict[str, Any]) -> Dict[str, Any]:
-    """校验单/双人、明确上下文和可解释的原子属性约束。"""
-    if not isinstance(request, dict):
-        raise InputError("请求必须为对象")
-    req = copy.deepcopy(request)
-    if set(req) - {"context", "budget_cents", "people"}:
-        raise InputError("请求包含不支持的字段")
-    if not isinstance(req.get("context"), dict):
-        raise InputError("需要门店与用餐上下文")
-    context = req["context"]
-    required = {"store_code", "channel", "meal_time"}
-    if set(context) != required or any(
-        not isinstance(context[k], str) or not context[k].strip() for k in required
-    ):
-        raise InputError("上下文必须包含非空 store_code、channel、meal_time")
-    if context["channel"] != "pickup":
-        raise InputError("首版只支持到店自取 pickup")
-    integer(req.get("budget_cents"), "预算", 1)
-    people = req.get("people")
-    if not isinstance(people, list) or not 1 <= len(people) <= 2:
-        raise InputError("首版支持1或2位用餐者")
+def validate_people(people: Any, max_people: int, count_message: str) -> None:
+    """校验用餐者列表（v1/v2 共用）；就地补全 hard/prefer 默认值。"""
+    if not isinstance(people, list) or not 1 <= len(people) <= max_people:
+        raise InputError(count_message)
     seen = set()
     for person in people:
         if not isinstance(person, dict) or set(person) - {"id", "hard", "prefer"}:
@@ -79,6 +62,31 @@ def validate_request(request: Dict[str, Any]) -> Dict[str, Any]:
                     int,
                 ):
                     raise InputError("属性必须是字符串键及字符串/布尔/整数值")
+
+
+def validate_request(request: Dict[str, Any]) -> Dict[str, Any]:
+    """校验单/双人、明确上下文和可解释的原子属性约束。"""
+    if not isinstance(request, dict):
+        raise InputError("请求必须为对象")
+    req = copy.deepcopy(request)
+    if set(req) - {"context", "budget_cents", "people"}:
+        raise InputError("请求包含不支持的字段")
+    if not isinstance(req.get("context"), dict):
+        raise InputError("需要门店与用餐上下文")
+    context = req["context"]
+    required = {"store_code", "channel", "meal_time"}
+    if set(context) != required or any(
+        not isinstance(context[k], str) or not context[k].strip() for k in required
+    ):
+        raise InputError("上下文必须包含非空 store_code、channel、meal_time")
+    if context["channel"] != "pickup":
+        raise InputError("首版只支持到店自取 pickup")
+    integer(req.get("budget_cents"), "预算", 1)
+    validate_people(
+        req.get("people"),
+        2,
+        "首版支持1或2位用餐者（3人及以上请使用 schema_version=2 请求）",
+    )
     return req
 
 

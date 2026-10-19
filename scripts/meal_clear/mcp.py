@@ -8,8 +8,11 @@ import re
 import time
 import urllib.error
 import urllib.request
+from collections import deque
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Callable, Deque, Dict, Optional
+
+from .config import RATE_LIMIT
 
 ENDPOINT = "https://mcp.mcd.cn"
 READ_ONLY = frozenset(
@@ -21,12 +24,57 @@ READ_ONLY = frozenset(
         "calculate-price",
         "campaign-calendar",
         "now-time-info",
+        "available-coupons",
+        "query-my-coupons",
+        "delivery-query-addresses",
+        "delivery-query-stores",
     }
 )
 
 
 class McpError(RuntimeError):
     """可安全显示的协议/业务错误，不携带原始账户响应。"""
+
+
+class RateLimitedError(McpError):
+    """429 重试耗尽；调用方应停止继续请求并如实说明。"""
+
+
+class RateLimiter:
+    """滑动窗口客户端限流：超出则等待，而不是发出请求。"""
+
+    def __init__(
+        self,
+        max_calls: int = RATE_LIMIT[0],
+        window: float = RATE_LIMIT[1],
+        clock: Optional[Callable[[], float]] = None,
+        sleep: Optional[Callable[[float], None]] = None,
+    ) -> None:
+        """clock/sleep 可注入假时钟以便测试。"""
+        self.max_calls = max_calls
+        self.window = window
+        self._clock = clock or time.monotonic
+        self._sleep = sleep or (lambda seconds: time.sleep(seconds))
+        self._stamps: Deque[float] = deque()
+
+    def acquire(self) -> None:
+        """占用一个名额；窗口已满时等待最早一次调用过期。"""
+        while True:
+            now = self._clock()
+            while self._stamps and now - self._stamps[0] >= self.window:
+                self._stamps.popleft()
+            if len(self._stamps) < self.max_calls:
+                self._stamps.append(now)
+                return
+            self._sleep(max(self.window - (now - self._stamps[0]), 0.001))
+
+
+def _validate_test_endpoint(url: str) -> str:
+    """仅接受 http://127.0.0.1|localhost:端口（无用户信息和路径）。"""
+    match = re.fullmatch(r"http://(127\.0\.0\.1|localhost):(\d{1,5})", url or "")
+    if not match or not 1 <= int(match.group(2)) <= 65535:
+        raise McpError("测试端点只允许 http://127.0.0.1 或 localhost 的本机端口")
+    return url
 
 
 class NoRedirect(urllib.request.HTTPRedirectHandler):
@@ -104,7 +152,14 @@ def unwrap_tool(result: Dict[str, Any]) -> Dict[str, Any]:
 class McpClient:
     """凭证只驻留内存；客户端没有任意端点和任意工具入口。"""
 
-    def __init__(self, token_file: Optional[str] = None, timeout: float = 20) -> None:
+    def __init__(
+        self,
+        token_file: Optional[str] = None,
+        timeout: float = 20,
+        endpoint: Optional[str] = None,
+        retry_delay: float = 0.5,
+        rate_limiter: Optional[RateLimiter] = None,
+    ) -> None:
         """优先使用环境变量，或读取用户明确给定的本地凭证文件。"""
         token = os.environ.get("MCD_MCP_TOKEN", "").strip()
         if not token and token_file:
@@ -120,6 +175,9 @@ class McpClient:
         self._protocol = "2024-11-05"
         self._counter = 0
         self.timeout = timeout
+        self.endpoint = ENDPOINT if endpoint is None else _validate_test_endpoint(endpoint)
+        self.retry_delay = retry_delay
+        self.rate_limiter = rate_limiter or RateLimiter()
         self.audit = []
         self._opener = urllib.request.build_opener(NoRedirect())
 
@@ -148,8 +206,9 @@ class McpClient:
         encoded = json.dumps(body).encode()
         for attempt in range(3):
             try:
+                self.rate_limiter.acquire()
                 req = urllib.request.Request(
-                    ENDPOINT, data=encoded, headers=headers, method="POST"
+                    self.endpoint, data=encoded, headers=headers, method="POST"
                 )
                 with self._opener.open(req, timeout=self.timeout) as response:
                     session = response.headers.get("Mcp-Session-Id")
@@ -175,11 +234,15 @@ class McpClient:
                         f"HTTP {exc.code}：认证或访问受限，停止重试"
                     ) from None
                 if exc.code not in {429, 500, 502, 503, 504} or attempt == 2:
+                    if exc.code == 429:
+                        raise RateLimitedError(
+                            f"HTTP {exc.code}：只读请求失败"
+                        ) from None
                     raise McpError(f"HTTP {exc.code}：只读请求失败") from None
             except (urllib.error.URLError, TimeoutError, OSError):
                 if attempt == 2:
                     raise McpError("网络或超时错误；只读请求已达到重试上限") from None
-            time.sleep(0.5 * (2**attempt))
+            time.sleep(self.retry_delay * (2**attempt))
         raise McpError("未完成请求")
 
     def initialize(self) -> Dict[str, Any]:
