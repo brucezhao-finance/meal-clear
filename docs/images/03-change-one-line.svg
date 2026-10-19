@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 640" width="1200" height="640" role="img" aria-labelledby="ch-t ch-d">
+<title id="ch-t">改一句,不重来:前后对比</title>
+<desc id="ch-d">改前 A、B 都是模拟鸡肉组合,合计 38.00 元。B 想吃牛肉后,A 不变,B 换成模拟牛肉组合,合计 43.00 元,增加 5 元。数据为模拟数据。</desc>
+<style>text{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif} text:not([fill]){fill:#3A2A1A} .m{font-family:Menlo,Consolas,'PingFang SC','Microsoft YaHei',monospace}</style>
+<rect width="1200" height="640" fill="#FFF8E1"/>
+<rect x="0" y="0" width="1200" height="70" rx="0" fill="#DA291C"/>
+<g transform="translate(24,10) scale(0.6)"><rect width="96" height="80" rx="16" fill="#DA291C"/><path d="M14 62 C14 14 48 14 48 62 C48 14 82 14 82 62" fill="none" stroke="#FFC72C" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/></g>
+<text x="90" y="46" font-size="30" text-anchor="start" font-weight="bold" fill="#FFFFFF">改一句,不重来</text>
+<rect x="1050" y="18" width="112" height="34" rx="17" fill="#FFC72C"/>
+<text x="1106" y="42" font-size="18" text-anchor="middle" font-weight="bold">模拟数据</text>
+<rect x="30" y="95" width="1140" height="170" rx="14" fill="#FFFFFF" stroke="#FFC72C" stroke-width="3"/>
+<text x="60" y="145" font-size="28" text-anchor="start" font-weight="bold">改之前</text>
+<text x="60" y="195" font-size="40" text-anchor="start" font-weight="bold" fill="#3A2A1A">¥38.00</text>
+<rect x="300" y="120" width="380" height="120" rx="14" fill="#EFEFEF" stroke="#BBBBBB" stroke-width="2"/>
+<text x="320" y="155" font-size="22" text-anchor="start" font-weight="bold">A</text>
+<text x="320" y="195" font-size="24" text-anchor="start" font-weight="normal">模拟鸡肉组合 ¥19</text>
+<text x="320" y="225" font-size="18" text-anchor="start" font-weight="normal">不辣 · 无糖饮料</text>
+<rect x="710" y="120" width="440" height="120" rx="14" fill="#EFEFEF" stroke="#BBBBBB" stroke-width="2"/>
+<text x="730" y="155" font-size="22" text-anchor="start" font-weight="bold" fill="#3A2A1A">B</text>
+<text x="730" y="195" font-size="24" text-anchor="start" font-weight="normal" fill="#3A2A1A">模拟鸡肉组合 ¥19</text>
+<text x="730" y="225" font-size="18" text-anchor="start" font-weight="normal">不辣 · 无糖饮料</text>
+<text x="600" y="300" font-size="26" text-anchor="middle" font-weight="bold" fill="#DA291C">B 想吃牛肉,其他不变</text>
+<path d="M588 312 L600 328 L612 312 Z" fill="#DA291C"/>
+<text x="600" y="350" font-size="1" text-anchor="start" font-weight="normal"></text>
+<rect x="30" y="345" width="1140" height="170" rx="14" fill="#FFFFFF" stroke="#FFC72C" stroke-width="3"/>
+<text x="60" y="395" font-size="28" text-anchor="start" font-weight="bold">改之后</text>
+<text x="60" y="445" font-size="40" text-anchor="start" font-weight="bold" fill="#DA291C">¥43.00</text>
+<rect x="300" y="370" width="380" height="120" rx="14" fill="#F5F5F5" stroke="#BBBBBB" stroke-width="2"/>
+<text x="320" y="405" font-size="22" text-anchor="start" font-weight="bold">A</text>
+<text x="320" y="445" font-size="24" text-anchor="start" font-weight="normal">不变:模拟鸡肉组合 ¥19</text>
+<text x="320" y="475" font-size="18" text-anchor="start" font-weight="normal">不辣 · 无糖饮料 保留</text>
+<rect x="710" y="370" width="440" height="120" rx="14" fill="#FFEAE8" stroke="#DA291C" stroke-width="4"/>
+<text x="730" y="405" font-size="22" text-anchor="start" font-weight="bold" fill="#DA291C">B</text>
+<text x="730" y="445" font-size="24" text-anchor="start" font-weight="bold" fill="#DA291C">换成:模拟牛肉组合 ¥24</text>
+<text x="730" y="475" font-size="18" text-anchor="start" font-weight="normal">不辣 · 无糖饮料 保留</text>
+<rect x="30" y="540" width="300" height="70" rx="35" fill="#FFC72C"/>
+<text x="180" y="587" font-size="38" text-anchor="middle" font-weight="bold" fill="#3A2A1A">+¥5.00</text>
+<text x="350" y="570" font-size="22" text-anchor="start" font-weight="bold">差价 delta_cents: 500(分)</text>
+<text x="350" y="600" font-size="18" text-anchor="start" font-weight="normal">只重算受影响部分 · old_quote_reused: false(旧报价不复用)</text>
+</svg>

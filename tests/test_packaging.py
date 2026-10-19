@@ -67,3 +67,33 @@ class PackagingTests(unittest.TestCase):
             manifest["sha256"], hashlib.sha256(SKILL.read_bytes()).hexdigest()
         )
         self.assertIn("verification", manifest["excluded"])
+
+
+@unittest.skipUnless(SKILL.exists(), "源码仓库外无dist包")
+class ReadmeAssetTests(unittest.TestCase):
+    """README 引用的图片必须随包提供。"""
+
+    def test_readme_assets_in_package(self) -> None:
+        """包内 README 的相对图片/链接目标存在，4 张 SVG 均在且小于100KB。"""
+        import re
+        with zipfile.ZipFile(SKILL) as archive:
+            names = set(archive.namelist())
+            readme = archive.read("meal-clear/README.md").decode("utf-8")
+            infos = {i.filename: i for i in archive.infolist()}
+        targets = re.findall(r"\]\(([^)#\s]+)", readme)
+        for target in targets:
+            if target.startswith(("http://", "https://")):
+                continue
+            with self.subTest(target=target):
+                self.assertIn("meal-clear/" + target, names)
+        self.assertNotIn("assets/", readme)
+        for svg in (
+            "01-overview.svg",
+            "02-terminal-demo.svg",
+            "03-change-one-line.svg",
+            "04-safety-boundary.svg",
+        ):
+            key = "meal-clear/docs/images/" + svg
+            with self.subTest(svg=svg):
+                self.assertIn(key, names)
+                self.assertLess(infos[key].file_size, 100 * 1024)
