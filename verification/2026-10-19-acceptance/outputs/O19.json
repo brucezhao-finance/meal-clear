@@ -1,0 +1,17 @@
+{
+  "id": "O19",
+  "title": "每次节省为0不能伪造回本",
+  "command": "python3 scripts/meal_clear.py break-even --fee 1400 --saving 0",
+  "returncode": 0,
+  "elapsed_ms": 42,
+  "expected": {
+    "exit": 0
+  },
+  "stdout": "{\"visits\": null}\n",
+  "stderr": "",
+  "parsed": {
+    "visits": null
+  },
+  "passed": true,
+  "failures": []
+}

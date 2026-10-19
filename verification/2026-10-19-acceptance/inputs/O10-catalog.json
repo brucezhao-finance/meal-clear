@@ -1,0 +1,179 @@
+{
+  "mode": "simulation",
+  "as_of": "2026-10-19（验收自建模拟，非真实采集）",
+  "context": {
+    "store_code": "OTHER",
+    "channel": "pickup",
+    "meal_time": "synthetic"
+  },
+  "order_fee_cents": 0,
+  "price_source": "完全虚构验收价格",
+  "offers": [
+    {
+      "id": "chicken",
+      "name": "验收模拟chicken",
+      "price_cents": 2150,
+      "card_fee_cents": 0,
+      "facts": {
+        "non_spicy": {
+          "value": true,
+          "source": "验收自建模拟证据，非官方数据"
+        },
+        "sugar_free_drink": {
+          "value": true,
+          "source": "验收自建模拟证据，非官方数据"
+        },
+        "main_meat": {
+          "value": "chicken",
+          "source": "验收自建模拟证据，非官方数据"
+        }
+      },
+      "items": [
+        {
+          "code": "chicken-main",
+          "name": "验收模拟主食",
+          "role": "main",
+          "quantity": 1
+        },
+        {
+          "code": "chicken-drink",
+          "name": "验收模拟无糖饮料",
+          "role": "drink",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "id": "beef",
+      "name": "验收模拟beef",
+      "price_cents": 2900,
+      "card_fee_cents": 0,
+      "facts": {
+        "non_spicy": {
+          "value": true,
+          "source": "验收自建模拟证据，非官方数据"
+        },
+        "sugar_free_drink": {
+          "value": true,
+          "source": "验收自建模拟证据，非官方数据"
+        },
+        "main_meat": {
+          "value": "beef",
+          "source": "验收自建模拟证据，非官方数据"
+        }
+      },
+      "items": [
+        {
+          "code": "beef-main",
+          "name": "验收模拟主食",
+          "role": "main",
+          "quantity": 1
+        },
+        {
+          "code": "beef-drink",
+          "name": "验收模拟无糖饮料",
+          "role": "drink",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "id": "unknown",
+      "name": "验收模拟unknown",
+      "price_cents": 1200,
+      "card_fee_cents": 0,
+      "facts": {
+        "sugar_free_drink": {
+          "value": true,
+          "source": "验收自建模拟证据，非官方数据"
+        },
+        "main_meat": {
+          "value": "chicken",
+          "source": "验收自建模拟证据，非官方数据"
+        }
+      },
+      "items": [
+        {
+          "code": "unknown-main",
+          "name": "验收模拟主食",
+          "role": "main",
+          "quantity": 1
+        },
+        {
+          "code": "unknown-drink",
+          "name": "验收模拟无糖饮料",
+          "role": "drink",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "id": "spicy",
+      "name": "验收模拟spicy",
+      "price_cents": 1800,
+      "card_fee_cents": 0,
+      "facts": {
+        "non_spicy": {
+          "value": false,
+          "source": "验收自建模拟证据，非官方数据"
+        },
+        "sugar_free_drink": {
+          "value": true,
+          "source": "验收自建模拟证据，非官方数据"
+        },
+        "main_meat": {
+          "value": "chicken",
+          "source": "验收自建模拟证据，非官方数据"
+        }
+      },
+      "items": [
+        {
+          "code": "spicy-main",
+          "name": "验收模拟主食",
+          "role": "main",
+          "quantity": 1
+        },
+        {
+          "code": "spicy-drink",
+          "name": "验收模拟无糖饮料",
+          "role": "drink",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "id": "card",
+      "name": "验收模拟card",
+      "price_cents": 1300,
+      "card_fee_cents": 1200,
+      "facts": {
+        "non_spicy": {
+          "value": true,
+          "source": "验收自建模拟证据，非官方数据"
+        },
+        "sugar_free_drink": {
+          "value": true,
+          "source": "验收自建模拟证据，非官方数据"
+        },
+        "main_meat": {
+          "value": "chicken",
+          "source": "验收自建模拟证据，非官方数据"
+        }
+      },
+      "items": [
+        {
+          "code": "card-main",
+          "name": "验收模拟主食",
+          "role": "main",
+          "quantity": 1
+        },
+        {
+          "code": "card-drink",
+          "name": "验收模拟无糖饮料",
+          "role": "drink",
+          "quantity": 1
+        }
+      ]
+    }
+  ]
+}

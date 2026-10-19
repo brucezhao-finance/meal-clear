@@ -1,0 +1,1281 @@
+{
+  "id": "O24",
+  "title": "用绝对路径从其他工作目录运行演示",
+  "command": "cd /private/tmp && python3 <项目绝对路径>/scripts/meal_clear.py demo --json",
+  "returncode": 0,
+  "elapsed_ms": 43,
+  "expected": {
+    "exit": 0
+  },
+  "stdout": "{\n  \"before\": {\n    \"request\": {\n      \"context\": {\n        \"store_code\": \"DEMO\",\n        \"channel\": \"pickup\",\n        \"meal_time\": \"demo-time\"\n      },\n      \"budget_cents\": 5000,\n      \"people\": [\n        {\n          \"id\": \"A\",\n          \"hard\": {\n            \"non_spicy\": true,\n            \"sugar_free_drink\": true\n          },\n          \"prefer\": {\n            \"main_meat\": \"chicken\"\n          }\n        },\n        {\n          \"id\": \"B\",\n          \"hard\": {\n            \"non_spicy\": true,\n            \"sugar_free_drink\": true\n          },\n          \"prefer\": {\n            \"main_meat\": \"chicken\"\n          }\n        }\n      ]\n    },\n    \"request_id\": \"7f304328a67ff8b2\",\n    \"mode\": \"simulation\",\n    \"as_of\": \"2026-10-17（模拟数据创建日期，非真实采集）\",\n    \"status\": \"simulation\",\n    \"plans\": [\n      {\n        \"signature\": \"d155f2a806ec150723c201350a4d76795b7be223742aa0662c879a2603f1dd11\",\n        \"assignments\": [\n          {\n            \"person_id\": \"A\",\n            \"offer_id\": \"demo-chicken\",\n            \"name\": \"模拟鸡肉组合\",\n            \"items\": [\n              {\n                \"code\": \"demo-chicken-main\",\n                \"name\": \"模拟非辣鸡肉堡\",\n                \"quantity\": 1,\n                \"role\": \"main\"\n              },\n              {\n                \"code\": \"demo-drink\",\n                \"name\": \"模拟无糖饮料\",\n                \"quantity\": 1,\n                \"role\": \"drink\"\n              }\n            ],\n            \"checks\": [\n              {\n                \"attribute\": \"non_spicy\",\n                \"expected\": true,\n                \"status\": \"verified\",\n                \"source\": \"模拟数据：辣度声明\"\n              },\n              {\n                \"attribute\": \"sugar_free_drink\",\n                \"expected\": true,\n                \"status\": \"verified\",\n                \"source\": \"模拟数据：饮料无糖\"\n              }\n            ]\n          },\n          {\n            \"person_id\": \"B\",\n            \"offer_id\": \"demo-chicken\",\n            \"name\": \"模拟鸡肉组合\",\n            \"items\": [\n              {\n                \"code\": \"demo-chicken-main\",\n                \"name\": \"模拟非辣鸡肉堡\",\n                \"quantity\": 1,\n                \"role\": \"main\"\n              },\n              {\n                \"code\": \"demo-drink\",\n                \"name\": \"模拟无糖饮料\",\n                \"quantity\": 1,\n                \"role\": \"drink\"\n              }\n            ],\n            \"checks\": [\n              {\n                \"attribute\": \"non_spicy\",\n                \"expected\": true,\n                \"status\": \"verified\",\n                \"source\": \"模拟数据：辣度声明\"\n              },\n              {\n                \"attribute\": \"sugar_free_drink\",\n                \"expected\": true,\n                \"status\": \"verified\",\n                \"source\": \"模拟数据：饮料无糖\"\n              }\n            ]\n          }\n        ],\n        \"preference_matches\": 2,\n        \"total_cents\": 3800,\n        \"price_status\": \"simulation\",\n        \"pricing_source\": \"完全虚构的测试价格，不是麦当劳现价\",\n        \"new_card_cents\": 0,\n        \"steps\": {\n          \"order_count\": 1,\n          \"new_card_count\": 0\n        },\n        \"within_budget\": true\n      },\n      {\n        \"signature\": \"2e92ab2cdd6b747ba3f3bf5a726c65735b5dc069c5fa68f209937a80f74d184d\",\n        \"assignments\": [\n          {\n            \"person_id\": \"A\",\n            \"offer_id\": \"demo-chicken\",\n            \"name\": \"模拟鸡肉组合\",\n            \"items\": [\n              {\n                \"code\": \"demo-chicken-main\",\n                \"name\": \"模拟非辣鸡肉堡\",\n                \"quantity\": 1,\n                \"role\": \"main\"\n              },\n              {\n                \"code\": \"demo-drink\",\n                \"name\": \"模拟无糖饮料\",\n                \"quantity\": 1,\n                \"role\": \"drink\"\n              }\n            ],\n            \"checks\": [\n              {\n                \"attribute\": \"non_spicy\",\n                \"expected\": true,\n                \"status\": \"verified\",\n                \"source\": \"模拟数据：辣度声明\"\n              },\n              {\n                \"attribute\": \"sugar_free_drink\",\n                \"expected\": true,\n                \"status\": \"verified\",\n                \"source\": \"模拟数据：饮料无糖\"\n              }\n            ]\n          },\n          {\n            \"person_id\": \"B\",\n            \"offer_id\": \"demo-card\",\n            \"name\": \"模拟需新卡鸡肉组合\",\n            \"items\": [\n              {\n                \"code\": \"demo-card-main\",\n                \"name\": \"模拟非辣鸡肉堡\",\n                \"quantity\": 1,\n                \"role\": \"main\"\n              },\n              {\n                \"code\": \"demo-drink\",\n                \"name\": \"模拟无糖饮料\",\n                \"quantity\": 1,\n                \"role\": \"drink\"\n              }\n            ],\n            \"checks\": [\n              {\n                \"attribute\": \"non_spicy\",\n                \"expected\": true,\n                \"status\": \"verified\",\n                \"source\": \"模拟数据：辣度声明\"\n              },\n              {\n                \"attribute\": \"sugar_free_drink\",\n                \"expected\": true,\n                \"status\": \"verified\",\n                \"source\": \"模拟数据：饮料无糖\"\n              }\n            ]\n          }\n        ],\n        \"preference_matches\": 2,\n        \"total_cents\": 4400,\n        \"price_status\": \"simulation\",\n        \"pricing_source\": \"完全虚构的测试价格，不是麦当劳现价\",\n        \"new_card_cents\": 900,\n        \"steps\": {\n          \"order_count\": 1,\n          \"new_card_count\": 1\n        },\n        \"within_budget\": true\n      },\n      {\n        \"signature\": \"ac46ec6ec958ae8239200470f21784473422d19205a8dd3f49f44bc650afd0ee\",\n        \"assignments\": [\n          {\n            \"person_id\": \"A\",\n            \"offer_id\": \"demo-card\",\n            \"name\": \"模拟需新卡鸡肉组合\",\n            \"items\": [\n              {\n                \"code\": \"demo-card-main\",\n                \"name\": \"模拟非辣鸡肉堡\",\n                \"quantity\": 1,\n                \"role\": \"main\"\n              },\n              {\n                \"code\": \"demo-drink\",\n                \"name\": \"模拟无糖饮料\",\n                \"quantity\": 1,\n                \"role\": \"drink\"\n              }\n            ],\n            \"checks\": [\n              {\n                \"attribute\": \"non_spicy\",\n                \"expected\": true,\n                \"status\": \"verified\",\n                \"source\": \"模拟数据：辣度声明\"\n              },\n              {\n                \"attribute\": \"sugar_free_drink\",\n                \"expected\": true,\n                \"status\": \"verified\",\n                \"source\": \"模拟数据：饮料无糖\"\n              }\n            ]\n          },\n          {\n            \"person_id\": \"B\",\n            \"offer_id\": \"demo-chicken\",\n            \"name\": \"模拟鸡肉组合\",\n            \"items\": [\n              {\n                \"code\": \"demo-chicken-main\",\n                \"name\": \"模拟非辣鸡肉堡\",\n                \"quantity\": 1,\n                \"role\": \"main\"\n              },\n              {\n                \"code\": \"demo-drink\",\n                \"name\": \"模拟无糖饮料\",\n                \"quantity\": 1,\n                \"role\": \"drink\"\n              }\n            ],\n            \"checks\": [\n              {\n                \"attribute\": \"non_spicy\",\n                \"expected\": true,\n                \"status\": \"verified\",\n                \"source\": \"模拟数据：辣度声明\"\n              },\n              {\n                \"attribute\": \"sugar_free_drink\",\n                \"expected\": true,\n                \"status\": \"verified\",\n                \"source\": \"模拟数据：饮料无糖\"\n              }\n            ]\n          }\n        ],\n        \"preference_matches\": 2,\n        \"total_cents\": 4400,\n        \"price_status\": \"simulation\",\n        \"pricing_source\": \"完全虚构的测试价格，不是麦当劳现价\",\n        \"new_card_cents\": 900,\n        \"steps\": {\n          \"order_count\": 1,\n          \"new_card_count\": 1\n        },\n        \"within_budget\": true\n      },\n      {\n        \"signature\": \"3900abbf1ce836973dff571222412bde3167c3ddca291cce60f5f4d209147c46\",\n        \"assignments\": [\n          {\n            \"person_id\": \"A\",\n            \"offer_id\": \"demo-card\",\n            \"name\": \"模拟需新卡鸡肉组合\",\n            \"items\": [\n              {\n                \"code\": \"demo-card-main\",\n                \"name\": \"模拟非辣鸡肉堡\",\n                \"quantity\": 1,\n                \"role\": \"main\"\n              },\n              {\n                \"code\": \"demo-drink\",\n                \"name\": \"模拟无糖饮料\",\n                \"quantity\": 1,\n                \"role\": \"drink\"\n              }\n            ],\n            \"checks\": [\n              {\n                \"attribute\": \"non_spicy\",\n                \"expected\": true,\n                \"status\": \"verified\",\n                \"source\": \"模拟数据：辣度声明\"\n              },\n              {\n                \"attribute\": \"sugar_free_drink\",\n                \"expected\": true,\n                \"status\": \"verified\",\n                \"source\": \"模拟数据：饮料无糖\"\n              }\n            ]\n          },\n          {\n            \"person_id\": \"B\",\n            \"offer_id\": \"demo-card\",\n            \"name\": \"模拟需新卡鸡肉组合\",\n            \"items\": [\n              {\n                \"code\": \"demo-card-main\",\n                \"name\": \"模拟非辣鸡肉堡\",\n                \"quantity\": 1,\n                \"role\": \"main\"\n              },\n              {\n                \"code\": \"demo-drink\",\n                \"name\": \"模拟无糖饮料\",\n                \"quantity\": 1,\n                \"role\": \"drink\"\n              }\n            ],\n            \"checks\": [\n              {\n                \"attribute\": \"non_spicy\",\n                \"expected\": true,\n                \"status\": \"verified\",\n                \"source\": \"模拟数据：辣度声明\"\n              },\n              {\n                \"attribute\": \"sugar_free_drink\",\n                \"expected\": true,\n                \"status\": \"verified\",\n                \"source\": \"模拟数据：饮料无糖\"\n              }\n            ]\n          }\n        ],\n        \"preference_matches\": 2,\n        \"total_cents\": 5000,\n        \"price_status\": \"simulation\",\n        \"pricing_source\": \"完全虚构的测试价格，不是麦当劳现价\",\n        \"new_card_cents\": 1800,\n        \"steps\": {\n          \"order_count\": 1,\n          \"new_card_count\": 2\n        },\n        \"within_budget\": true\n      },\n      {\n        \"signature\": \"d11592e97db7f7c8ae7c30b14112fd423c953e746ea47ac1e6ae3783863ed45a\",\n        \"assignments\": [\n          {\n            \"person_id\": \"A\",\n            \"offer_id\": \"demo-chicken\",\n            \"name\": \"模拟鸡肉组合\",\n            \"items\": [\n              {\n                \"code\": \"demo-chicken-main\",\n                \"name\": \"模拟非辣鸡肉堡\",\n                \"quantity\": 1,\n                \"role\": \"main\"\n              },\n              {\n                \"code\": \"demo-drink\",\n                \"name\": \"模拟无糖饮料\",\n                \"quantity\": 1,\n                \"role\": \"drink\"\n              }\n            ],\n            \"checks\": [\n              {\n                \"attribute\": \"non_spicy\",\n                \"expected\": true,\n                \"status\": \"verified\",\n                \"source\": \"模拟数据：辣度声明\"\n              },\n              {\n                \"attribute\": \"sugar_free_drink\",\n                \"expected\": true,\n                \"status\": \"verified\",\n                \"source\": \"模拟数据：饮料无糖\"\n              }\n            ]\n          },\n          {\n            \"person_id\": \"B\",\n            \"offer_id\": \"demo-beef\",\n            \"name\": \"模拟牛肉组合\",\n            \"items\": [\n              {\n                \"code\": \"demo-beef-main\",\n                \"name\": \"模拟非辣牛肉堡\",\n                \"quantity\": 1,\n                \"role\": \"main\"\n              },\n              {\n                \"code\": \"demo-drink\",\n                \"name\": \"模拟无糖饮料\",\n                \"quantity\": 1,\n                \"role\": \"drink\"\n              }\n            ],\n            \"checks\": [\n              {\n                \"attribute\": \"non_spicy\",\n                \"expected\": true,\n                \"status\": \"verified\",\n                \"source\": \"模拟数据：辣度声明\"\n              },\n              {\n                \"attribute\": \"sugar_free_drink\",\n                \"expected\": true,\n                \"status\": \"verified\",\n                \"source\": \"模拟数据：饮料无糖\"\n              }\n            ]\n          }\n        ],\n        \"preference_matches\": 1,\n        \"total_cents\": 4300,\n        \"price_status\": \"simulation\",\n        \"pricing_source\": \"完全虚构的测试价格，不是麦当劳现价\",\n        \"new_card_cents\": 0,\n        \"steps\": {\n          \"order_count\": 1,\n          \"new_card_count\": 0\n        },\n        \"within_budget\": true\n      },\n      {\n        \"signature\": \"d501a9341d182be7a5c1c2a0125b9b240640323101804fae390f9332aa0a75ce\",\n        \"assignments\": [\n          {\n            \"person_id\": \"A\",\n            \"offer_id\": \"demo-beef\",\n            \"name\": \"模拟牛肉组合\",\n            \"items\": [\n              {\n                \"code\": \"demo-beef-main\",\n                \"name\": \"模拟非辣牛肉堡\",\n                \"quantity\": 1,\n                \"role\": \"main\"\n              },\n              {\n                \"code\": \"demo-drink\",\n                \"name\": \"模拟无糖饮料\",\n                \"quantity\": 1,\n                \"role\": \"drink\"\n              }\n            ],\n            \"checks\": [\n              {\n                \"attribute\": \"non_spicy\",\n                \"expected\": true,\n                \"status\": \"verified\",\n                \"source\": \"模拟数据：辣度声明\"\n              },\n              {\n                \"attribute\": \"sugar_free_drink\",\n                \"expected\": true,\n                \"status\": \"verified\",\n                \"source\": \"模拟数据：饮料无糖\"\n              }\n            ]\n          },\n          {\n            \"person_id\": \"B\",\n            \"offer_id\": \"demo-chicken\",\n            \"name\": \"模拟鸡肉组合\",\n            \"items\": [\n              {\n                \"code\": \"demo-chicken-main\",\n                \"name\": \"模拟非辣鸡肉堡\",\n                \"quantity\": 1,\n                \"role\": \"main\"\n              },\n              {\n                \"code\": \"demo-drink\",\n                \"name\": \"模拟无糖饮料\",\n                \"quantity\": 1,\n                \"role\": \"drink\"\n              }\n            ],\n            \"checks\": [\n              {\n                \"attribute\": \"non_spicy\",\n                \"expected\": true,\n                \"status\": \"verified\",\n                \"source\": \"模拟数据：辣度声明\"\n              },\n              {\n                \"attribute\": \"sugar_free_drink\",\n                \"expected\": true,\n                \"status\": \"verified\",\n                \"source\": \"模拟数据：饮料无糖\"\n              }\n            ]\n          }\n        ],\n        \"preference_matches\": 1,\n        \"total_cents\": 4300,\n        \"price_status\": \"simulation\",\n        \"pricing_source\": \"完全虚构的测试价格，不是麦当劳现价\",\n        \"new_card_cents\": 0,\n        \"steps\": {\n          \"order_count\": 1,\n          \"new_card_count\": 0\n        },\n        \"within_budget\": true\n      },\n      {\n        \"signature\": \"122ca1da87b95dd797d678f810bf16dad4594df8cac1ec3182323a86f608406e\",\n        \"assignments\": [\n          {\n            \"person_id\": \"A\",\n            \"offer_id\": \"demo-card\",\n            \"name\": \"模拟需新卡鸡肉组合\",\n            \"items\": [\n              {\n                \"code\": \"demo-card-main\",\n                \"name\": \"模拟非辣鸡肉堡\",\n                \"quantity\": 1,\n                \"role\": \"main\"\n              },\n              {\n                \"code\": \"demo-drink\",\n                \"name\": \"模拟无糖饮料\",\n                \"quantity\": 1,\n                \"role\": \"drink\"\n              }\n            ],\n            \"checks\": [\n              {\n                \"attribute\": \"non_spicy\",\n                \"expected\": true,\n                \"status\": \"verified\",\n                \"source\": \"模拟数据：辣度声明\"\n              },\n              {\n                \"attribute\": \"sugar_free_drink\",\n                \"expected\": true,\n                \"status\": \"verified\",\n                \"source\": \"模拟数据：饮料无糖\"\n              }\n            ]\n          },\n          {\n            \"person_id\": \"B\",\n            \"offer_id\": \"demo-beef\",\n            \"name\": \"模拟牛肉组合\",\n            \"items\": [\n              {\n                \"code\": \"demo-beef-main\",\n                \"name\": \"模拟非辣牛肉堡\",\n                \"quantity\": 1,\n                \"role\": \"main\"\n              },\n              {\n                \"code\": \"demo-drink\",\n                \"name\": \"模拟无糖饮料\",\n                \"quantity\": 1,\n                \"role\": \"drink\"\n              }\n            ],\n            \"checks\": [\n              {\n                \"attribute\": \"non_spicy\",\n                \"expected\": true,\n                \"status\": \"verified\",\n                \"source\": \"模拟数据：辣度声明\"\n              },\n              {\n                \"attribute\": \"sugar_free_drink\",\n                \"expected\": true,\n                \"status\": \"verified\",\n                \"source\": \"模拟数据：饮料无糖\"\n              }\n            ]\n          }\n        ],\n        \"preference_matches\": 1,\n        \"total_cents\": 4900,\n        \"price_status\": \"simulation\",\n        \"pricing_source\": \"完全虚构的测试价格，不是麦当劳现价\",\n        \"new_card_cents\": 900,\n        \"steps\": {\n          \"order_count\": 1,\n          \"new_card_count\": 1\n        },\n        \"within_budget\": true\n      },\n      {\n        \"signature\": \"22fcc12810b599485e2d440fef44a0f78bcf6834b02f9cd3a4e599d3aaf4dcbd\",\n        \"assignments\": [\n          {\n            \"person_id\": \"A\",\n            \"offer_id\": \"demo-beef\",\n            \"name\": \"模拟牛肉组合\",\n            \"items\": [\n              {\n                \"code\": \"demo-beef-main\",\n                \"name\": \"模拟非辣牛肉堡\",\n                \"quantity\": 1,\n                \"role\": \"main\"\n              },\n              {\n                \"code\": \"demo-drink\",\n                \"name\": \"模拟无糖饮料\",\n                \"quantity\": 1,\n                \"role\": \"drink\"\n              }\n            ],\n            \"checks\": [\n              {\n                \"attribute\": \"non_spicy\",\n                \"expected\": true,\n                \"status\": \"verified\",\n                \"source\": \"模拟数据：辣度声明\"\n              },\n              {\n                \"attribute\": \"sugar_free_drink\",\n                \"expected\": true,\n                \"status\": \"verified\",\n                \"source\": \"模拟数据：饮料无糖\"\n              }\n            ]\n          },\n          {\n            \"person_id\": \"B\",\n            \"offer_id\": \"demo-card\",\n            \"name\": \"模拟需新卡鸡肉组合\",\n            \"items\": [\n              {\n                \"code\": \"demo-card-main\",\n                \"name\": \"模拟非辣鸡肉堡\",\n                \"quantity\": 1,\n                \"role\": \"main\"\n              },\n              {\n                \"code\": \"demo-drink\",\n                \"name\": \"模拟无糖饮料\",\n                \"quantity\": 1,\n                \"role\": \"drink\"\n              }\n            ],\n            \"checks\": [\n              {\n                \"attribute\": \"non_spicy\",\n                \"expected\": true,\n                \"status\": \"verified\",\n                \"source\": \"模拟数据：辣度声明\"\n              },\n              {\n                \"attribute\": \"sugar_free_drink\",\n                \"expected\": true,\n                \"status\": \"verified\",\n                \"source\": \"模拟数据：饮料无糖\"\n              }\n            ]\n          }\n        ],\n        \"preference_matches\": 1,\n        \"total_cents\": 4900,\n        \"price_status\": \"simulation\",\n        \"pricing_source\": \"完全虚构的测试价格，不是麦当劳现价\",\n        \"new_card_cents\": 900,\n        \"steps\": {\n          \"order_count\": 1,\n          \"new_card_count\": 1\n        },\n        \"within_budget\": true\n      },\n      {\n        \"signature\": \"eb2c147d7e2836d62222dce322c6dee03daf62c0b17f53a459b4541d5730c769\",\n        \"assignments\": [\n          {\n            \"person_id\": \"A\",\n            \"offer_id\": \"demo-beef\",\n            \"name\": \"模拟牛肉组合\",\n            \"items\": [\n              {\n                \"code\": \"demo-beef-main\",\n                \"name\": \"模拟非辣牛肉堡\",\n                \"quantity\": 1,\n                \"role\": \"main\"\n              },\n              {\n                \"code\": \"demo-drink\",\n                \"name\": \"模拟无糖饮料\",\n                \"quantity\": 1,\n                \"role\": \"drink\"\n              }\n            ],\n            \"checks\": [\n              {\n                \"attribute\": \"non_spicy\",\n                \"expected\": true,\n                \"status\": \"verified\",\n                \"source\": \"模拟数据：辣度声明\"\n              },\n              {\n                \"attribute\": \"sugar_free_drink\",\n                \"expected\": true,\n                \"status\": \"verified\",\n                \"source\": \"模拟数据：饮料无糖\"\n              }\n            ]\n          },\n          {\n            \"person_id\": \"B\",\n            \"offer_id\": \"demo-beef\",\n            \"name\": \"模拟牛肉组合\",\n            \"items\": [\n              {\n                \"code\": \"demo-beef-main\",\n                \"name\": \"模拟非辣牛肉堡\",\n                \"quantity\": 1,\n                \"role\": \"main\"\n              },\n              {\n                \"code\": \"demo-drink\",\n                \"name\": \"模拟无糖饮料\",\n                \"quantity\": 1,\n                \"role\": \"drink\"\n              }\n            ],\n            \"checks\": [\n              {\n                \"attribute\": \"non_spicy\",\n                \"expected\": true,\n                \"status\": \"verified\",\n                \"source\": \"模拟数据：辣度声明\"\n              },\n              {\n                \"attribute\": \"sugar_free_drink\",\n                \"expected\": true,\n                \"status\": \"verified\",\n                \"source\": \"模拟数据：饮料无糖\"\n              }\n            ]\n          }\n        ],\n        \"preference_matches\": 0,\n        \"total_cents\": 4800,\n        \"price_status\": \"simulation\",\n        \"pricing_source\": \"完全虚构的测试价格，不是麦当劳现价\",\n        \"new_card_cents\": 0,\n        \"steps\": {\n          \"order_count\": 1,\n          \"new_card_count\": 0\n        },\n        \"within_budget\": true\n      }\n    ],\n    \"diagnostics\": [],\n    \"search\": {\n      \"catalog_offers\": 5,\n      \"max_offers_per_person\": 30,\n      \"max_combinations\": 900,\n      \"checked_combinations\": 9\n    },\n    \"recommendations\": [\n      {\n        \"signature\": \"d155f2a806ec150723c201350a4d76795b7be223742aa0662c879a2603f1dd11\",\n        \"assignments\": [\n          {\n            \"person_id\": \"A\",\n            \"offer_id\": \"demo-chicken\",\n            \"name\": \"模拟鸡肉组合\",\n            \"items\": [\n              {\n                \"code\": \"demo-chicken-main\",\n                \"name\": \"模拟非辣鸡肉堡\",\n                \"quantity\": 1,\n                \"role\": \"main\"\n              },\n              {\n                \"code\": \"demo-drink\",\n                \"name\": \"模拟无糖饮料\",\n                \"quantity\": 1,\n                \"role\": \"drink\"\n              }\n            ],\n            \"checks\": [\n              {\n                \"attribute\": \"non_spicy\",\n                \"expected\": true,\n                \"status\": \"verified\",\n                \"source\": \"模拟数据：辣度声明\"\n              },\n              {\n                \"attribute\": \"sugar_free_drink\",\n                \"expected\": true,\n                \"status\": \"verified\",\n                \"source\": \"模拟数据：饮料无糖\"\n              }\n            ]\n          },\n          {\n            \"person_id\": \"B\",\n            \"offer_id\": \"demo-chicken\",\n            \"name\": \"模拟鸡肉组合\",\n            \"items\": [\n              {\n                \"code\": \"demo-chicken-main\",\n                \"name\": \"模拟非辣鸡肉堡\",\n                \"quantity\": 1,\n                \"role\": \"main\"\n              },\n              {\n                \"code\": \"demo-drink\",\n                \"name\": \"模拟无糖饮料\",\n                \"quantity\": 1,\n                \"role\": \"drink\"\n              }\n            ],\n            \"checks\": [\n              {\n                \"attribute\": \"non_spicy\",\n                \"expected\": true,\n                \"status\": \"verified\",\n                \"source\": \"模拟数据：辣度声明\"\n              },\n              {\n                \"attribute\": \"sugar_free_drink\",\n                \"expected\": true,\n                \"status\": \"verified\",\n                \"source\": \"模拟数据：饮料无糖\"\n              }\n            ]\n          }\n        ],\n        \"preference_matches\": 2,\n        \"total_cents\": 3800,\n        \"price_status\": \"simulation\",\n        \"pricing_source\": \"完全虚构的测试价格，不是麦当劳现价\",\n        \"new_card_cents\": 0,\n        \"steps\": {\n          \"order_count\": 1,\n          \"new_card_count\": 0\n        },\n        \"within_budget\": true\n      }\n    ]\n  },\n  \"after\": {\n    \"request\": {\n      \"context\": {\n        \"store_code\": \"DEMO\",\n        \"channel\": \"pickup\",\n        \"meal_time\": \"demo-time\"\n      },\n      \"budget_cents\": 5000,\n      \"people\": [\n        {\n          \"id\": \"A\",\n          \"hard\": {\n            \"non_spicy\": true,\n            \"sugar_free_drink\": true\n          },\n          \"prefer\": {\n            \"main_meat\": \"chicken\"\n          }\n        },\n        {\n          \"id\": \"B\",\n          \"hard\": {\n            \"non_spicy\": true,\n            \"sugar_free_drink\": true,\n            \"main_meat\": \"beef\"\n          },\n          \"prefer\": {}\n        }\n      ]\n    },\n    \"request_id\": \"52a6753719e21413\",\n    \"mode\": \"simulation\",\n    \"as_of\": \"2026-10-17（模拟数据创建日期，非真实采集）\",\n    \"status\": \"simulation\",\n    \"plans\": [\n      {\n        \"signature\": \"d11592e97db7f7c8ae7c30b14112fd423c953e746ea47ac1e6ae3783863ed45a\",\n        \"assignments\": [\n          {\n            \"person_id\": \"A\",\n            \"offer_id\": \"demo-chicken\",\n            \"name\": \"模拟鸡肉组合\",\n            \"items\": [\n              {\n                \"code\": \"demo-chicken-main\",\n                \"name\": \"模拟非辣鸡肉堡\",\n                \"quantity\": 1,\n                \"role\": \"main\"\n              },\n              {\n                \"code\": \"demo-drink\",\n                \"name\": \"模拟无糖饮料\",\n                \"quantity\": 1,\n                \"role\": \"drink\"\n              }\n            ],\n            \"checks\": [\n              {\n                \"attribute\": \"non_spicy\",\n                \"expected\": true,\n                \"status\": \"verified\",\n                \"source\": \"模拟数据：辣度声明\"\n              },\n              {\n                \"attribute\": \"sugar_free_drink\",\n                \"expected\": true,\n                \"status\": \"verified\",\n                \"source\": \"模拟数据：饮料无糖\"\n              }\n            ]\n          },\n          {\n            \"person_id\": \"B\",\n            \"offer_id\": \"demo-beef\",\n            \"name\": \"模拟牛肉组合\",\n            \"items\": [\n              {\n                \"code\": \"demo-beef-main\",\n                \"name\": \"模拟非辣牛肉堡\",\n                \"quantity\": 1,\n                \"role\": \"main\"\n              },\n              {\n                \"code\": \"demo-drink\",\n                \"name\": \"模拟无糖饮料\",\n                \"quantity\": 1,\n                \"role\": \"drink\"\n              }\n            ],\n            \"checks\": [\n              {\n                \"attribute\": \"non_spicy\",\n                \"expected\": true,\n                \"status\": \"verified\",\n                \"source\": \"模拟数据：辣度声明\"\n              },\n              {\n                \"attribute\": \"sugar_free_drink\",\n                \"expected\": true,\n                \"status\": \"verified\",\n                \"source\": \"模拟数据：饮料无糖\"\n              },\n              {\n                \"attribute\": \"main_meat\",\n                \"expected\": \"beef\",\n                \"status\": \"verified\",\n                \"source\": \"模拟数据：主食肉类\"\n              }\n            ]\n          }\n        ],\n        \"preference_matches\": 1,\n        \"total_cents\": 4300,\n        \"price_status\": \"simulation\",\n        \"pricing_source\": \"完全虚构的测试价格，不是麦当劳现价\",\n        \"new_card_cents\": 0,\n        \"steps\": {\n          \"order_count\": 1,\n          \"new_card_count\": 0\n        },\n        \"within_budget\": true\n      },\n      {\n        \"signature\": \"122ca1da87b95dd797d678f810bf16dad4594df8cac1ec3182323a86f608406e\",\n        \"assignments\": [\n          {\n            \"person_id\": \"A\",\n            \"offer_id\": \"demo-card\",\n            \"name\": \"模拟需新卡鸡肉组合\",\n            \"items\": [\n              {\n                \"code\": \"demo-card-main\",\n                \"name\": \"模拟非辣鸡肉堡\",\n                \"quantity\": 1,\n                \"role\": \"main\"\n              },\n              {\n                \"code\": \"demo-drink\",\n                \"name\": \"模拟无糖饮料\",\n                \"quantity\": 1,\n                \"role\": \"drink\"\n              }\n            ],\n            \"checks\": [\n              {\n                \"attribute\": \"non_spicy\",\n                \"expected\": true,\n                \"status\": \"verified\",\n                \"source\": \"模拟数据：辣度声明\"\n              },\n              {\n                \"attribute\": \"sugar_free_drink\",\n                \"expected\": true,\n                \"status\": \"verified\",\n                \"source\": \"模拟数据：饮料无糖\"\n              }\n            ]\n          },\n          {\n            \"person_id\": \"B\",\n            \"offer_id\": \"demo-beef\",\n            \"name\": \"模拟牛肉组合\",\n            \"items\": [\n              {\n                \"code\": \"demo-beef-main\",\n                \"name\": \"模拟非辣牛肉堡\",\n                \"quantity\": 1,\n                \"role\": \"main\"\n              },\n              {\n                \"code\": \"demo-drink\",\n                \"name\": \"模拟无糖饮料\",\n                \"quantity\": 1,\n                \"role\": \"drink\"\n              }\n            ],\n            \"checks\": [\n              {\n                \"attribute\": \"non_spicy\",\n                \"expected\": true,\n                \"status\": \"verified\",\n                \"source\": \"模拟数据：辣度声明\"\n              },\n              {\n                \"attribute\": \"sugar_free_drink\",\n                \"expected\": true,\n                \"status\": \"verified\",\n                \"source\": \"模拟数据：饮料无糖\"\n              },\n              {\n                \"attribute\": \"main_meat\",\n                \"expected\": \"beef\",\n                \"status\": \"verified\",\n                \"source\": \"模拟数据：主食肉类\"\n              }\n            ]\n          }\n        ],\n        \"preference_matches\": 1,\n        \"total_cents\": 4900,\n        \"price_status\": \"simulation\",\n        \"pricing_source\": \"完全虚构的测试价格，不是麦当劳现价\",\n        \"new_card_cents\": 900,\n        \"steps\": {\n          \"order_count\": 1,\n          \"new_card_count\": 1\n        },\n        \"within_budget\": true\n      },\n      {\n        \"signature\": \"eb2c147d7e2836d62222dce322c6dee03daf62c0b17f53a459b4541d5730c769\",\n        \"assignments\": [\n          {\n            \"person_id\": \"A\",\n            \"offer_id\": \"demo-beef\",\n            \"name\": \"模拟牛肉组合\",\n            \"items\": [\n              {\n                \"code\": \"demo-beef-main\",\n                \"name\": \"模拟非辣牛肉堡\",\n                \"quantity\": 1,\n                \"role\": \"main\"\n              },\n              {\n                \"code\": \"demo-drink\",\n                \"name\": \"模拟无糖饮料\",\n                \"quantity\": 1,\n                \"role\": \"drink\"\n              }\n            ],\n            \"checks\": [\n              {\n                \"attribute\": \"non_spicy\",\n                \"expected\": true,\n                \"status\": \"verified\",\n                \"source\": \"模拟数据：辣度声明\"\n              },\n              {\n                \"attribute\": \"sugar_free_drink\",\n                \"expected\": true,\n                \"status\": \"verified\",\n                \"source\": \"模拟数据：饮料无糖\"\n              }\n            ]\n          },\n          {\n            \"person_id\": \"B\",\n            \"offer_id\": \"demo-beef\",\n            \"name\": \"模拟牛肉组合\",\n            \"items\": [\n              {\n                \"code\": \"demo-beef-main\",\n                \"name\": \"模拟非辣牛肉堡\",\n                \"quantity\": 1,\n                \"role\": \"main\"\n              },\n              {\n                \"code\": \"demo-drink\",\n                \"name\": \"模拟无糖饮料\",\n                \"quantity\": 1,\n                \"role\": \"drink\"\n              }\n            ],\n            \"checks\": [\n              {\n                \"attribute\": \"non_spicy\",\n                \"expected\": true,\n                \"status\": \"verified\",\n                \"source\": \"模拟数据：辣度声明\"\n              },\n              {\n                \"attribute\": \"sugar_free_drink\",\n                \"expected\": true,\n                \"status\": \"verified\",\n                \"source\": \"模拟数据：饮料无糖\"\n              },\n              {\n                \"attribute\": \"main_meat\",\n                \"expected\": \"beef\",\n                \"status\": \"verified\",\n                \"source\": \"模拟数据：主食肉类\"\n              }\n            ]\n          }\n        ],\n        \"preference_matches\": 0,\n        \"total_cents\": 4800,\n        \"price_status\": \"simulation\",\n        \"pricing_source\": \"完全虚构的测试价格，不是麦当劳现价\",\n        \"new_card_cents\": 0,\n        \"steps\": {\n          \"order_count\": 1,\n          \"new_card_count\": 0\n        },\n        \"within_budget\": true\n      }\n    ],\n    \"diagnostics\": [],\n    \"search\": {\n      \"catalog_offers\": 5,\n      \"max_offers_per_person\": 30,\n      \"max_combinations\": 900,\n      \"checked_combinations\": 3\n    },\n    \"recommendations\": [\n      {\n        \"signature\": \"d11592e97db7f7c8ae7c30b14112fd423c953e746ea47ac1e6ae3783863ed45a\",\n        \"assignments\": [\n          {\n            \"person_id\": \"A\",\n            \"offer_id\": \"demo-chicken\",\n            \"name\": \"模拟鸡肉组合\",\n            \"items\": [\n              {\n                \"code\": \"demo-chicken-main\",\n                \"name\": \"模拟非辣鸡肉堡\",\n                \"quantity\": 1,\n                \"role\": \"main\"\n              },\n              {\n                \"code\": \"demo-drink\",\n                \"name\": \"模拟无糖饮料\",\n                \"quantity\": 1,\n                \"role\": \"drink\"\n              }\n            ],\n            \"checks\": [\n              {\n                \"attribute\": \"non_spicy\",\n                \"expected\": true,\n                \"status\": \"verified\",\n                \"source\": \"模拟数据：辣度声明\"\n              },\n              {\n                \"attribute\": \"sugar_free_drink\",\n                \"expected\": true,\n                \"status\": \"verified\",\n                \"source\": \"模拟数据：饮料无糖\"\n              }\n            ]\n          },\n          {\n            \"person_id\": \"B\",\n            \"offer_id\": \"demo-beef\",\n            \"name\": \"模拟牛肉组合\",\n            \"items\": [\n              {\n                \"code\": \"demo-beef-main\",\n                \"name\": \"模拟非辣牛肉堡\",\n                \"quantity\": 1,\n                \"role\": \"main\"\n              },\n              {\n                \"code\": \"demo-drink\",\n                \"name\": \"模拟无糖饮料\",\n                \"quantity\": 1,\n                \"role\": \"drink\"\n              }\n            ],\n            \"checks\": [\n              {\n                \"attribute\": \"non_spicy\",\n                \"expected\": true,\n                \"status\": \"verified\",\n                \"source\": \"模拟数据：辣度声明\"\n              },\n              {\n                \"attribute\": \"sugar_free_drink\",\n                \"expected\": true,\n                \"status\": \"verified\",\n                \"source\": \"模拟数据：饮料无糖\"\n              },\n              {\n                \"attribute\": \"main_meat\",\n                \"expected\": \"beef\",\n                \"status\": \"verified\",\n                \"source\": \"模拟数据：主食肉类\"\n              }\n            ]\n          }\n        ],\n        \"preference_matches\": 1,\n        \"total_cents\": 4300,\n        \"price_status\": \"simulation\",\n        \"pricing_source\": \"完全虚构的测试价格，不是麦当劳现价\",\n        \"new_card_cents\": 0,\n        \"steps\": {\n          \"order_count\": 1,\n          \"new_card_count\": 0\n        },\n        \"within_budget\": true\n      }\n    ]\n  },\n  \"difference\": {\n    \"before_request_id\": \"7f304328a67ff8b2\",\n    \"after_request_id\": \"52a6753719e21413\",\n    \"changes\": [\n      {\n        \"person_id\": \"B\",\n        \"before\": \"模拟鸡肉组合\",\n        \"after\": \"模拟牛肉组合\"\n      }\n    ],\n    \"delta_cents\": 500,\n    \"new_status\": \"simulation\",\n    \"old_quote_reused\": false\n  }\n}\n",
+  "stderr": "",
+  "parsed": {
+    "before": {
+      "request": {
+        "context": {
+          "store_code": "DEMO",
+          "channel": "pickup",
+          "meal_time": "demo-time"
+        },
+        "budget_cents": 5000,
+        "people": [
+          {
+            "id": "A",
+            "hard": {
+              "non_spicy": true,
+              "sugar_free_drink": true
+            },
+            "prefer": {
+              "main_meat": "chicken"
+            }
+          },
+          {
+            "id": "B",
+            "hard": {
+              "non_spicy": true,
+              "sugar_free_drink": true
+            },
+            "prefer": {
+              "main_meat": "chicken"
+            }
+          }
+        ]
+      },
+      "request_id": "7f304328a67ff8b2",
+      "mode": "simulation",
+      "as_of": "2026-10-17（模拟数据创建日期，非真实采集）",
+      "status": "simulation",
+      "plans": [
+        {
+          "signature": "d155f2a806ec150723c201350a4d76795b7be223742aa0662c879a2603f1dd11",
+          "assignments": [
+            {
+              "person_id": "A",
+              "offer_id": "demo-chicken",
+              "name": "模拟鸡肉组合",
+              "items": [
+                {
+                  "code": "demo-chicken-main",
+                  "name": "模拟非辣鸡肉堡",
+                  "quantity": 1,
+                  "role": "main"
+                },
+                {
+                  "code": "demo-drink",
+                  "name": "模拟无糖饮料",
+                  "quantity": 1,
+                  "role": "drink"
+                }
+              ],
+              "checks": [
+                {
+                  "attribute": "non_spicy",
+                  "expected": true,
+                  "status": "verified",
+                  "source": "模拟数据：辣度声明"
+                },
+                {
+                  "attribute": "sugar_free_drink",
+                  "expected": true,
+                  "status": "verified",
+                  "source": "模拟数据：饮料无糖"
+                }
+              ]
+            },
+            {
+              "person_id": "B",
+              "offer_id": "demo-chicken",
+              "name": "模拟鸡肉组合",
+              "items": [
+                {
+                  "code": "demo-chicken-main",
+                  "name": "模拟非辣鸡肉堡",
+                  "quantity": 1,
+                  "role": "main"
+                },
+                {
+                  "code": "demo-drink",
+                  "name": "模拟无糖饮料",
+                  "quantity": 1,
+                  "role": "drink"
+                }
+              ],
+              "checks": [
+                {
+                  "attribute": "non_spicy",
+                  "expected": true,
+                  "status": "verified",
+                  "source": "模拟数据：辣度声明"
+                },
+                {
+                  "attribute": "sugar_free_drink",
+                  "expected": true,
+                  "status": "verified",
+                  "source": "模拟数据：饮料无糖"
+                }
+              ]
+            }
+          ],
+          "preference_matches": 2,
+          "total_cents": 3800,
+          "price_status": "simulation",
+          "pricing_source": "完全虚构的测试价格，不是麦当劳现价",
+          "new_card_cents": 0,
+          "steps": {
+            "order_count": 1,
+            "new_card_count": 0
+          },
+          "within_budget": true
+        },
+        {
+          "signature": "2e92ab2cdd6b747ba3f3bf5a726c65735b5dc069c5fa68f209937a80f74d184d",
+          "assignments": [
+            {
+              "person_id": "A",
+              "offer_id": "demo-chicken",
+              "name": "模拟鸡肉组合",
+              "items": [
+                {
+                  "code": "demo-chicken-main",
+                  "name": "模拟非辣鸡肉堡",
+                  "quantity": 1,
+                  "role": "main"
+                },
+                {
+                  "code": "demo-drink",
+                  "name": "模拟无糖饮料",
+                  "quantity": 1,
+                  "role": "drink"
+                }
+              ],
+              "checks": [
+                {
+                  "attribute": "non_spicy",
+                  "expected": true,
+                  "status": "verified",
+                  "source": "模拟数据：辣度声明"
+                },
+                {
+                  "attribute": "sugar_free_drink",
+                  "expected": true,
+                  "status": "verified",
+                  "source": "模拟数据：饮料无糖"
+                }
+              ]
+            },
+            {
+              "person_id": "B",
+              "offer_id": "demo-card",
+              "name": "模拟需新卡鸡肉组合",
+              "items": [
+                {
+                  "code": "demo-card-main",
+                  "name": "模拟非辣鸡肉堡",
+                  "quantity": 1,
+                  "role": "main"
+                },
+                {
+                  "code": "demo-drink",
+                  "name": "模拟无糖饮料",
+                  "quantity": 1,
+                  "role": "drink"
+                }
+              ],
+              "checks": [
+                {
+                  "attribute": "non_spicy",
+                  "expected": true,
+                  "status": "verified",
+                  "source": "模拟数据：辣度声明"
+                },
+                {
+                  "attribute": "sugar_free_drink",
+                  "expected": true,
+                  "status": "verified",
+                  "source": "模拟数据：饮料无糖"
+                }
+              ]
+            }
+          ],
+          "preference_matches": 2,
+          "total_cents": 4400,
+          "price_status": "simulation",
+          "pricing_source": "完全虚构的测试价格，不是麦当劳现价",
+          "new_card_cents": 900,
+          "steps": {
+            "order_count": 1,
+            "new_card_count": 1
+          },
+          "within_budget": true
+        },
+        {
+          "signature": "ac46ec6ec958ae8239200470f21784473422d19205a8dd3f49f44bc650afd0ee",
+          "assignments": [
+            {
+              "person_id": "A",
+              "offer_id": "demo-card",
+              "name": "模拟需新卡鸡肉组合",
+              "items": [
+                {
+                  "code": "demo-card-main",
+                  "name": "模拟非辣鸡肉堡",
+                  "quantity": 1,
+                  "role": "main"
+                },
+                {
+                  "code": "demo-drink",
+                  "name": "模拟无糖饮料",
+                  "quantity": 1,
+                  "role": "drink"
+                }
+              ],
+              "checks": [
+                {
+                  "attribute": "non_spicy",
+                  "expected": true,
+                  "status": "verified",
+                  "source": "模拟数据：辣度声明"
+                },
+                {
+                  "attribute": "sugar_free_drink",
+                  "expected": true,
+                  "status": "verified",
+                  "source": "模拟数据：饮料无糖"
+                }
+              ]
+            },
+            {
+              "person_id": "B",
+              "offer_id": "demo-chicken",
+              "name": "模拟鸡肉组合",
+              "items": [
+                {
+                  "code": "demo-chicken-main",
+                  "name": "模拟非辣鸡肉堡",
+                  "quantity": 1,
+                  "role": "main"
+                },
+                {
+                  "code": "demo-drink",
+                  "name": "模拟无糖饮料",
+                  "quantity": 1,
+                  "role": "drink"
+                }
+              ],
+              "checks": [
+                {
+                  "attribute": "non_spicy",
+                  "expected": true,
+                  "status": "verified",
+                  "source": "模拟数据：辣度声明"
+                },
+                {
+                  "attribute": "sugar_free_drink",
+                  "expected": true,
+                  "status": "verified",
+                  "source": "模拟数据：饮料无糖"
+                }
+              ]
+            }
+          ],
+          "preference_matches": 2,
+          "total_cents": 4400,
+          "price_status": "simulation",
+          "pricing_source": "完全虚构的测试价格，不是麦当劳现价",
+          "new_card_cents": 900,
+          "steps": {
+            "order_count": 1,
+            "new_card_count": 1
+          },
+          "within_budget": true
+        },
+        {
+          "signature": "3900abbf1ce836973dff571222412bde3167c3ddca291cce60f5f4d209147c46",
+          "assignments": [
+            {
+              "person_id": "A",
+              "offer_id": "demo-card",
+              "name": "模拟需新卡鸡肉组合",
+              "items": [
+                {
+                  "code": "demo-card-main",
+                  "name": "模拟非辣鸡肉堡",
+                  "quantity": 1,
+                  "role": "main"
+                },
+                {
+                  "code": "demo-drink",
+                  "name": "模拟无糖饮料",
+                  "quantity": 1,
+                  "role": "drink"
+                }
+              ],
+              "checks": [
+                {
+                  "attribute": "non_spicy",
+                  "expected": true,
+                  "status": "verified",
+                  "source": "模拟数据：辣度声明"
+                },
+                {
+                  "attribute": "sugar_free_drink",
+                  "expected": true,
+                  "status": "verified",
+                  "source": "模拟数据：饮料无糖"
+                }
+              ]
+            },
+            {
+              "person_id": "B",
+              "offer_id": "demo-card",
+              "name": "模拟需新卡鸡肉组合",
+              "items": [
+                {
+                  "code": "demo-card-main",
+                  "name": "模拟非辣鸡肉堡",
+                  "quantity": 1,
+                  "role": "main"
+                },
+                {
+                  "code": "demo-drink",
+                  "name": "模拟无糖饮料",
+                  "quantity": 1,
+                  "role": "drink"
+                }
+              ],
+              "checks": [
+                {
+                  "attribute": "non_spicy",
+                  "expected": true,
+                  "status": "verified",
+                  "source": "模拟数据：辣度声明"
+                },
+                {
+                  "attribute": "sugar_free_drink",
+                  "expected": true,
+                  "status": "verified",
+                  "source": "模拟数据：饮料无糖"
+                }
+              ]
+            }
+          ],
+          "preference_matches": 2,
+          "total_cents": 5000,
+          "price_status": "simulation",
+          "pricing_source": "完全虚构的测试价格，不是麦当劳现价",
+          "new_card_cents": 1800,
+          "steps": {
+            "order_count": 1,
+            "new_card_count": 2
+          },
+          "within_budget": true
+        },
+        {
+          "signature": "d11592e97db7f7c8ae7c30b14112fd423c953e746ea47ac1e6ae3783863ed45a",
+          "assignments": [
+            {
+              "person_id": "A",
+              "offer_id": "demo-chicken",
+              "name": "模拟鸡肉组合",
+              "items": [
+                {
+                  "code": "demo-chicken-main",
+                  "name": "模拟非辣鸡肉堡",
+                  "quantity": 1,
+                  "role": "main"
+                },
+                {
+                  "code": "demo-drink",
+                  "name": "模拟无糖饮料",
+                  "quantity": 1,
+                  "role": "drink"
+                }
+              ],
+              "checks": [
+                {
+                  "attribute": "non_spicy",
+                  "expected": true,
+                  "status": "verified",
+                  "source": "模拟数据：辣度声明"
+                },
+                {
+                  "attribute": "sugar_free_drink",
+                  "expected": true,
+                  "status": "verified",
+                  "source": "模拟数据：饮料无糖"
+                }
+              ]
+            },
+            {
+              "person_id": "B",
+              "offer_id": "demo-beef",
+              "name": "模拟牛肉组合",
+              "items": [
+                {
+                  "code": "demo-beef-main",
+                  "name": "模拟非辣牛肉堡",
+                  "quantity": 1,
+                  "role": "main"
+                },
+                {
+                  "code": "demo-drink",
+                  "name": "模拟无糖饮料",
+                  "quantity": 1,
+                  "role": "drink"
+                }
+              ],
+              "checks": [
+                {
+                  "attribute": "non_spicy",
+                  "expected": true,
+                  "status": "verified",
+                  "source": "模拟数据：辣度声明"
+                },
+                {
+                  "attribute": "sugar_free_drink",
+                  "expected": true,
+                  "status": "verified",
+                  "source": "模拟数据：饮料无糖"
+                }
+              ]
+            }
+          ],
+          "preference_matches": 1,
+          "total_cents": 4300,
+          "price_status": "simulation",
+          "pricing_source": "完全虚构的测试价格，不是麦当劳现价",
+          "new_card_cents": 0,
+          "steps": {
+            "order_count": 1,
+            "new_card_count": 0
+          },
+          "within_budget": true
+        },
+        {
+          "signature": "d501a9341d182be7a5c1c2a0125b9b240640323101804fae390f9332aa0a75ce",
+          "assignments": [
+            {
+              "person_id": "A",
+              "offer_id": "demo-beef",
+              "name": "模拟牛肉组合",
+              "items": [
+                {
+                  "code": "demo-beef-main",
+                  "name": "模拟非辣牛肉堡",
+                  "quantity": 1,
+                  "role": "main"
+                },
+                {
+                  "code": "demo-drink",
+                  "name": "模拟无糖饮料",
+                  "quantity": 1,
+                  "role": "drink"
+                }
+              ],
+              "checks": [
+                {
+                  "attribute": "non_spicy",
+                  "expected": true,
+                  "status": "verified",
+                  "source": "模拟数据：辣度声明"
+                },
+                {
+                  "attribute": "sugar_free_drink",
+                  "expected": true,
+                  "status": "verified",
+                  "source": "模拟数据：饮料无糖"
+                }
+              ]
+            },
+            {
+              "person_id": "B",
+              "offer_id": "demo-chicken",
+              "name": "模拟鸡肉组合",
+              "items": [
+                {
+                  "code": "demo-chicken-main",
+                  "name": "模拟非辣鸡肉堡",
+                  "quantity": 1,
+                  "role": "main"
+                },
+                {
+                  "code": "demo-drink",
+                  "name": "模拟无糖饮料",
+                  "quantity": 1,
+                  "role": "drink"
+                }
+              ],
+              "checks": [
+                {
+                  "attribute": "non_spicy",
+                  "expected": true,
+                  "status": "verified",
+                  "source": "模拟数据：辣度声明"
+                },
+                {
+                  "attribute": "sugar_free_drink",
+                  "expected": true,
+                  "status": "verified",
+                  "source": "模拟数据：饮料无糖"
+                }
+              ]
+            }
+          ],
+          "preference_matches": 1,
+          "total_cents": 4300,
+          "price_status": "simulation",
+          "pricing_source": "完全虚构的测试价格，不是麦当劳现价",
+          "new_card_cents": 0,
+          "steps": {
+            "order_count": 1,
+            "new_card_count": 0
+          },
+          "within_budget": true
+        },
+        {
+          "signature": "122ca1da87b95dd797d678f810bf16dad4594df8cac1ec3182323a86f608406e",
+          "assignments": [
+            {
+              "person_id": "A",
+              "offer_id": "demo-card",
+              "name": "模拟需新卡鸡肉组合",
+              "items": [
+                {
+                  "code": "demo-card-main",
+                  "name": "模拟非辣鸡肉堡",
+                  "quantity": 1,
+                  "role": "main"
+                },
+                {
+                  "code": "demo-drink",
+                  "name": "模拟无糖饮料",
+                  "quantity": 1,
+                  "role": "drink"
+                }
+              ],
+              "checks": [
+                {
+                  "attribute": "non_spicy",
+                  "expected": true,
+                  "status": "verified",
+                  "source": "模拟数据：辣度声明"
+                },
+                {
+                  "attribute": "sugar_free_drink",
+                  "expected": true,
+                  "status": "verified",
+                  "source": "模拟数据：饮料无糖"
+                }
+              ]
+            },
+            {
+              "person_id": "B",
+              "offer_id": "demo-beef",
+              "name": "模拟牛肉组合",
+              "items": [
+                {
+                  "code": "demo-beef-main",
+                  "name": "模拟非辣牛肉堡",
+                  "quantity": 1,
+                  "role": "main"
+                },
+                {
+                  "code": "demo-drink",
+                  "name": "模拟无糖饮料",
+                  "quantity": 1,
+                  "role": "drink"
+                }
+              ],
+              "checks": [
+                {
+                  "attribute": "non_spicy",
+                  "expected": true,
+                  "status": "verified",
+                  "source": "模拟数据：辣度声明"
+                },
+                {
+                  "attribute": "sugar_free_drink",
+                  "expected": true,
+                  "status": "verified",
+                  "source": "模拟数据：饮料无糖"
+                }
+              ]
+            }
+          ],
+          "preference_matches": 1,
+          "total_cents": 4900,
+          "price_status": "simulation",
+          "pricing_source": "完全虚构的测试价格，不是麦当劳现价",
+          "new_card_cents": 900,
+          "steps": {
+            "order_count": 1,
+            "new_card_count": 1
+          },
+          "within_budget": true
+        },
+        {
+          "signature": "22fcc12810b599485e2d440fef44a0f78bcf6834b02f9cd3a4e599d3aaf4dcbd",
+          "assignments": [
+            {
+              "person_id": "A",
+              "offer_id": "demo-beef",
+              "name": "模拟牛肉组合",
+              "items": [
+                {
+                  "code": "demo-beef-main",
+                  "name": "模拟非辣牛肉堡",
+                  "quantity": 1,
+                  "role": "main"
+                },
+                {
+                  "code": "demo-drink",
+                  "name": "模拟无糖饮料",
+                  "quantity": 1,
+                  "role": "drink"
+                }
+              ],
+              "checks": [
+                {
+                  "attribute": "non_spicy",
+                  "expected": true,
+                  "status": "verified",
+                  "source": "模拟数据：辣度声明"
+                },
+                {
+                  "attribute": "sugar_free_drink",
+                  "expected": true,
+                  "status": "verified",
+                  "source": "模拟数据：饮料无糖"
+                }
+              ]
+            },
+            {
+              "person_id": "B",
+              "offer_id": "demo-card",
+              "name": "模拟需新卡鸡肉组合",
+              "items": [
+                {
+                  "code": "demo-card-main",
+                  "name": "模拟非辣鸡肉堡",
+                  "quantity": 1,
+                  "role": "main"
+                },
+                {
+                  "code": "demo-drink",
+                  "name": "模拟无糖饮料",
+                  "quantity": 1,
+                  "role": "drink"
+                }
+              ],
+              "checks": [
+                {
+                  "attribute": "non_spicy",
+                  "expected": true,
+                  "status": "verified",
+                  "source": "模拟数据：辣度声明"
+                },
+                {
+                  "attribute": "sugar_free_drink",
+                  "expected": true,
+                  "status": "verified",
+                  "source": "模拟数据：饮料无糖"
+                }
+              ]
+            }
+          ],
+          "preference_matches": 1,
+          "total_cents": 4900,
+          "price_status": "simulation",
+          "pricing_source": "完全虚构的测试价格，不是麦当劳现价",
+          "new_card_cents": 900,
+          "steps": {
+            "order_count": 1,
+            "new_card_count": 1
+          },
+          "within_budget": true
+        },
+        {
+          "signature": "eb2c147d7e2836d62222dce322c6dee03daf62c0b17f53a459b4541d5730c769",
+          "assignments": [
+            {
+              "person_id": "A",
+              "offer_id": "demo-beef",
+              "name": "模拟牛肉组合",
+              "items": [
+                {
+                  "code": "demo-beef-main",
+                  "name": "模拟非辣牛肉堡",
+                  "quantity": 1,
+                  "role": "main"
+                },
+                {
+                  "code": "demo-drink",
+                  "name": "模拟无糖饮料",
+                  "quantity": 1,
+                  "role": "drink"
+                }
+              ],
+              "checks": [
+                {
+                  "attribute": "non_spicy",
+                  "expected": true,
+                  "status": "verified",
+                  "source": "模拟数据：辣度声明"
+                },
+                {
+                  "attribute": "sugar_free_drink",
+                  "expected": true,
+                  "status": "verified",
+                  "source": "模拟数据：饮料无糖"
+                }
+              ]
+            },
+            {
+              "person_id": "B",
+              "offer_id": "demo-beef",
+              "name": "模拟牛肉组合",
+              "items": [
+                {
+                  "code": "demo-beef-main",
+                  "name": "模拟非辣牛肉堡",
+                  "quantity": 1,
+                  "role": "main"
+                },
+                {
+                  "code": "demo-drink",
+                  "name": "模拟无糖饮料",
+                  "quantity": 1,
+                  "role": "drink"
+                }
+              ],
+              "checks": [
+                {
+                  "attribute": "non_spicy",
+                  "expected": true,
+                  "status": "verified",
+                  "source": "模拟数据：辣度声明"
+                },
+                {
+                  "attribute": "sugar_free_drink",
+                  "expected": true,
+                  "status": "verified",
+                  "source": "模拟数据：饮料无糖"
+                }
+              ]
+            }
+          ],
+          "preference_matches": 0,
+          "total_cents": 4800,
+          "price_status": "simulation",
+          "pricing_source": "完全虚构的测试价格，不是麦当劳现价",
+          "new_card_cents": 0,
+          "steps": {
+            "order_count": 1,
+            "new_card_count": 0
+          },
+          "within_budget": true
+        }
+      ],
+      "diagnostics": [],
+      "search": {
+        "catalog_offers": 5,
+        "max_offers_per_person": 30,
+        "max_combinations": 900,
+        "checked_combinations": 9
+      },
+      "recommendations": [
+        {
+          "signature": "d155f2a806ec150723c201350a4d76795b7be223742aa0662c879a2603f1dd11",
+          "assignments": [
+            {
+              "person_id": "A",
+              "offer_id": "demo-chicken",
+              "name": "模拟鸡肉组合",
+              "items": [
+                {
+                  "code": "demo-chicken-main",
+                  "name": "模拟非辣鸡肉堡",
+                  "quantity": 1,
+                  "role": "main"
+                },
+                {
+                  "code": "demo-drink",
+                  "name": "模拟无糖饮料",
+                  "quantity": 1,
+                  "role": "drink"
+                }
+              ],
+              "checks": [
+                {
+                  "attribute": "non_spicy",
+                  "expected": true,
+                  "status": "verified",
+                  "source": "模拟数据：辣度声明"
+                },
+                {
+                  "attribute": "sugar_free_drink",
+                  "expected": true,
+                  "status": "verified",
+                  "source": "模拟数据：饮料无糖"
+                }
+              ]
+            },
+            {
+              "person_id": "B",
+              "offer_id": "demo-chicken",
+              "name": "模拟鸡肉组合",
+              "items": [
+                {
+                  "code": "demo-chicken-main",
+                  "name": "模拟非辣鸡肉堡",
+                  "quantity": 1,
+                  "role": "main"
+                },
+                {
+                  "code": "demo-drink",
+                  "name": "模拟无糖饮料",
+                  "quantity": 1,
+                  "role": "drink"
+                }
+              ],
+              "checks": [
+                {
+                  "attribute": "non_spicy",
+                  "expected": true,
+                  "status": "verified",
+                  "source": "模拟数据：辣度声明"
+                },
+                {
+                  "attribute": "sugar_free_drink",
+                  "expected": true,
+                  "status": "verified",
+                  "source": "模拟数据：饮料无糖"
+                }
+              ]
+            }
+          ],
+          "preference_matches": 2,
+          "total_cents": 3800,
+          "price_status": "simulation",
+          "pricing_source": "完全虚构的测试价格，不是麦当劳现价",
+          "new_card_cents": 0,
+          "steps": {
+            "order_count": 1,
+            "new_card_count": 0
+          },
+          "within_budget": true
+        }
+      ]
+    },
+    "after": {
+      "request": {
+        "context": {
+          "store_code": "DEMO",
+          "channel": "pickup",
+          "meal_time": "demo-time"
+        },
+        "budget_cents": 5000,
+        "people": [
+          {
+            "id": "A",
+            "hard": {
+              "non_spicy": true,
+              "sugar_free_drink": true
+            },
+            "prefer": {
+              "main_meat": "chicken"
+            }
+          },
+          {
+            "id": "B",
+            "hard": {
+              "non_spicy": true,
+              "sugar_free_drink": true,
+              "main_meat": "beef"
+            },
+            "prefer": {}
+          }
+        ]
+      },
+      "request_id": "52a6753719e21413",
+      "mode": "simulation",
+      "as_of": "2026-10-17（模拟数据创建日期，非真实采集）",
+      "status": "simulation",
+      "plans": [
+        {
+          "signature": "d11592e97db7f7c8ae7c30b14112fd423c953e746ea47ac1e6ae3783863ed45a",
+          "assignments": [
+            {
+              "person_id": "A",
+              "offer_id": "demo-chicken",
+              "name": "模拟鸡肉组合",
+              "items": [
+                {
+                  "code": "demo-chicken-main",
+                  "name": "模拟非辣鸡肉堡",
+                  "quantity": 1,
+                  "role": "main"
+                },
+                {
+                  "code": "demo-drink",
+                  "name": "模拟无糖饮料",
+                  "quantity": 1,
+                  "role": "drink"
+                }
+              ],
+              "checks": [
+                {
+                  "attribute": "non_spicy",
+                  "expected": true,
+                  "status": "verified",
+                  "source": "模拟数据：辣度声明"
+                },
+                {
+                  "attribute": "sugar_free_drink",
+                  "expected": true,
+                  "status": "verified",
+                  "source": "模拟数据：饮料无糖"
+                }
+              ]
+            },
+            {
+              "person_id": "B",
+              "offer_id": "demo-beef",
+              "name": "模拟牛肉组合",
+              "items": [
+                {
+                  "code": "demo-beef-main",
+                  "name": "模拟非辣牛肉堡",
+                  "quantity": 1,
+                  "role": "main"
+                },
+                {
+                  "code": "demo-drink",
+                  "name": "模拟无糖饮料",
+                  "quantity": 1,
+                  "role": "drink"
+                }
+              ],
+              "checks": [
+                {
+                  "attribute": "non_spicy",
+                  "expected": true,
+                  "status": "verified",
+                  "source": "模拟数据：辣度声明"
+                },
+                {
+                  "attribute": "sugar_free_drink",
+                  "expected": true,
+                  "status": "verified",
+                  "source": "模拟数据：饮料无糖"
+                },
+                {
+                  "attribute": "main_meat",
+                  "expected": "beef",
+                  "status": "verified",
+                  "source": "模拟数据：主食肉类"
+                }
+              ]
+            }
+          ],
+          "preference_matches": 1,
+          "total_cents": 4300,
+          "price_status": "simulation",
+          "pricing_source": "完全虚构的测试价格，不是麦当劳现价",
+          "new_card_cents": 0,
+          "steps": {
+            "order_count": 1,
+            "new_card_count": 0
+          },
+          "within_budget": true
+        },
+        {
+          "signature": "122ca1da87b95dd797d678f810bf16dad4594df8cac1ec3182323a86f608406e",
+          "assignments": [
+            {
+              "person_id": "A",
+              "offer_id": "demo-card",
+              "name": "模拟需新卡鸡肉组合",
+              "items": [
+                {
+                  "code": "demo-card-main",
+                  "name": "模拟非辣鸡肉堡",
+                  "quantity": 1,
+                  "role": "main"
+                },
+                {
+                  "code": "demo-drink",
+                  "name": "模拟无糖饮料",
+                  "quantity": 1,
+                  "role": "drink"
+                }
+              ],
+              "checks": [
+                {
+                  "attribute": "non_spicy",
+                  "expected": true,
+                  "status": "verified",
+                  "source": "模拟数据：辣度声明"
+                },
+                {
+                  "attribute": "sugar_free_drink",
+                  "expected": true,
+                  "status": "verified",
+                  "source": "模拟数据：饮料无糖"
+                }
+              ]
+            },
+            {
+              "person_id": "B",
+              "offer_id": "demo-beef",
+              "name": "模拟牛肉组合",
+              "items": [
+                {
+                  "code": "demo-beef-main",
+                  "name": "模拟非辣牛肉堡",
+                  "quantity": 1,
+                  "role": "main"
+                },
+                {
+                  "code": "demo-drink",
+                  "name": "模拟无糖饮料",
+                  "quantity": 1,
+                  "role": "drink"
+                }
+              ],
+              "checks": [
+                {
+                  "attribute": "non_spicy",
+                  "expected": true,
+                  "status": "verified",
+                  "source": "模拟数据：辣度声明"
+                },
+                {
+                  "attribute": "sugar_free_drink",
+                  "expected": true,
+                  "status": "verified",
+                  "source": "模拟数据：饮料无糖"
+                },
+                {
+                  "attribute": "main_meat",
+                  "expected": "beef",
+                  "status": "verified",
+                  "source": "模拟数据：主食肉类"
+                }
+              ]
+            }
+          ],
+          "preference_matches": 1,
+          "total_cents": 4900,
+          "price_status": "simulation",
+          "pricing_source": "完全虚构的测试价格，不是麦当劳现价",
+          "new_card_cents": 900,
+          "steps": {
+            "order_count": 1,
+            "new_card_count": 1
+          },
+          "within_budget": true
+        },
+        {
+          "signature": "eb2c147d7e2836d62222dce322c6dee03daf62c0b17f53a459b4541d5730c769",
+          "assignments": [
+            {
+              "person_id": "A",
+              "offer_id": "demo-beef",
+              "name": "模拟牛肉组合",
+              "items": [
+                {
+                  "code": "demo-beef-main",
+                  "name": "模拟非辣牛肉堡",
+                  "quantity": 1,
+                  "role": "main"
+                },
+                {
+                  "code": "demo-drink",
+                  "name": "模拟无糖饮料",
+                  "quantity": 1,
+                  "role": "drink"
+                }
+              ],
+              "checks": [
+                {
+                  "attribute": "non_spicy",
+                  "expected": true,
+                  "status": "verified",
+                  "source": "模拟数据：辣度声明"
+                },
+                {
+                  "attribute": "sugar_free_drink",
+                  "expected": true,
+                  "status": "verified",
+                  "source": "模拟数据：饮料无糖"
+                }
+              ]
+            },
+            {
+              "person_id": "B",
+              "offer_id": "demo-beef",
+              "name": "模拟牛肉组合",
+              "items": [
+                {
+                  "code": "demo-beef-main",
+                  "name": "模拟非辣牛肉堡",
+                  "quantity": 1,
+                  "role": "main"
+                },
+                {
+                  "code": "demo-drink",
+                  "name": "模拟无糖饮料",
+                  "quantity": 1,
+                  "role": "drink"
+                }
+              ],
+              "checks": [
+                {
+                  "attribute": "non_spicy",
+                  "expected": true,
+                  "status": "verified",
+                  "source": "模拟数据：辣度声明"
+                },
+                {
+                  "attribute": "sugar_free_drink",
+                  "expected": true,
+                  "status": "verified",
+                  "source": "模拟数据：饮料无糖"
+                },
+                {
+                  "attribute": "main_meat",
+                  "expected": "beef",
+                  "status": "verified",
+                  "source": "模拟数据：主食肉类"
+                }
+              ]
+            }
+          ],
+          "preference_matches": 0,
+          "total_cents": 4800,
+          "price_status": "simulation",
+          "pricing_source": "完全虚构的测试价格，不是麦当劳现价",
+          "new_card_cents": 0,
+          "steps": {
+            "order_count": 1,
+            "new_card_count": 0
+          },
+          "within_budget": true
+        }
+      ],
+      "diagnostics": [],
+      "search": {
+        "catalog_offers": 5,
+        "max_offers_per_person": 30,
+        "max_combinations": 900,
+        "checked_combinations": 3
+      },
+      "recommendations": [
+        {
+          "signature": "d11592e97db7f7c8ae7c30b14112fd423c953e746ea47ac1e6ae3783863ed45a",
+          "assignments": [
+            {
+              "person_id": "A",
+              "offer_id": "demo-chicken",
+              "name": "模拟鸡肉组合",
+              "items": [
+                {
+                  "code": "demo-chicken-main",
+                  "name": "模拟非辣鸡肉堡",
+                  "quantity": 1,
+                  "role": "main"
+                },
+                {
+                  "code": "demo-drink",
+                  "name": "模拟无糖饮料",
+                  "quantity": 1,
+                  "role": "drink"
+                }
+              ],
+              "checks": [
+                {
+                  "attribute": "non_spicy",
+                  "expected": true,
+                  "status": "verified",
+                  "source": "模拟数据：辣度声明"
+                },
+                {
+                  "attribute": "sugar_free_drink",
+                  "expected": true,
+                  "status": "verified",
+                  "source": "模拟数据：饮料无糖"
+                }
+              ]
+            },
+            {
+              "person_id": "B",
+              "offer_id": "demo-beef",
+              "name": "模拟牛肉组合",
+              "items": [
+                {
+                  "code": "demo-beef-main",
+                  "name": "模拟非辣牛肉堡",
+                  "quantity": 1,
+                  "role": "main"
+                },
+                {
+                  "code": "demo-drink",
+                  "name": "模拟无糖饮料",
+                  "quantity": 1,
+                  "role": "drink"
+                }
+              ],
+              "checks": [
+                {
+                  "attribute": "non_spicy",
+                  "expected": true,
+                  "status": "verified",
+                  "source": "模拟数据：辣度声明"
+                },
+                {
+                  "attribute": "sugar_free_drink",
+                  "expected": true,
+                  "status": "verified",
+                  "source": "模拟数据：饮料无糖"
+                },
+                {
+                  "attribute": "main_meat",
+                  "expected": "beef",
+                  "status": "verified",
+                  "source": "模拟数据：主食肉类"
+                }
+              ]
+            }
+          ],
+          "preference_matches": 1,
+          "total_cents": 4300,
+          "price_status": "simulation",
+          "pricing_source": "完全虚构的测试价格，不是麦当劳现价",
+          "new_card_cents": 0,
+          "steps": {
+            "order_count": 1,
+            "new_card_count": 0
+          },
+          "within_budget": true
+        }
+      ]
+    },
+    "difference": {
+      "before_request_id": "7f304328a67ff8b2",
+      "after_request_id": "52a6753719e21413",
+      "changes": [
+        {
+          "person_id": "B",
+          "before": "模拟鸡肉组合",
+          "after": "模拟牛肉组合"
+        }
+      ],
+      "delta_cents": 500,
+      "new_status": "simulation",
+      "old_quote_reused": false
+    }
+  },
+  "passed": true,
+  "failures": []
+}

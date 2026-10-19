@@ -1,0 +1,131 @@
+{
+  "id": "L04",
+  "title": "增加牛肉硬要求，保留预算无糖门店并重新核价",
+  "finished_at": "2026-10-19T02:01:00.711536+00:00",
+  "command": "python3 scripts/meal_clear.py update --state local-state/acceptance-20261019/live-single.json --patch verification/2026-10-19-acceptance/inputs/live-beef-patch.json --save local-state/acceptance-20261019/live-beef.json --json --token-file <本机凭证文件>",
+  "elapsed_ms": 4424,
+  "returncode": 2,
+  "output": {
+    "request": {
+      "context": {
+        "store_code": "1450002",
+        "channel": "pickup",
+        "meal_time": "now"
+      },
+      "budget_cents": 10000,
+      "people": [
+        {
+          "id": "A",
+          "hard": {
+            "sugar_free_drink": true,
+            "main_meat": "beef"
+          },
+          "prefer": {}
+        }
+      ]
+    },
+    "request_id": "c81827719978cbf8",
+    "mode": "live",
+    "as_of": "2026-10-19T02:01:00.700485+00:00",
+    "status": "no_verified_plan",
+    "plans": [],
+    "diagnostics": [
+      {
+        "person_id": "A",
+        "reason": "没有证据完整且满足硬要求的组合",
+        "examples": [
+          {
+            "offer_id": "9900011872-af6229b5",
+            "checks": [
+              {
+                "attribute": "sugar_free_drink",
+                "expected": true,
+                "status": "unknown",
+                "source": null
+              },
+              {
+                "attribute": "main_meat",
+                "expected": "beef",
+                "status": "unknown",
+                "source": null
+              }
+            ]
+          },
+          {
+            "offer_id": "9900011872-ac86397a",
+            "checks": [
+              {
+                "attribute": "main_meat",
+                "expected": "beef",
+                "status": "unknown",
+                "source": null
+              }
+            ]
+          },
+          {
+            "offer_id": "9900016334-7b36a4ad-coupon",
+            "checks": [
+              {
+                "attribute": "sugar_free_drink",
+                "expected": true,
+                "status": "unknown",
+                "source": null
+              },
+              {
+                "attribute": "main_meat",
+                "expected": "beef",
+                "status": "unknown",
+                "source": null
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "search": {
+      "catalog_offers": 3,
+      "max_offers_per_person": 30,
+      "max_combinations": 900
+    },
+    "coverage": {
+      "menu_entries": 90,
+      "detail_queries": 2,
+      "skipped_errors": 0,
+      "coupon_count": 1,
+      "note": "有界单人套餐搜索，未穷尽全菜单；辣度等缺失仍未知"
+    },
+    "quote_attempts": 0,
+    "verified_quotes": 0,
+    "quote_errors": [],
+    "read_only_audit": [
+      {
+        "tool": "query-meals",
+        "success": true,
+        "elapsed_ms": 806
+      },
+      {
+        "tool": "query-store-coupons",
+        "success": true,
+        "elapsed_ms": 603
+      },
+      {
+        "tool": "query-meal-detail",
+        "success": true,
+        "elapsed_ms": 678
+      },
+      {
+        "tool": "query-meal-detail",
+        "success": true,
+        "elapsed_ms": 565
+      }
+    ],
+    "difference": {
+      "before_request_id": "4d8ab715f08b7d00",
+      "after_request_id": "c81827719978cbf8",
+      "changes": [],
+      "delta_cents": null,
+      "new_status": "no_verified_plan",
+      "old_quote_reused": false
+    }
+  }
+}

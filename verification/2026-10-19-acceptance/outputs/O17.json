@@ -1,0 +1,19 @@
+{
+  "id": "O17",
+  "title": "离线修改未给新菜单应拒绝",
+  "command": "python3 scripts/meal_clear.py update --state local-state/acceptance-20261019/original.json --patch verification/2026-10-19-acceptance/inputs/patch-beef.json --json",
+  "returncode": 1,
+  "elapsed_ms": 40,
+  "expected": {
+    "exit": 1,
+    "status": "error"
+  },
+  "stdout": "{\"status\": \"error\", \"message\": \"离线修改需要显式提供--catalog，不静默复用旧价格\"}\n",
+  "stderr": "",
+  "parsed": {
+    "status": "error",
+    "message": "离线修改需要显式提供--catalog，不静默复用旧价格"
+  },
+  "passed": true,
+  "failures": []
+}

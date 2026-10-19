@@ -1,0 +1,32 @@
+{
+  "id": "M01",
+  "description": "分发包在全新临时目录解压运行；未读取源码目录的菜单或脚本",
+  "passed": true,
+  "elapsed_ms": 147,
+  "runs": [
+    {
+      "command": "python3 scripts/meal_clear.py demo --json",
+      "returncode": 0,
+      "observed": {
+        "before_cents": 3800,
+        "after_cents": 4300,
+        "delta_cents": 500
+      }
+    },
+    {
+      "command": "python3 -m unittest discover -s tests -v",
+      "returncode": 0,
+      "observed": {
+        "stderr": "test_alternatives_have_real_tradeoff (test_behavior.BehaviorTests)\n更贵但偏好更匹配时保留备选，不重复相同购物篮。 ... ok\ntest_break_even_boundary (test_behavior.BehaviorTests)\n回本向上取整，零/负节省不生成有限次数。 ... ok\ntest_breakfast_combo_reaches_detail_without_member_card (test_behavior.BehaviorTests)\n普通早餐组合必须进入详情核验，附带会员条件的组合仍被排除。 ... ok\ntest_budget_conflict_is_not_silently_relaxed (test_behavior.BehaviorTests)\n无解时保留要求，不为了生成推荐自动换掉约束。 ... ok\ntest_budget_equality_is_allowed (test_behavior.BehaviorTests)\n预算等于实际全单价属于可行。 ... ok\ntest_change_preserves_other_person_and_budget (test_behavior.BehaviorTests)\n改B口味不会丢掉A的要求或修改预算。 ... ok\ntest_context_change_requires_new_menu (test_behavior.BehaviorTests)\n换店后不使用旧店价格或优惠。 ... ok\ntest_coupon_reuse_does_not_pass (test_behavior.BehaviorTests)\n首版单券边界阻止一张券重复给两个人用。 ... ok\ntest_demo_does_not_call_unknown_safe (test_behavior.BehaviorTests)\n低价但辣度未知的餐不会混入符合要求的方案。 ... ok\ntest_explicit_nonspicy_not_misread_as_spicy (test_behavior.BehaviorTests)\n非辣的“辣”字不能反向判为辣味。 ... ok\ntest_false_boolean_not_integer_zero (test_behavior.BehaviorTests)\n避免Python将False与0视作相同而误判。 ... ok\ntest_invalid_request_modes_rejected (test_behavior.BehaviorTests)\n超范围人群、模式和布尔预算不会悄悄运行。 ... ok\ntest_live_never_uses_local_menu_price (test_behavior.BehaviorTests)\n实时模式即使给了菜单价也必须等官方报价。 ... ok\ntest_malformed_catalog_containers_raise_input_error (test_behavior.BehaviorTests)\n损坏套餐、餐品或事实容器应产生受控错误，不能抛AttributeError。 ... ok\ntest_missing_offline_fee_not_zero (test_behavior.BehaviorTests)\n缺失本地费用时不声称算出完整实付。 ... ok\ntest_mixed_meat_not_exclusively_beef (test_behavior.BehaviorTests)\n牛鸡混合名称不被标成单一牛肉属性。 ... ok\ntest_money_units_and_precision (test_behavior.BehaviorTests)\n金额单位显式处理，不口算/猜单位或舍入。 ... ok\ntest_new_card_not_disguised_as_cheap (test_behavior.BehaviorTests)\n低餐费加高卡费不能挤掉无卡更便宜的同内容方案。 ... ok\ntest_official_total_can_have_unknown_breakdown (test_behavior.BehaviorTests)\n真实到店回包可缺费用拆分，采用官方总额但不伪填零。 ... ok\ntest_private_state_permissions (test_behavior.BehaviorTests)\n保存会话只给当前用户读写，不因默认umask开放。 ... ok\ntest_quote_consistency_and_missing_total (test_behavior.BehaviorTests)\n费用冲突、商品错配或总价缺失不会作为可确认方案。 ... ok\ntest_same_request_fingerprint_stable (test_behavior.BehaviorTests)\n字段顺序不改变身份，预算或用餐时间改变会更新身份。 ... ok\ntest_unknown_people_and_fields_rejected (test_behavior.BehaviorTests)\n修改不误创建陌生用餐者或忽略拼错字段。 ... ok\ntest_unknown_sugar_not_replaced_with_low_sugar (test_behavior.BehaviorTests)\n低糖/原味不自动等于无糖/不辣。 ... ok\ntest_wrong_context_quote_rejected (test_behavior.BehaviorTests)\n其他门店的报价即使商品相同也不能采纳。 ... ok\ntest_business_failure_sanitized (test_behavior.ProtocolTests)\n业务失败不能因为HTTP成功被接受，消息内容不泄漏。 ... ok\ntest_explicit_sugar_free_variant_uses_actual_code (test_behavior.ProtocolTests)\n无糖替换使用返回的选项编码，不靠备注。 ... ok\ntest_readonly_client_rejects_mutations_without_network (test_behavior.ProtocolTests)\n所有交易工具在任何网络调用前被拒绝。 ... ok\ntest_sse_selects_matching_response (test_behavior.ProtocolTests)\n通知不被误读为工具成功。 ... ok\n\n----------------------------------------------------------------------\nRan 29 tests in 0.006s\n\nOK\n"
+      }
+    }
+  ],
+  "tested_runtime_sha256": {
+    "scripts/meal_clear.py": "65b22101430e500534d5b4c64391a591a62c69d408b7577da33626d8e876bef8",
+    "scripts/meal_clear/__init__.py": "608e4be5c32a4b1f259ffef5bea8b0f5f3b437958bffa30c6281e907d715619c",
+    "scripts/meal_clear/core.py": "d116acd4020f389b0faa52e8c69a81a4cb62b81920523ce904a3b2778c09b92e",
+    "scripts/meal_clear/cli.py": "741c6c3cee49b553d5d8f5b6c36276985232f685ca903f4a831c9c00a66f1594",
+    "scripts/meal_clear/mcp.py": "3d68a960c4f0ea42873fecdea305bc13fe9a12964ae042d899dbbd9d31fb57ad",
+    "scripts/meal_clear/live.py": "01116252bb57f378d599bfa880bdf8a61313bd55371b2df8db81fd5ef94b3cc1"
+  }
+}

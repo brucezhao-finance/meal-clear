@@ -1,0 +1,149 @@
+{
+  "id": "O08",
+  "title": "卡价1300加新卡1200，应付2500分",
+  "command": "python3 scripts/meal_clear.py plan --request verification/2026-10-19-acceptance/inputs/O08-request.json --catalog verification/2026-10-19-acceptance/inputs/O08-catalog.json --json",
+  "returncode": 0,
+  "elapsed_ms": 40,
+  "expected": {
+    "totals": [
+      2500
+    ]
+  },
+  "stdout": "{\n  \"request\": {\n    \"context\": {\n      \"store_code\": \"ACCEPTANCE-DEMO\",\n      \"channel\": \"pickup\",\n      \"meal_time\": \"synthetic\"\n    },\n    \"budget_cents\": 6000,\n    \"people\": [\n      {\n        \"id\": \"A\",\n        \"hard\": {\n          \"non_spicy\": true,\n          \"sugar_free_drink\": true\n        },\n        \"prefer\": {\n          \"main_meat\": \"chicken\"\n        }\n      }\n    ]\n  },\n  \"request_id\": \"901aa52a08c038ae\",\n  \"mode\": \"simulation\",\n  \"as_of\": \"2026-10-19（验收自建模拟，非真实采集）\",\n  \"status\": \"simulation\",\n  \"plans\": [\n    {\n      \"signature\": \"8b996a2c7999556ec8ffff8a8dc8fe1d2e1be8ffabb8ab66c63b06b0f97d9126\",\n      \"assignments\": [\n        {\n          \"person_id\": \"A\",\n          \"offer_id\": \"card\",\n          \"name\": \"验收模拟card\",\n          \"items\": [\n            {\n              \"code\": \"card-main\",\n              \"name\": \"验收模拟主食\",\n              \"role\": \"main\",\n              \"quantity\": 1\n            },\n            {\n              \"code\": \"card-drink\",\n              \"name\": \"验收模拟无糖饮料\",\n              \"role\": \"drink\",\n              \"quantity\": 1\n            }\n          ],\n          \"checks\": [\n            {\n              \"attribute\": \"non_spicy\",\n              \"expected\": true,\n              \"status\": \"verified\",\n              \"source\": \"验收自建模拟证据，非官方数据\"\n            },\n            {\n              \"attribute\": \"sugar_free_drink\",\n              \"expected\": true,\n              \"status\": \"verified\",\n              \"source\": \"验收自建模拟证据，非官方数据\"\n            }\n          ]\n        }\n      ],\n      \"preference_matches\": 1,\n      \"total_cents\": 2500,\n      \"price_status\": \"simulation\",\n      \"pricing_source\": \"完全虚构验收价格\",\n      \"new_card_cents\": 1200,\n      \"steps\": {\n        \"order_count\": 1,\n        \"new_card_count\": 1\n      },\n      \"within_budget\": true\n    }\n  ],\n  \"diagnostics\": [],\n  \"search\": {\n    \"catalog_offers\": 1,\n    \"max_offers_per_person\": 30,\n    \"max_combinations\": 900,\n    \"checked_combinations\": 1\n  },\n  \"recommendations\": [\n    {\n      \"signature\": \"8b996a2c7999556ec8ffff8a8dc8fe1d2e1be8ffabb8ab66c63b06b0f97d9126\",\n      \"assignments\": [\n        {\n          \"person_id\": \"A\",\n          \"offer_id\": \"card\",\n          \"name\": \"验收模拟card\",\n          \"items\": [\n            {\n              \"code\": \"card-main\",\n              \"name\": \"验收模拟主食\",\n              \"role\": \"main\",\n              \"quantity\": 1\n            },\n            {\n              \"code\": \"card-drink\",\n              \"name\": \"验收模拟无糖饮料\",\n              \"role\": \"drink\",\n              \"quantity\": 1\n            }\n          ],\n          \"checks\": [\n            {\n              \"attribute\": \"non_spicy\",\n              \"expected\": true,\n              \"status\": \"verified\",\n              \"source\": \"验收自建模拟证据，非官方数据\"\n            },\n            {\n              \"attribute\": \"sugar_free_drink\",\n              \"expected\": true,\n              \"status\": \"verified\",\n              \"source\": \"验收自建模拟证据，非官方数据\"\n            }\n          ]\n        }\n      ],\n      \"preference_matches\": 1,\n      \"total_cents\": 2500,\n      \"price_status\": \"simulation\",\n      \"pricing_source\": \"完全虚构验收价格\",\n      \"new_card_cents\": 1200,\n      \"steps\": {\n        \"order_count\": 1,\n        \"new_card_count\": 1\n      },\n      \"within_budget\": true\n    }\n  ]\n}\n",
+  "stderr": "",
+  "parsed": {
+    "request": {
+      "context": {
+        "store_code": "ACCEPTANCE-DEMO",
+        "channel": "pickup",
+        "meal_time": "synthetic"
+      },
+      "budget_cents": 6000,
+      "people": [
+        {
+          "id": "A",
+          "hard": {
+            "non_spicy": true,
+            "sugar_free_drink": true
+          },
+          "prefer": {
+            "main_meat": "chicken"
+          }
+        }
+      ]
+    },
+    "request_id": "901aa52a08c038ae",
+    "mode": "simulation",
+    "as_of": "2026-10-19（验收自建模拟，非真实采集）",
+    "status": "simulation",
+    "plans": [
+      {
+        "signature": "8b996a2c7999556ec8ffff8a8dc8fe1d2e1be8ffabb8ab66c63b06b0f97d9126",
+        "assignments": [
+          {
+            "person_id": "A",
+            "offer_id": "card",
+            "name": "验收模拟card",
+            "items": [
+              {
+                "code": "card-main",
+                "name": "验收模拟主食",
+                "role": "main",
+                "quantity": 1
+              },
+              {
+                "code": "card-drink",
+                "name": "验收模拟无糖饮料",
+                "role": "drink",
+                "quantity": 1
+              }
+            ],
+            "checks": [
+              {
+                "attribute": "non_spicy",
+                "expected": true,
+                "status": "verified",
+                "source": "验收自建模拟证据，非官方数据"
+              },
+              {
+                "attribute": "sugar_free_drink",
+                "expected": true,
+                "status": "verified",
+                "source": "验收自建模拟证据，非官方数据"
+              }
+            ]
+          }
+        ],
+        "preference_matches": 1,
+        "total_cents": 2500,
+        "price_status": "simulation",
+        "pricing_source": "完全虚构验收价格",
+        "new_card_cents": 1200,
+        "steps": {
+          "order_count": 1,
+          "new_card_count": 1
+        },
+        "within_budget": true
+      }
+    ],
+    "diagnostics": [],
+    "search": {
+      "catalog_offers": 1,
+      "max_offers_per_person": 30,
+      "max_combinations": 900,
+      "checked_combinations": 1
+    },
+    "recommendations": [
+      {
+        "signature": "8b996a2c7999556ec8ffff8a8dc8fe1d2e1be8ffabb8ab66c63b06b0f97d9126",
+        "assignments": [
+          {
+            "person_id": "A",
+            "offer_id": "card",
+            "name": "验收模拟card",
+            "items": [
+              {
+                "code": "card-main",
+                "name": "验收模拟主食",
+                "role": "main",
+                "quantity": 1
+              },
+              {
+                "code": "card-drink",
+                "name": "验收模拟无糖饮料",
+                "role": "drink",
+                "quantity": 1
+              }
+            ],
+            "checks": [
+              {
+                "attribute": "non_spicy",
+                "expected": true,
+                "status": "verified",
+                "source": "验收自建模拟证据，非官方数据"
+              },
+              {
+                "attribute": "sugar_free_drink",
+                "expected": true,
+                "status": "verified",
+                "source": "验收自建模拟证据，非官方数据"
+              }
+            ]
+          }
+        ],
+        "preference_matches": 1,
+        "total_cents": 2500,
+        "price_status": "simulation",
+        "pricing_source": "完全虚构验收价格",
+        "new_card_cents": 1200,
+        "steps": {
+          "order_count": 1,
+          "new_card_count": 1
+        },
+        "within_budget": true
+      }
+    ]
+  },
+  "passed": true,
+  "failures": []
+}

@@ -1,0 +1,19 @@
+{
+  "id": "O13",
+  "title": "三人超出范围，应返回受控输入错误",
+  "command": "python3 scripts/meal_clear.py plan --request verification/2026-10-19-acceptance/inputs/O13-request.json --catalog verification/2026-10-19-acceptance/inputs/O13-catalog.json --json",
+  "returncode": 1,
+  "elapsed_ms": 41,
+  "expected": {
+    "exit": 1,
+    "status": "error"
+  },
+  "stdout": "{\"status\": \"error\", \"message\": \"首版支持1或2位用餐者\"}\n",
+  "stderr": "",
+  "parsed": {
+    "status": "error",
+    "message": "首版支持1或2位用餐者"
+  },
+  "passed": true,
+  "failures": []
+}

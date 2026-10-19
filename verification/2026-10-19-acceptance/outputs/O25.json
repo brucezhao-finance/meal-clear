@@ -1,0 +1,19 @@
+{
+  "id": "O25",
+  "title": "损坏JSON不得打印原始文件",
+  "command": "python3 scripts/meal_clear.py plan --request verification/2026-10-19-acceptance/inputs/malformed.json --catalog verification/2026-10-19-acceptance/inputs/catalog.json --json",
+  "returncode": 1,
+  "elapsed_ms": 40,
+  "expected": {
+    "exit": 1,
+    "status": "error"
+  },
+  "stdout": "{\"status\": \"error\", \"message\": \"输入文件缺失、格式错误或结构不匹配\"}\n",
+  "stderr": "",
+  "parsed": {
+    "status": "error",
+    "message": "输入文件缺失、格式错误或结构不匹配"
+  },
+  "passed": true,
+  "failures": []
+}

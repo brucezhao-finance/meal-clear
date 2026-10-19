@@ -129,16 +129,26 @@ def validate_catalog(catalog: Dict[str, Any]) -> None:
         raise InputError("菜单需要获取时间和offers列表")
     seen = set()
     for offer in catalog["offers"]:
+        if not isinstance(offer, dict):
+            raise InputError("每个套餐/组合必须为对象")
         oid = offer.get("id")
         if not isinstance(oid, str) or not oid or oid in seen:
             raise InputError("套餐/组合id必须唯一")
         seen.add(oid)
         if not offer.get("name") or not offer.get("items"):
             raise InputError("组合需要名称与餐品清单")
+        items = offer["items"]
+        if not isinstance(items, list) or any(
+            not isinstance(item, dict) for item in items
+        ):
+            raise InputError("餐品清单必须为对象列表")
+        facts = offer.get("facts", {})
+        if not isinstance(facts, dict):
+            raise InputError("属性证据集合必须为对象")
         for role in ("main", "drink"):
-            if not any(i.get("role") == role for i in offer["items"]):
+            if not any(i.get("role") == role for i in items):
                 raise InputError("每人组合必须包含主食与饮品，不静默减少餐品")
-        for fact in offer.get("facts", {}).values():
+        for fact in facts.values():
             if (
                 not isinstance(fact, dict)
                 or not fact.get("source")

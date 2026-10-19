@@ -309,7 +309,7 @@ class LivePlanner:
                 x in v.get("name", "") for x in ("双人", "多人", "会员", "月卡")
             )
             and classify_role(v.get("name", "")) == "main"
-            and any(x in v.get("name", "") for x in ("件套", "套餐", "单人餐"))
+            and any(x in v.get("name", "") for x in ("件套", "套餐", "单人餐", "组合"))
         ]
         entries.sort(key=rank)
         to_fetch = [(code, None) for code, _ in entries[:6]]

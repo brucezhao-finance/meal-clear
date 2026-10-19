@@ -1,0 +1,113 @@
+{
+  "validated_at": "2026-10-19T02:03:53.805407+00:00",
+  "mode": "real_read_only",
+  "passed": 8,
+  "failed": 0,
+  "cases": [
+    {
+      "id": "L01",
+      "expected_status": null,
+      "actual_status": null,
+      "exit": 0,
+      "elapsed_ms": 657,
+      "totals_cents": [],
+      "passed": true,
+      "errors": [],
+      "record": "outputs/L01-tools.json",
+      "coupon_plan_verified": false
+    },
+    {
+      "id": "L02",
+      "expected_status": null,
+      "actual_status": null,
+      "exit": 0,
+      "elapsed_ms": 1997,
+      "totals_cents": [],
+      "passed": true,
+      "errors": [],
+      "record": "outputs/L02.json",
+      "coupon_plan_verified": false
+    },
+    {
+      "id": "L03",
+      "expected_status": "ready",
+      "actual_status": "ready",
+      "exit": 0,
+      "elapsed_ms": 4984,
+      "totals_cents": [
+        1240
+      ],
+      "passed": true,
+      "errors": [],
+      "record": "outputs/L03.json",
+      "coupon_plan_verified": false
+    },
+    {
+      "id": "L04",
+      "expected_status": "no_verified_plan",
+      "actual_status": "no_verified_plan",
+      "exit": 2,
+      "elapsed_ms": 4424,
+      "totals_cents": [],
+      "passed": true,
+      "errors": [],
+      "record": "outputs/L04.json",
+      "coupon_plan_verified": false
+    },
+    {
+      "id": "L05",
+      "expected_status": "ready",
+      "actual_status": "ready",
+      "exit": 0,
+      "elapsed_ms": 5177,
+      "totals_cents": [
+        2480
+      ],
+      "passed": true,
+      "errors": [],
+      "record": "outputs/L05.json",
+      "coupon_plan_verified": false
+    },
+    {
+      "id": "L06",
+      "expected_status": "no_verified_plan",
+      "actual_status": "no_verified_plan",
+      "exit": 2,
+      "elapsed_ms": 4326,
+      "totals_cents": [],
+      "passed": true,
+      "errors": [],
+      "record": "outputs/L06.json",
+      "coupon_plan_verified": false
+    },
+    {
+      "id": "L07",
+      "expected_status": "ready",
+      "actual_status": "ready",
+      "exit": 0,
+      "elapsed_ms": 7098,
+      "totals_cents": [
+        990,
+        990
+      ],
+      "passed": true,
+      "errors": [],
+      "record": "outputs/L07.json",
+      "coupon_plan_verified": true
+    },
+    {
+      "id": "L08",
+      "expected_status": "ready",
+      "actual_status": "ready",
+      "exit": 0,
+      "elapsed_ms": 5302,
+      "totals_cents": [
+        1240
+      ],
+      "passed": true,
+      "errors": [],
+      "record": "outputs/L08.json",
+      "coupon_plan_verified": false
+    }
+  ]
+}

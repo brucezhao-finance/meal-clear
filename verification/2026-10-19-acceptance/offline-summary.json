@@ -1,0 +1,380 @@
+{
+  "finished_at": "2026-10-19T02:01:51.079766+00:00",
+  "cases": [
+    {
+      "id": "O01",
+      "title": "两人独立选餐并保存600权限状态",
+      "command": "python3 scripts/meal_clear.py plan --request verification/2026-10-19-acceptance/inputs/request.json --catalog verification/2026-10-19-acceptance/inputs/catalog.json --save local-state/acceptance-20261019/original.json --json",
+      "returncode": 0,
+      "elapsed_ms": 53,
+      "expected": {
+        "status": "simulation",
+        "totals": [
+          4300
+        ],
+        "private_state": true
+      },
+      "passed": true,
+      "failures": []
+    },
+    {
+      "id": "O02",
+      "title": "只改B为牛肉，A与6000分预算保持",
+      "command": "python3 scripts/meal_clear.py update --state local-state/acceptance-20261019/original.json --patch verification/2026-10-19-acceptance/inputs/patch-beef.json --catalog verification/2026-10-19-acceptance/inputs/catalog.json --json",
+      "returncode": 0,
+      "elapsed_ms": 46,
+      "expected": {
+        "status": "simulation",
+        "totals": [
+          5050
+        ],
+        "delta": 750,
+        "preserve_a": true
+      },
+      "passed": true,
+      "failures": []
+    },
+    {
+      "id": "O03",
+      "title": "恰好等于预算",
+      "command": "python3 scripts/meal_clear.py plan --request verification/2026-10-19-acceptance/inputs/O03-request.json --catalog verification/2026-10-19-acceptance/inputs/O03-catalog.json --json",
+      "returncode": 0,
+      "elapsed_ms": 43,
+      "expected": {
+        "status": "simulation",
+        "totals": [
+          4300
+        ]
+      },
+      "passed": true,
+      "failures": []
+    },
+    {
+      "id": "O04",
+      "title": "差1分超预算仍拒绝",
+      "command": "python3 scripts/meal_clear.py plan --request verification/2026-10-19-acceptance/inputs/O04-request.json --catalog verification/2026-10-19-acceptance/inputs/O04-catalog.json --json",
+      "returncode": 2,
+      "elapsed_ms": 41,
+      "expected": {
+        "exit": 2,
+        "status": "over_budget_in_checked_set",
+        "no_recommendation": true
+      },
+      "passed": true,
+      "failures": []
+    },
+    {
+      "id": "O05",
+      "title": "软偏好提供价格与口味两种取舍",
+      "command": "python3 scripts/meal_clear.py plan --request verification/2026-10-19-acceptance/inputs/O05-request.json --catalog verification/2026-10-19-acceptance/inputs/O05-catalog.json --json",
+      "returncode": 0,
+      "elapsed_ms": 42,
+      "expected": {
+        "totals": [
+          4300,
+          5050
+        ]
+      },
+      "passed": true,
+      "failures": []
+    },
+    {
+      "id": "O06",
+      "title": "只有辣度未知低价餐，不能冒充满足不辣",
+      "command": "python3 scripts/meal_clear.py plan --request verification/2026-10-19-acceptance/inputs/O06-request.json --catalog verification/2026-10-19-acceptance/inputs/O06-catalog.json --json",
+      "returncode": 2,
+      "elapsed_ms": 40,
+      "expected": {
+        "exit": 2,
+        "status": "no_verified_plan",
+        "no_recommendation": true
+      },
+      "passed": true,
+      "failures": []
+    },
+    {
+      "id": "O07",
+      "title": "只有明确辣味餐，拒绝不辣要求",
+      "command": "python3 scripts/meal_clear.py plan --request verification/2026-10-19-acceptance/inputs/O07-request.json --catalog verification/2026-10-19-acceptance/inputs/O07-catalog.json --json",
+      "returncode": 2,
+      "elapsed_ms": 40,
+      "expected": {
+        "exit": 2,
+        "status": "no_verified_plan",
+        "no_recommendation": true
+      },
+      "passed": true,
+      "failures": []
+    },
+    {
+      "id": "O08",
+      "title": "卡价1300加新卡1200，应付2500分",
+      "command": "python3 scripts/meal_clear.py plan --request verification/2026-10-19-acceptance/inputs/O08-request.json --catalog verification/2026-10-19-acceptance/inputs/O08-catalog.json --json",
+      "returncode": 0,
+      "elapsed_ms": 40,
+      "expected": {
+        "totals": [
+          2500
+        ]
+      },
+      "passed": true,
+      "failures": []
+    },
+    {
+      "id": "O09",
+      "title": "费用缺失不能补0",
+      "command": "python3 scripts/meal_clear.py plan --request verification/2026-10-19-acceptance/inputs/O09-request.json --catalog verification/2026-10-19-acceptance/inputs/O09-catalog.json --json",
+      "returncode": 2,
+      "elapsed_ms": 40,
+      "expected": {
+        "exit": 2,
+        "status": "needs_price_verification",
+        "no_recommendation": true
+      },
+      "passed": true,
+      "failures": []
+    },
+    {
+      "id": "O10",
+      "title": "换店后旧菜单不可沿用",
+      "command": "python3 scripts/meal_clear.py plan --request verification/2026-10-19-acceptance/inputs/O10-request.json --catalog verification/2026-10-19-acceptance/inputs/O10-catalog.json --json",
+      "returncode": 2,
+      "elapsed_ms": 39,
+      "expected": {
+        "exit": 2,
+        "status": "context_mismatch",
+        "no_recommendation": true
+      },
+      "passed": true,
+      "failures": []
+    },
+    {
+      "id": "O11",
+      "title": "资料来源模式必须保留：historical",
+      "command": "python3 scripts/meal_clear.py plan --request verification/2026-10-19-acceptance/inputs/O11-request.json --catalog verification/2026-10-19-acceptance/inputs/O11-catalog.json --json",
+      "returncode": 0,
+      "elapsed_ms": 40,
+      "expected": {
+        "status": "historical",
+        "totals": [
+          4300
+        ]
+      },
+      "passed": true,
+      "failures": []
+    },
+    {
+      "id": "O12",
+      "title": "资料来源模式必须保留：user_supplied",
+      "command": "python3 scripts/meal_clear.py plan --request verification/2026-10-19-acceptance/inputs/O12-request.json --catalog verification/2026-10-19-acceptance/inputs/O12-catalog.json --json",
+      "returncode": 0,
+      "elapsed_ms": 41,
+      "expected": {
+        "status": "user_supplied",
+        "totals": [
+          4300
+        ]
+      },
+      "passed": true,
+      "failures": []
+    },
+    {
+      "id": "O13",
+      "title": "三人超出范围，应返回受控输入错误",
+      "command": "python3 scripts/meal_clear.py plan --request verification/2026-10-19-acceptance/inputs/O13-request.json --catalog verification/2026-10-19-acceptance/inputs/O13-catalog.json --json",
+      "returncode": 1,
+      "elapsed_ms": 41,
+      "expected": {
+        "exit": 1,
+        "status": "error"
+      },
+      "passed": true,
+      "failures": []
+    },
+    {
+      "id": "O14",
+      "title": "布尔预算不是1分",
+      "command": "python3 scripts/meal_clear.py plan --request verification/2026-10-19-acceptance/inputs/O14-request.json --catalog verification/2026-10-19-acceptance/inputs/O14-catalog.json --json",
+      "returncode": 1,
+      "elapsed_ms": 40,
+      "expected": {
+        "exit": 1,
+        "status": "error"
+      },
+      "passed": true,
+      "failures": []
+    },
+    {
+      "id": "O15",
+      "title": "重复用户id拒绝",
+      "command": "python3 scripts/meal_clear.py plan --request verification/2026-10-19-acceptance/inputs/O15-request.json --catalog verification/2026-10-19-acceptance/inputs/O15-catalog.json --json",
+      "returncode": 1,
+      "elapsed_ms": 40,
+      "expected": {
+        "exit": 1,
+        "status": "error"
+      },
+      "passed": true,
+      "failures": []
+    },
+    {
+      "id": "O16",
+      "title": "未知过敏安全属性不得保证通过",
+      "command": "python3 scripts/meal_clear.py plan --request verification/2026-10-19-acceptance/inputs/O16-request.json --catalog verification/2026-10-19-acceptance/inputs/O16-catalog.json --json",
+      "returncode": 2,
+      "elapsed_ms": 40,
+      "expected": {
+        "exit": 2,
+        "status": "no_verified_plan",
+        "no_recommendation": true
+      },
+      "passed": true,
+      "failures": []
+    },
+    {
+      "id": "O17",
+      "title": "离线修改未给新菜单应拒绝",
+      "command": "python3 scripts/meal_clear.py update --state local-state/acceptance-20261019/original.json --patch verification/2026-10-19-acceptance/inputs/patch-beef.json --json",
+      "returncode": 1,
+      "elapsed_ms": 40,
+      "expected": {
+        "exit": 1,
+        "status": "error"
+      },
+      "passed": true,
+      "failures": []
+    },
+    {
+      "id": "O18",
+      "title": "固定回本1401除200向上取整8次",
+      "command": "python3 scripts/meal_clear.py break-even --fee 1401 --saving 200",
+      "returncode": 0,
+      "elapsed_ms": 39,
+      "expected": {
+        "exit": 0
+      },
+      "passed": true,
+      "failures": []
+    },
+    {
+      "id": "O19",
+      "title": "每次节省为0不能伪造回本",
+      "command": "python3 scripts/meal_clear.py break-even --fee 1400 --saving 0",
+      "returncode": 0,
+      "elapsed_ms": 42,
+      "expected": {
+        "exit": 0
+      },
+      "passed": true,
+      "failures": []
+    },
+    {
+      "id": "O20",
+      "title": "修改不存在的C拒绝",
+      "command": "python3 scripts/meal_clear.py update --state local-state/acceptance-20261019/original.json --patch verification/2026-10-19-acceptance/inputs/patch-unknown-person.json --catalog verification/2026-10-19-acceptance/inputs/catalog.json --json",
+      "returncode": 1,
+      "elapsed_ms": 41,
+      "expected": {
+        "exit": 1,
+        "status": "error"
+      },
+      "passed": true,
+      "failures": []
+    },
+    {
+      "id": "O21",
+      "title": "损坏菜单offers元素为null，应受控拒绝",
+      "command": "python3 scripts/meal_clear.py plan --request verification/2026-10-19-acceptance/inputs/O21-request.json --catalog verification/2026-10-19-acceptance/inputs/O21-catalog.json --json",
+      "returncode": 1,
+      "elapsed_ms": 41,
+      "expected": {
+        "exit": 1,
+        "status": "error"
+      },
+      "passed": true,
+      "failures": []
+    },
+    {
+      "id": "O22",
+      "title": "损坏餐品元素为null，应受控拒绝",
+      "command": "python3 scripts/meal_clear.py plan --request verification/2026-10-19-acceptance/inputs/O22-request.json --catalog verification/2026-10-19-acceptance/inputs/O22-catalog.json --json",
+      "returncode": 1,
+      "elapsed_ms": 41,
+      "expected": {
+        "exit": 1,
+        "status": "error"
+      },
+      "passed": true,
+      "failures": []
+    },
+    {
+      "id": "O23",
+      "title": "损坏事实集合为数组，应受控拒绝",
+      "command": "python3 scripts/meal_clear.py plan --request verification/2026-10-19-acceptance/inputs/O23-request.json --catalog verification/2026-10-19-acceptance/inputs/O23-catalog.json --json",
+      "returncode": 1,
+      "elapsed_ms": 41,
+      "expected": {
+        "exit": 1,
+        "status": "error"
+      },
+      "passed": true,
+      "failures": []
+    },
+    {
+      "id": "O24",
+      "title": "用绝对路径从其他工作目录运行演示",
+      "command": "cd /private/tmp && python3 <项目绝对路径>/scripts/meal_clear.py demo --json",
+      "returncode": 0,
+      "elapsed_ms": 41,
+      "expected": {
+        "exit": 0
+      },
+      "passed": true,
+      "failures": []
+    },
+    {
+      "id": "O25",
+      "title": "损坏JSON不得打印原始文件",
+      "command": "python3 scripts/meal_clear.py plan --request verification/2026-10-19-acceptance/inputs/malformed.json --catalog verification/2026-10-19-acceptance/inputs/catalog.json --json",
+      "returncode": 1,
+      "elapsed_ms": 40,
+      "expected": {
+        "exit": 1,
+        "status": "error"
+      },
+      "passed": true,
+      "failures": []
+    },
+    {
+      "id": "O26",
+      "title": "修改后无方案，价差保持null",
+      "command": "python3 scripts/meal_clear.py update --state local-state/acceptance-20261019/original.json --patch verification/2026-10-19-acceptance/inputs/patch-tight-budget.json --catalog verification/2026-10-19-acceptance/inputs/catalog.json --json",
+      "returncode": 2,
+      "elapsed_ms": 43,
+      "expected": {
+        "exit": 2,
+        "status": "over_budget_in_checked_set",
+        "delta": null,
+        "no_recommendation": true
+      },
+      "passed": true,
+      "failures": []
+    },
+    {
+      "id": "O27",
+      "title": "仅有一张券的餐不能同单重复分给两人",
+      "command": "python3 scripts/meal_clear.py plan --request verification/2026-10-19-acceptance/inputs/O27-request.json --catalog verification/2026-10-19-acceptance/inputs/O27-catalog.json --json",
+      "returncode": 2,
+      "elapsed_ms": 47,
+      "expected": {
+        "exit": 2,
+        "status": "no_verified_plan",
+        "no_recommendation": true
+      },
+      "passed": true,
+      "failures": []
+    }
+  ],
+  "passed": 27,
+  "failed": 0
+}

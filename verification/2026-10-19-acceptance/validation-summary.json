@@ -1,0 +1,21 @@
+{
+  "checks": [
+    {
+      "name": "regression",
+      "exit": 0
+    },
+    {
+      "name": "ruff",
+      "exit": 0
+    },
+    {
+      "name": "skill_structure",
+      "exit": 0
+    }
+  ],
+  "credential_exact_match_scan": "passed",
+  "publishable_files_scanned": 157,
+  "documentation_links_checked": 89,
+  "retained_failures_redacted": "local_project_path",
+  "package_replay": "passed"
+}

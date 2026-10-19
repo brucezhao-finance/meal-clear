@@ -1,0 +1,59 @@
+test_alternatives_have_real_tradeoff (test_behavior.BehaviorTests)
+更贵但偏好更匹配时保留备选，不重复相同购物篮。 ... ok
+test_break_even_boundary (test_behavior.BehaviorTests)
+回本向上取整，零/负节省不生成有限次数。 ... ok
+test_budget_conflict_is_not_silently_relaxed (test_behavior.BehaviorTests)
+无解时保留要求，不为了生成推荐自动换掉约束。 ... ok
+test_budget_equality_is_allowed (test_behavior.BehaviorTests)
+预算等于实际全单价属于可行。 ... ok
+test_change_preserves_other_person_and_budget (test_behavior.BehaviorTests)
+改B口味不会丢掉A的要求或修改预算。 ... ok
+test_context_change_requires_new_menu (test_behavior.BehaviorTests)
+换店后不使用旧店价格或优惠。 ... ok
+test_coupon_reuse_does_not_pass (test_behavior.BehaviorTests)
+首版单券边界阻止一张券重复给两个人用。 ... ok
+test_demo_does_not_call_unknown_safe (test_behavior.BehaviorTests)
+低价但辣度未知的餐不会混入符合要求的方案。 ... ok
+test_explicit_nonspicy_not_misread_as_spicy (test_behavior.BehaviorTests)
+非辣的“辣”字不能反向判为辣味。 ... ok
+test_false_boolean_not_integer_zero (test_behavior.BehaviorTests)
+避免Python将False与0视作相同而误判。 ... ok
+test_invalid_request_modes_rejected (test_behavior.BehaviorTests)
+超范围人群、模式和布尔预算不会悄悄运行。 ... ok
+test_live_never_uses_local_menu_price (test_behavior.BehaviorTests)
+实时模式即使给了菜单价也必须等官方报价。 ... ok
+test_missing_offline_fee_not_zero (test_behavior.BehaviorTests)
+缺失本地费用时不声称算出完整实付。 ... ok
+test_mixed_meat_not_exclusively_beef (test_behavior.BehaviorTests)
+牛鸡混合名称不被标成单一牛肉属性。 ... ok
+test_money_units_and_precision (test_behavior.BehaviorTests)
+金额单位显式处理，不口算/猜单位或舍入。 ... ok
+test_new_card_not_disguised_as_cheap (test_behavior.BehaviorTests)
+低餐费加高卡费不能挤掉无卡更便宜的同内容方案。 ... ok
+test_official_total_can_have_unknown_breakdown (test_behavior.BehaviorTests)
+真实到店回包可缺费用拆分，采用官方总额但不伪填零。 ... ok
+test_private_state_permissions (test_behavior.BehaviorTests)
+保存会话只给当前用户读写，不因默认umask开放。 ... ok
+test_quote_consistency_and_missing_total (test_behavior.BehaviorTests)
+费用冲突、商品错配或总价缺失不会作为可确认方案。 ... ok
+test_same_request_fingerprint_stable (test_behavior.BehaviorTests)
+字段顺序不改变身份，预算或用餐时间改变会更新身份。 ... ok
+test_unknown_people_and_fields_rejected (test_behavior.BehaviorTests)
+修改不误创建陌生用餐者或忽略拼错字段。 ... ok
+test_unknown_sugar_not_replaced_with_low_sugar (test_behavior.BehaviorTests)
+低糖/原味不自动等于无糖/不辣。 ... ok
+test_wrong_context_quote_rejected (test_behavior.BehaviorTests)
+其他门店的报价即使商品相同也不能采纳。 ... ok
+test_business_failure_sanitized (test_behavior.ProtocolTests)
+业务失败不能因为HTTP成功被接受，消息内容不泄漏。 ... ok
+test_explicit_sugar_free_variant_uses_actual_code (test_behavior.ProtocolTests)
+无糖替换使用返回的选项编码，不靠备注。 ... ok
+test_readonly_client_rejects_mutations_without_network (test_behavior.ProtocolTests)
+所有交易工具在任何网络调用前被拒绝。 ... ok
+test_sse_selects_matching_response (test_behavior.ProtocolTests)
+通知不被误读为工具成功。 ... ok
+
+----------------------------------------------------------------------
+Ran 27 tests in 0.006s
+
+OK

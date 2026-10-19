@@ -1,0 +1,14 @@
+{
+  "mode": "simulation",
+  "as_of": "2026-10-19（验收自建模拟，非真实采集）",
+  "context": {
+    "store_code": "ACCEPTANCE-DEMO",
+    "channel": "pickup",
+    "meal_time": "synthetic"
+  },
+  "order_fee_cents": 0,
+  "price_source": "完全虚构验收价格",
+  "offers": [
+    null
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "id": "O20",
+  "title": "修改不存在的C拒绝",
+  "command": "python3 scripts/meal_clear.py update --state local-state/acceptance-20261019/original.json --patch verification/2026-10-19-acceptance/inputs/patch-unknown-person.json --catalog verification/2026-10-19-acceptance/inputs/catalog.json --json",
+  "returncode": 1,
+  "elapsed_ms": 41,
+  "expected": {
+    "exit": 1,
+    "status": "error"
+  },
+  "stdout": "{\"status\": \"error\", \"message\": \"修改包含未知用餐者或字段\"}\n",
+  "stderr": "",
+  "parsed": {
+    "status": "error",
+    "message": "修改包含未知用餐者或字段"
+  },
+  "passed": true,
+  "failures": []
+}

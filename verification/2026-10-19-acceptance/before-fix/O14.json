@@ -1,0 +1,19 @@
+{
+  "id": "O14",
+  "title": "布尔预算不是1分",
+  "command": "python3 scripts/meal_clear.py plan --request verification/2026-10-19-acceptance/inputs/O14-request.json --catalog verification/2026-10-19-acceptance/inputs/O14-catalog.json --json",
+  "returncode": 1,
+  "elapsed_ms": 40,
+  "expected": {
+    "exit": 1,
+    "status": "error"
+  },
+  "stdout": "{\"status\": \"error\", \"message\": \"预算必须是至少1的整数\"}\n",
+  "stderr": "",
+  "parsed": {
+    "status": "error",
+    "message": "预算必须是至少1的整数"
+  },
+  "passed": true,
+  "failures": []
+}

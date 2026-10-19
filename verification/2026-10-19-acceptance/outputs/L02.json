@@ -1,0 +1,39 @@
+{
+  "id": "L02",
+  "title": "搜索工程测试门店，不替用户选就餐店",
+  "finished_at": "2026-10-19T02:00:51.300017+00:00",
+  "command": "python3 scripts/meal_clear.py stores --city 上海 --keyword 静安寺 --token-file <本机凭证文件>",
+  "elapsed_ms": 1997,
+  "returncode": 0,
+  "output": {
+    "as_of": "2026-10-19T02:00:51.282963+00:00",
+    "stores": [
+      {
+        "storeCode": "1450002",
+        "storeName": "麦当劳上海静安寺餐厅",
+        "businessStatus": true
+      },
+      {
+        "storeCode": "1450133",
+        "storeName": "麦当劳上海越洋广场餐厅",
+        "businessStatus": true
+      },
+      {
+        "storeCode": "1450224",
+        "storeName": "麦当劳上海南京西路Eco1788餐厅",
+        "businessStatus": true
+      },
+      {
+        "storeCode": "1450400",
+        "storeName": "麦当劳上海CP静安餐厅",
+        "businessStatus": true
+      },
+      {
+        "storeCode": "1450650",
+        "storeName": "麦当劳上海静安延平路德必餐厅",
+        "businessStatus": true
+      }
+    ],
+    "note": "请用户明确选定门店，未自动选店或下单"
+  }
+}

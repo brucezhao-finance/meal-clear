@@ -1,0 +1,19 @@
+{
+  "id": "O22",
+  "title": "损坏餐品元素为null，应受控拒绝",
+  "command": "python3 scripts/meal_clear.py plan --request verification/2026-10-19-acceptance/inputs/O22-request.json --catalog verification/2026-10-19-acceptance/inputs/O22-catalog.json --json",
+  "returncode": 1,
+  "elapsed_ms": 41,
+  "expected": {
+    "exit": 1,
+    "status": "error"
+  },
+  "stdout": "{\"status\": \"error\", \"message\": \"餐品清单必须为对象列表\"}\n",
+  "stderr": "",
+  "parsed": {
+    "status": "error",
+    "message": "餐品清单必须为对象列表"
+  },
+  "passed": true,
+  "failures": []
+}

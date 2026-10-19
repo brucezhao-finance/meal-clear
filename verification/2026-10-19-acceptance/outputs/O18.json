@@ -1,0 +1,17 @@
+{
+  "id": "O18",
+  "title": "固定回本1401除200向上取整8次",
+  "command": "python3 scripts/meal_clear.py break-even --fee 1401 --saving 200",
+  "returncode": 0,
+  "elapsed_ms": 39,
+  "expected": {
+    "exit": 0
+  },
+  "stdout": "{\"visits\": 8}\n",
+  "stderr": "",
+  "parsed": {
+    "visits": 8
+  },
+  "passed": true,
+  "failures": []
+}

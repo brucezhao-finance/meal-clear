@@ -1,0 +1,90 @@
+{
+  "id": "L06",
+  "title": "无糖且不辣，检查缺失辣度证据时能否正确拒绝",
+  "finished_at": "2026-10-19T01:58:47.863280+00:00",
+  "command": "python3 scripts/meal_clear.py live-plan --request verification/2026-10-19-acceptance/inputs/live-nonspicy.json --json --token-file <本机凭证文件>",
+  "elapsed_ms": 4192,
+  "returncode": 2,
+  "output": {
+    "request": {
+      "context": {
+        "store_code": "1450002",
+        "channel": "pickup",
+        "meal_time": "now"
+      },
+      "budget_cents": 10000,
+      "people": [
+        {
+          "id": "A",
+          "hard": {
+            "sugar_free_drink": true,
+            "non_spicy": true
+          },
+          "prefer": {}
+        }
+      ]
+    },
+    "request_id": "e433ea5aad09c2d6",
+    "mode": "live",
+    "as_of": "2026-10-19T01:58:47.851471+00:00",
+    "status": "no_verified_plan",
+    "plans": [],
+    "diagnostics": [
+      {
+        "person_id": "A",
+        "reason": "没有证据完整且满足硬要求的组合",
+        "examples": [
+          {
+            "offer_id": "9900016334-7b36a4ad-coupon",
+            "checks": [
+              {
+                "attribute": "sugar_free_drink",
+                "expected": true,
+                "status": "unknown",
+                "source": null
+              },
+              {
+                "attribute": "non_spicy",
+                "expected": true,
+                "status": "unknown",
+                "source": null
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "search": {
+      "catalog_offers": 1,
+      "max_offers_per_person": 30,
+      "max_combinations": 900
+    },
+    "coverage": {
+      "menu_entries": 90,
+      "detail_queries": 1,
+      "skipped_errors": 0,
+      "coupon_count": 1,
+      "note": "有界单人套餐搜索，未穷尽全菜单；辣度等缺失仍未知"
+    },
+    "quote_attempts": 0,
+    "verified_quotes": 0,
+    "quote_errors": [],
+    "read_only_audit": [
+      {
+        "tool": "query-meals",
+        "success": true,
+        "elapsed_ms": 1096
+      },
+      {
+        "tool": "query-store-coupons",
+        "success": true,
+        "elapsed_ms": 835
+      },
+      {
+        "tool": "query-meal-detail",
+        "success": true,
+        "elapsed_ms": 619
+      }
+    ]
+  }
+}

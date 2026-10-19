@@ -1,0 +1,61 @@
+{
+  "id": "O10",
+  "title": "换店后旧菜单不可沿用",
+  "command": "python3 scripts/meal_clear.py plan --request verification/2026-10-19-acceptance/inputs/O10-request.json --catalog verification/2026-10-19-acceptance/inputs/O10-catalog.json --json",
+  "returncode": 2,
+  "elapsed_ms": 39,
+  "expected": {
+    "exit": 2,
+    "status": "context_mismatch",
+    "no_recommendation": true
+  },
+  "stdout": "{\n  \"request\": {\n    \"context\": {\n      \"store_code\": \"ACCEPTANCE-DEMO\",\n      \"channel\": \"pickup\",\n      \"meal_time\": \"synthetic\"\n    },\n    \"budget_cents\": 6000,\n    \"people\": [\n      {\n        \"id\": \"A\",\n        \"hard\": {\n          \"non_spicy\": true,\n          \"sugar_free_drink\": true\n        },\n        \"prefer\": {\n          \"main_meat\": \"chicken\"\n        }\n      },\n      {\n        \"id\": \"B\",\n        \"hard\": {\n          \"non_spicy\": true,\n          \"sugar_free_drink\": true\n        },\n        \"prefer\": {\n          \"main_meat\": \"chicken\"\n        }\n      }\n    ]\n  },\n  \"request_id\": \"4d476de9a48361ea\",\n  \"mode\": \"simulation\",\n  \"as_of\": \"2026-10-19（验收自建模拟，非真实采集）\",\n  \"status\": \"context_mismatch\",\n  \"plans\": [],\n  \"diagnostics\": [\n    \"门店、方式或时间不同；需要对应菜单和新报价\"\n  ],\n  \"search\": {\n    \"catalog_offers\": 5,\n    \"max_offers_per_person\": 30,\n    \"max_combinations\": 900\n  }\n}\n",
+  "stderr": "",
+  "parsed": {
+    "request": {
+      "context": {
+        "store_code": "ACCEPTANCE-DEMO",
+        "channel": "pickup",
+        "meal_time": "synthetic"
+      },
+      "budget_cents": 6000,
+      "people": [
+        {
+          "id": "A",
+          "hard": {
+            "non_spicy": true,
+            "sugar_free_drink": true
+          },
+          "prefer": {
+            "main_meat": "chicken"
+          }
+        },
+        {
+          "id": "B",
+          "hard": {
+            "non_spicy": true,
+            "sugar_free_drink": true
+          },
+          "prefer": {
+            "main_meat": "chicken"
+          }
+        }
+      ]
+    },
+    "request_id": "4d476de9a48361ea",
+    "mode": "simulation",
+    "as_of": "2026-10-19（验收自建模拟，非真实采集）",
+    "status": "context_mismatch",
+    "plans": [],
+    "diagnostics": [
+      "门店、方式或时间不同；需要对应菜单和新报价"
+    ],
+    "search": {
+      "catalog_offers": 5,
+      "max_offers_per_person": 30,
+      "max_combinations": 900
+    }
+  },
+  "passed": true,
+  "failures": []
+}

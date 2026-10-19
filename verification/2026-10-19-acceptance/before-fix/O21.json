@@ -1,0 +1,18 @@
+{
+  "id": "O21",
+  "title": "损坏菜单offers元素为null，应受控拒绝",
+  "command": "python3 scripts/meal_clear.py plan --request verification/2026-10-19-acceptance/inputs/O21-request.json --catalog verification/2026-10-19-acceptance/inputs/O21-catalog.json --json",
+  "returncode": 1,
+  "elapsed_ms": 42,
+  "expected": {
+    "exit": 1,
+    "status": "error"
+  },
+  "stdout": "",
+  "stderr": "Traceback (most recent call last):\n  File \"<项目目录>/scripts/meal_clear.py\", line 6, in <module>\n    raise SystemExit(main())\n  File \"<项目目录>/scripts/meal_clear/cli.py\", line 249, in main\n    result = compose(read_json(args.request), read_json(args.catalog))\n  File \"<项目目录>/scripts/meal_clear/core.py\", line 203, in compose\n    validate_catalog(catalog)\n  File \"<项目目录>/scripts/meal_clear/core.py\", line 132, in validate_catalog\n    oid = offer.get(\"id\")\nAttributeError: 'NoneType' object has no attribute 'get'\n",
+  "parsed": null,
+  "passed": false,
+  "failures": [
+    "输出不能解析为JSON对象"
+  ]
+}

@@ -1,0 +1,79 @@
+{
+  "cases": [
+    {
+      "id": "P01",
+      "mode": "simulated_transport",
+      "http_status": 401,
+      "recovery": false,
+      "expected_attempts": 1,
+      "observed": {
+        "error": "HTTP 401：认证或访问受限，停止重试",
+        "attempts": 1,
+        "retry_delays": []
+      },
+      "passed": true
+    },
+    {
+      "id": "P02",
+      "mode": "simulated_transport",
+      "http_status": 403,
+      "recovery": false,
+      "expected_attempts": 1,
+      "observed": {
+        "error": "HTTP 403：认证或访问受限，停止重试",
+        "attempts": 1,
+        "retry_delays": []
+      },
+      "passed": true
+    },
+    {
+      "id": "P03",
+      "mode": "simulated_transport",
+      "http_status": 503,
+      "recovery": false,
+      "expected_attempts": 3,
+      "observed": {
+        "error": "HTTP 503：只读请求失败",
+        "attempts": 3,
+        "retry_delays": [
+          0.5,
+          1.0
+        ]
+      },
+      "passed": true
+    },
+    {
+      "id": "P04",
+      "mode": "simulated_transport",
+      "http_status": 503,
+      "recovery": true,
+      "expected_attempts": 2,
+      "observed": {
+        "result": {
+          "ok": true
+        },
+        "error": null,
+        "attempts": 2,
+        "retry_delays": [
+          0.5
+        ]
+      },
+      "passed": true
+    },
+    {
+      "id": "P05",
+      "mode": "simulated_transport",
+      "blocked_tools": [
+        "create-order",
+        "auto-bind-coupons",
+        "cancel-order",
+        "pay-order",
+        "redeem-points"
+      ],
+      "network_attempts": 0,
+      "passed": true
+    }
+  ],
+  "passed": 5,
+  "failed": 0
+}

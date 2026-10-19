@@ -1,0 +1,19 @@
+{
+  "id": "O23",
+  "title": "损坏事实集合为数组，应受控拒绝",
+  "command": "python3 scripts/meal_clear.py plan --request verification/2026-10-19-acceptance/inputs/O23-request.json --catalog verification/2026-10-19-acceptance/inputs/O23-catalog.json --json",
+  "returncode": 1,
+  "elapsed_ms": 41,
+  "expected": {
+    "exit": 1,
+    "status": "error"
+  },
+  "stdout": "{\"status\": \"error\", \"message\": \"属性证据集合必须为对象\"}\n",
+  "stderr": "",
+  "parsed": {
+    "status": "error",
+    "message": "属性证据集合必须为对象"
+  },
+  "passed": true,
+  "failures": []
+}

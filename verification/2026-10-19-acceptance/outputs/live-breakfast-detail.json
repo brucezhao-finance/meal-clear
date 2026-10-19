@@ -1,0 +1,155 @@
+{
+  "name": "芝芝火腿扒堡组合",
+  "rounds": [
+    {
+      "id": 1,
+      "name": "芝芝火腿扒堡",
+      "minQuantity": 1,
+      "quantity": 1,
+      "maxQuantity": 1,
+      "choices": [
+        {
+          "name": "芝芝火腿扒堡",
+          "isDefault": 1
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "选择早餐组合饮料",
+      "minQuantity": 1,
+      "quantity": 1,
+      "maxQuantity": 1,
+      "choices": [
+        {
+          "name": "小杯鲜萃咖啡",
+          "isDefault": 1
+        },
+        {
+          "name": "鲜萃冰咖",
+          "isDefault": 0
+        },
+        {
+          "name": "优品豆浆小杯",
+          "isDefault": 0
+        },
+        {
+          "name": "冰浓浓黑巧中杯",
+          "isDefault": 0
+        },
+        {
+          "name": "麦咖啡™冰美式中杯",
+          "isDefault": 0
+        },
+        {
+          "name": "麦咖啡™冰奶铁中杯",
+          "isDefault": 0
+        },
+        {
+          "name": "热浓浓黑巧中杯",
+          "isDefault": 0
+        },
+        {
+          "name": "热浓浓燕麦黑巧中杯",
+          "isDefault": 0
+        },
+        {
+          "name": "冰浓浓燕麦黑巧中杯",
+          "isDefault": 0
+        },
+        {
+          "name": "麦咖啡™热美式中杯",
+          "isDefault": 0
+        },
+        {
+          "name": "麦咖啡™热奶铁中杯",
+          "isDefault": 0
+        },
+        {
+          "name": "阳光柠檬红茶大杯",
+          "isDefault": 0
+        },
+        {
+          "name": "【美汁源】“多汁柠柠”",
+          "isDefault": 0
+        },
+        {
+          "name": "【美汁源】“黄金橙橙”",
+          "isDefault": 0
+        },
+        {
+          "name": "100%苹果汁",
+          "isDefault": 0
+        },
+        {
+          "name": "优品豆浆大杯",
+          "isDefault": 0
+        },
+        {
+          "name": "纯牛奶",
+          "isDefault": 0
+        },
+        {
+          "name": "锡兰红茶",
+          "isDefault": 0
+        },
+        {
+          "name": "阳光柠檬红茶中杯",
+          "isDefault": 0
+        },
+        {
+          "name": "冰燕麦奶铁中杯",
+          "isDefault": 0
+        },
+        {
+          "name": "热燕麦奶铁中杯",
+          "isDefault": 0
+        },
+        {
+          "name": "大杯鲜萃咖啡",
+          "isDefault": 0
+        },
+        {
+          "name": "大杯怡泉+C",
+          "isDefault": 0
+        },
+        {
+          "name": "可乐大杯",
+          "isDefault": 0
+        },
+        {
+          "name": "无糖可口可乐大杯",
+          "isDefault": 0
+        },
+        {
+          "name": "雪碧大杯",
+          "isDefault": 0
+        },
+        {
+          "name": "中杯怡泉+C",
+          "isDefault": 0
+        },
+        {
+          "name": "可乐中杯",
+          "isDefault": 0
+        },
+        {
+          "name": "无糖可口可乐中杯",
+          "isDefault": 0
+        },
+        {
+          "name": "雪碧中杯",
+          "isDefault": 0
+        },
+        {
+          "name": "卡布奇诺中杯",
+          "isDefault": 0
+        },
+        {
+          "name": "热牛奶中杯",
+          "isDefault": 0
+        }
+      ]
+    }
+  ]
+}

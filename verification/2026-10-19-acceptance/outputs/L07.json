@@ -1,0 +1,297 @@
+{
+  "id": "L07",
+  "title": "不设饮料硬要求，默认饮品真实核价",
+  "finished_at": "2026-10-19T02:01:36.221922+00:00",
+  "command": "python3 scripts/meal_clear.py live-plan --request verification/2026-10-19-acceptance/inputs/live-default.json --save local-state/acceptance-20261019/live-default.json --json --token-file <本机凭证文件>",
+  "elapsed_ms": 7098,
+  "returncode": 0,
+  "output": {
+    "request": {
+      "context": {
+        "store_code": "1450002",
+        "channel": "pickup",
+        "meal_time": "now"
+      },
+      "budget_cents": 10000,
+      "people": [
+        {
+          "id": "A",
+          "hard": {},
+          "prefer": {}
+        }
+      ]
+    },
+    "request_id": "11c80fd5f4ab48ea",
+    "mode": "live",
+    "as_of": "2026-10-19T02:01:34.315911+00:00",
+    "status": "ready",
+    "plans": [
+      {
+        "signature": "035cc41e16101c17dee4324c7b3ccf173d34fa7d7f0815a9e846ec651c8233da",
+        "assignments": [
+          {
+            "person_id": "A",
+            "offer_id": "9900016334-7b36a4ad-coupon",
+            "name": "火腿扒堡早餐两件套（默认选项）",
+            "items": [
+              {
+                "code": "521999",
+                "name": "火腿扒堡",
+                "quantity": 1,
+                "role": "main"
+              },
+              {
+                "code": "521327",
+                "name": "鲜萃冰咖",
+                "quantity": 1,
+                "role": "drink"
+              }
+            ],
+            "checks": []
+          }
+        ],
+        "preference_matches": 0,
+        "total_cents": 990,
+        "price_status": "official_verified",
+        "pricing_source": "官方calculate-price",
+        "new_card_cents": 0,
+        "steps": {
+          "order_count": 1,
+          "new_card_count": 0
+        },
+        "within_budget": true,
+        "quoted_at": "2026-10-19T02:01:34.830845+00:00",
+        "fee_breakdown": {
+          "productPrice": 990,
+          "deliveryPrice": null,
+          "packingPrice": null,
+          "tablewarePrice": null
+        }
+      },
+      {
+        "signature": "89b09ef6f96439982838f4529e944b898a9ed777cc4f206b81c4a9ae067956c9",
+        "assignments": [
+          {
+            "person_id": "A",
+            "offer_id": "9900011872-af6229b5",
+            "name": "芝芝火腿扒堡组合（默认选项）",
+            "items": [
+              {
+                "code": "521315",
+                "name": "芝芝火腿扒堡",
+                "quantity": 1,
+                "role": "main"
+              },
+              {
+                "code": "520689",
+                "name": "小杯鲜萃咖啡",
+                "quantity": 1,
+                "role": "drink"
+              }
+            ],
+            "checks": []
+          }
+        ],
+        "preference_matches": 0,
+        "total_cents": 990,
+        "price_status": "official_verified",
+        "pricing_source": "官方calculate-price",
+        "new_card_cents": 0,
+        "steps": {
+          "order_count": 1,
+          "new_card_count": 0
+        },
+        "within_budget": true,
+        "quoted_at": "2026-10-19T02:01:36.210202+00:00",
+        "fee_breakdown": {
+          "productPrice": 990,
+          "deliveryPrice": null,
+          "packingPrice": null,
+          "tablewarePrice": null
+        }
+      },
+      {
+        "signature": "0e7f94870879e9e0fb6a76f2af5d3f52e2b4a370340ded1ef76492deb4f436c8",
+        "assignments": [
+          {
+            "person_id": "A",
+            "offer_id": "9900011872-ac86397a",
+            "name": "芝芝火腿扒堡组合（无糖饮料选项）",
+            "items": [
+              {
+                "code": "521315",
+                "name": "芝芝火腿扒堡",
+                "quantity": 1,
+                "role": "main"
+              },
+              {
+                "code": "3111",
+                "name": "无糖可口可乐大杯",
+                "quantity": 1,
+                "role": "drink"
+              }
+            ],
+            "checks": []
+          }
+        ],
+        "preference_matches": 0,
+        "total_cents": 1240,
+        "price_status": "official_verified",
+        "pricing_source": "官方calculate-price",
+        "new_card_cents": 0,
+        "steps": {
+          "order_count": 1,
+          "new_card_count": 0
+        },
+        "within_budget": true,
+        "quoted_at": "2026-10-19T02:01:35.404275+00:00",
+        "fee_breakdown": {
+          "productPrice": 1240,
+          "deliveryPrice": null,
+          "packingPrice": null,
+          "tablewarePrice": null
+        }
+      }
+    ],
+    "diagnostics": [],
+    "search": {
+      "catalog_offers": 3,
+      "max_offers_per_person": 30,
+      "max_combinations": 900,
+      "checked_combinations": 3
+    },
+    "recommendations": [
+      {
+        "signature": "035cc41e16101c17dee4324c7b3ccf173d34fa7d7f0815a9e846ec651c8233da",
+        "assignments": [
+          {
+            "person_id": "A",
+            "offer_id": "9900016334-7b36a4ad-coupon",
+            "name": "火腿扒堡早餐两件套（默认选项）",
+            "items": [
+              {
+                "code": "521999",
+                "name": "火腿扒堡",
+                "quantity": 1,
+                "role": "main"
+              },
+              {
+                "code": "521327",
+                "name": "鲜萃冰咖",
+                "quantity": 1,
+                "role": "drink"
+              }
+            ],
+            "checks": []
+          }
+        ],
+        "preference_matches": 0,
+        "total_cents": 990,
+        "price_status": "official_verified",
+        "pricing_source": "官方calculate-price",
+        "new_card_cents": 0,
+        "steps": {
+          "order_count": 1,
+          "new_card_count": 0
+        },
+        "within_budget": true,
+        "quoted_at": "2026-10-19T02:01:34.830845+00:00",
+        "fee_breakdown": {
+          "productPrice": 990,
+          "deliveryPrice": null,
+          "packingPrice": null,
+          "tablewarePrice": null
+        }
+      },
+      {
+        "signature": "89b09ef6f96439982838f4529e944b898a9ed777cc4f206b81c4a9ae067956c9",
+        "assignments": [
+          {
+            "person_id": "A",
+            "offer_id": "9900011872-af6229b5",
+            "name": "芝芝火腿扒堡组合（默认选项）",
+            "items": [
+              {
+                "code": "521315",
+                "name": "芝芝火腿扒堡",
+                "quantity": 1,
+                "role": "main"
+              },
+              {
+                "code": "520689",
+                "name": "小杯鲜萃咖啡",
+                "quantity": 1,
+                "role": "drink"
+              }
+            ],
+            "checks": []
+          }
+        ],
+        "preference_matches": 0,
+        "total_cents": 990,
+        "price_status": "official_verified",
+        "pricing_source": "官方calculate-price",
+        "new_card_cents": 0,
+        "steps": {
+          "order_count": 1,
+          "new_card_count": 0
+        },
+        "within_budget": true,
+        "quoted_at": "2026-10-19T02:01:36.210202+00:00",
+        "fee_breakdown": {
+          "productPrice": 990,
+          "deliveryPrice": null,
+          "packingPrice": null,
+          "tablewarePrice": null
+        }
+      }
+    ],
+    "coverage": {
+      "menu_entries": 90,
+      "detail_queries": 2,
+      "skipped_errors": 0,
+      "coupon_count": 1,
+      "note": "有界单人套餐搜索，未穷尽全菜单；辣度等缺失仍未知"
+    },
+    "quote_attempts": 3,
+    "verified_quotes": 3,
+    "quote_errors": [],
+    "read_only_audit": [
+      {
+        "tool": "query-meals",
+        "success": true,
+        "elapsed_ms": 832
+      },
+      {
+        "tool": "query-store-coupons",
+        "success": true,
+        "elapsed_ms": 1303
+      },
+      {
+        "tool": "query-meal-detail",
+        "success": true,
+        "elapsed_ms": 588
+      },
+      {
+        "tool": "query-meal-detail",
+        "success": true,
+        "elapsed_ms": 423
+      },
+      {
+        "tool": "calculate-price",
+        "success": true,
+        "elapsed_ms": 514
+      },
+      {
+        "tool": "calculate-price",
+        "success": true,
+        "elapsed_ms": 573
+      },
+      {
+        "tool": "calculate-price",
+        "success": true,
+        "elapsed_ms": 806
+      }
+    ]
+  }
+}

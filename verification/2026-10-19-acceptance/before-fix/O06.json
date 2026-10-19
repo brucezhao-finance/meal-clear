@@ -1,0 +1,94 @@
+{
+  "id": "O06",
+  "title": "只有辣度未知低价餐，不能冒充满足不辣",
+  "command": "python3 scripts/meal_clear.py plan --request verification/2026-10-19-acceptance/inputs/O06-request.json --catalog verification/2026-10-19-acceptance/inputs/O06-catalog.json --json",
+  "returncode": 2,
+  "elapsed_ms": 40,
+  "expected": {
+    "exit": 2,
+    "status": "no_verified_plan",
+    "no_recommendation": true
+  },
+  "stdout": "{\n  \"request\": {\n    \"context\": {\n      \"store_code\": \"ACCEPTANCE-DEMO\",\n      \"channel\": \"pickup\",\n      \"meal_time\": \"synthetic\"\n    },\n    \"budget_cents\": 6000,\n    \"people\": [\n      {\n        \"id\": \"A\",\n        \"hard\": {\n          \"non_spicy\": true,\n          \"sugar_free_drink\": true\n        },\n        \"prefer\": {\n          \"main_meat\": \"chicken\"\n        }\n      },\n      {\n        \"id\": \"B\",\n        \"hard\": {\n          \"non_spicy\": true,\n          \"sugar_free_drink\": true\n        },\n        \"prefer\": {\n          \"main_meat\": \"chicken\"\n        }\n      }\n    ]\n  },\n  \"request_id\": \"4d476de9a48361ea\",\n  \"mode\": \"simulation\",\n  \"as_of\": \"2026-10-19（验收自建模拟，非真实采集）\",\n  \"status\": \"no_verified_plan\",\n  \"plans\": [],\n  \"diagnostics\": [\n    {\n      \"person_id\": \"A\",\n      \"reason\": \"没有证据完整且满足硬要求的组合\",\n      \"examples\": [\n        {\n          \"offer_id\": \"unknown\",\n          \"checks\": [\n            {\n              \"attribute\": \"non_spicy\",\n              \"expected\": true,\n              \"status\": \"unknown\",\n              \"source\": null\n            }\n          ]\n        }\n      ]\n    },\n    {\n      \"person_id\": \"B\",\n      \"reason\": \"没有证据完整且满足硬要求的组合\",\n      \"examples\": [\n        {\n          \"offer_id\": \"unknown\",\n          \"checks\": [\n            {\n              \"attribute\": \"non_spicy\",\n              \"expected\": true,\n              \"status\": \"unknown\",\n              \"source\": null\n            }\n          ]\n        }\n      ]\n    }\n  ],\n  \"search\": {\n    \"catalog_offers\": 1,\n    \"max_offers_per_person\": 30,\n    \"max_combinations\": 900\n  }\n}\n",
+  "stderr": "",
+  "parsed": {
+    "request": {
+      "context": {
+        "store_code": "ACCEPTANCE-DEMO",
+        "channel": "pickup",
+        "meal_time": "synthetic"
+      },
+      "budget_cents": 6000,
+      "people": [
+        {
+          "id": "A",
+          "hard": {
+            "non_spicy": true,
+            "sugar_free_drink": true
+          },
+          "prefer": {
+            "main_meat": "chicken"
+          }
+        },
+        {
+          "id": "B",
+          "hard": {
+            "non_spicy": true,
+            "sugar_free_drink": true
+          },
+          "prefer": {
+            "main_meat": "chicken"
+          }
+        }
+      ]
+    },
+    "request_id": "4d476de9a48361ea",
+    "mode": "simulation",
+    "as_of": "2026-10-19（验收自建模拟，非真实采集）",
+    "status": "no_verified_plan",
+    "plans": [],
+    "diagnostics": [
+      {
+        "person_id": "A",
+        "reason": "没有证据完整且满足硬要求的组合",
+        "examples": [
+          {
+            "offer_id": "unknown",
+            "checks": [
+              {
+                "attribute": "non_spicy",
+                "expected": true,
+                "status": "unknown",
+                "source": null
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "person_id": "B",
+        "reason": "没有证据完整且满足硬要求的组合",
+        "examples": [
+          {
+            "offer_id": "unknown",
+            "checks": [
+              {
+                "attribute": "non_spicy",
+                "expected": true,
+                "status": "unknown",
+                "source": null
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "search": {
+      "catalog_offers": 1,
+      "max_offers_per_person": 30,
+      "max_combinations": 900
+    }
+  },
+  "passed": true,
+  "failures": []
+}

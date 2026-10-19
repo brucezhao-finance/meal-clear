@@ -22,7 +22,7 @@ from meal_clear.core import (
     money_to_cents,
     validate_request,
 )
-from meal_clear.live import check_pricing, detail_offers, facts_for
+from meal_clear.live import LivePlanner, check_pricing, detail_offers, facts_for
 from meal_clear.mcp import McpClient, McpError, decode_response, unwrap_tool
 
 
@@ -44,6 +44,119 @@ class BehaviorTests(unittest.TestCase):
                 for p in result["plans"]
                 for a in p["assignments"]
             )
+        )
+
+    def test_malformed_catalog_containers_raise_input_error(self) -> None:
+        """损坏套餐、餐品或事实容器应产生受控错误，不能抛AttributeError。"""
+        variants = []
+        catalog = copy.deepcopy(self.catalog)
+        catalog["offers"] = [None]
+        variants.append(catalog)
+        for malformed_items in ([None], {"main": "not-a-list"}):
+            catalog = copy.deepcopy(self.catalog)
+            catalog["offers"][0]["items"] = malformed_items
+            variants.append(catalog)
+        for malformed_facts in ([], None):
+            catalog = copy.deepcopy(self.catalog)
+            catalog["offers"][0]["facts"] = malformed_facts
+            variants.append(catalog)
+        for catalog in variants:
+            with self.subTest(catalog=catalog), self.assertRaises(InputError):
+                compose(self.request, catalog)
+
+    def test_breakfast_combo_reaches_detail_without_member_card(self) -> None:
+        """普通早餐组合必须进入详情核验，附带会员条件的组合仍被排除。"""
+
+        class BreakfastClient:
+            """模拟当前菜单形状，不调用网络或提供真实价格。"""
+
+            def __init__(self) -> None:
+                """记录实际被查询的详情编码。"""
+                self.details = []
+
+            def list_tools(self) -> dict:
+                """提供适配器所需只读工具。"""
+                return {
+                    "tools": [
+                        {"name": name}
+                        for name in (
+                            "query-meals",
+                            "query-meal-detail",
+                            "query-store-coupons",
+                            "calculate-price",
+                        )
+                    ]
+                }
+
+            def call(self, name: str, arguments: dict) -> dict:
+                """返回结构化模拟菜单与主食、饮品轮次。"""
+                if name == "query-meals":
+                    return {
+                        "data": {
+                            "meals": {
+                                "COMBO": {
+                                    "name": "模拟鸡肉堡组合",
+                                    "canWithOrder": False,
+                                },
+                                "MEMBER": {
+                                    "name": "模拟鸡肉堡组合",
+                                    "canWithOrder": True,
+                                },
+                            }
+                        }
+                    }
+                if name == "query-store-coupons":
+                    return {"data": []}
+                self.details.append(arguments["code"])
+                return {
+                    "data": {
+                        "name": "模拟鸡肉堡组合",
+                        "rounds": [
+                            {
+                                "id": 1,
+                                "name": "主食",
+                                "minQuantity": 1,
+                                "quantity": 1,
+                                "choices": [
+                                    {
+                                        "code": "MAIN",
+                                        "name": "模拟鸡肉堡",
+                                        "isDefault": 1,
+                                    }
+                                ],
+                            },
+                            {
+                                "id": 2,
+                                "name": "选择早餐组合饮料",
+                                "minQuantity": 1,
+                                "quantity": 1,
+                                "choices": [
+                                    {
+                                        "code": "DRINK",
+                                        "name": "模拟咖啡",
+                                        "isDefault": 1,
+                                    },
+                                    {
+                                        "code": "ZERO",
+                                        "name": "模拟无糖饮料",
+                                        "isDefault": 0,
+                                    },
+                                ],
+                            },
+                        ],
+                    }
+                }
+
+        client = BreakfastClient()
+        request = {
+            "context": {"store_code": "123", "channel": "pickup", "meal_time": "now"},
+            "budget_cents": 10000,
+            "people": [{"id": "A", "hard": {"sugar_free_drink": True}}],
+        }
+        catalog = LivePlanner(client).catalog(request)
+        self.assertEqual(client.details, ["COMBO"])
+        self.assertEqual(
+            compose(request, catalog)["status"], "needs_price_verification"
         )
 
     def test_change_preserves_other_person_and_budget(self):

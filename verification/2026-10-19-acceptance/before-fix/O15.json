@@ -1,0 +1,19 @@
+{
+  "id": "O15",
+  "title": "重复用户id拒绝",
+  "command": "python3 scripts/meal_clear.py plan --request verification/2026-10-19-acceptance/inputs/O15-request.json --catalog verification/2026-10-19-acceptance/inputs/O15-catalog.json --json",
+  "returncode": 1,
+  "elapsed_ms": 40,
+  "expected": {
+    "exit": 1,
+    "status": "error"
+  },
+  "stdout": "{\"status\": \"error\", \"message\": \"每位用餐者需要不同的非空id\"}\n",
+  "stderr": "",
+  "parsed": {
+    "status": "error",
+    "message": "每位用餐者需要不同的非空id"
+  },
+  "passed": true,
+  "failures": []
+}

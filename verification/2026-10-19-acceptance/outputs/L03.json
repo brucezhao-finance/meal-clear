@@ -1,0 +1,177 @@
+{
+  "id": "L03",
+  "title": "单人100元预算、无糖饮品真实核价",
+  "finished_at": "2026-10-19T02:00:56.285771+00:00",
+  "command": "python3 scripts/meal_clear.py live-plan --request verification/2026-10-19-acceptance/inputs/live-single.json --save local-state/acceptance-20261019/live-single.json --json --token-file <本机凭证文件>",
+  "elapsed_ms": 4984,
+  "returncode": 0,
+  "output": {
+    "request": {
+      "context": {
+        "store_code": "1450002",
+        "channel": "pickup",
+        "meal_time": "now"
+      },
+      "budget_cents": 10000,
+      "people": [
+        {
+          "id": "A",
+          "hard": {
+            "sugar_free_drink": true
+          },
+          "prefer": {}
+        }
+      ]
+    },
+    "request_id": "4d8ab715f08b7d00",
+    "mode": "live",
+    "as_of": "2026-10-19T02:00:55.746258+00:00",
+    "status": "ready",
+    "plans": [
+      {
+        "signature": "0e7f94870879e9e0fb6a76f2af5d3f52e2b4a370340ded1ef76492deb4f436c8",
+        "assignments": [
+          {
+            "person_id": "A",
+            "offer_id": "9900011872-ac86397a",
+            "name": "芝芝火腿扒堡组合（无糖饮料选项）",
+            "items": [
+              {
+                "code": "521315",
+                "name": "芝芝火腿扒堡",
+                "quantity": 1,
+                "role": "main"
+              },
+              {
+                "code": "3111",
+                "name": "无糖可口可乐大杯",
+                "quantity": 1,
+                "role": "drink"
+              }
+            ],
+            "checks": [
+              {
+                "attribute": "sugar_free_drink",
+                "expected": true,
+                "status": "verified",
+                "source": "官方query-meal-detail／饮品官方名称明确标注无糖"
+              }
+            ]
+          }
+        ],
+        "preference_matches": 0,
+        "total_cents": 1240,
+        "price_status": "official_verified",
+        "pricing_source": "官方calculate-price",
+        "new_card_cents": 0,
+        "steps": {
+          "order_count": 1,
+          "new_card_count": 0
+        },
+        "within_budget": true,
+        "quoted_at": "2026-10-19T02:00:56.267431+00:00",
+        "fee_breakdown": {
+          "productPrice": 1240,
+          "deliveryPrice": null,
+          "packingPrice": null,
+          "tablewarePrice": null
+        }
+      }
+    ],
+    "diagnostics": [],
+    "search": {
+      "catalog_offers": 3,
+      "max_offers_per_person": 30,
+      "max_combinations": 900,
+      "checked_combinations": 1
+    },
+    "recommendations": [
+      {
+        "signature": "0e7f94870879e9e0fb6a76f2af5d3f52e2b4a370340ded1ef76492deb4f436c8",
+        "assignments": [
+          {
+            "person_id": "A",
+            "offer_id": "9900011872-ac86397a",
+            "name": "芝芝火腿扒堡组合（无糖饮料选项）",
+            "items": [
+              {
+                "code": "521315",
+                "name": "芝芝火腿扒堡",
+                "quantity": 1,
+                "role": "main"
+              },
+              {
+                "code": "3111",
+                "name": "无糖可口可乐大杯",
+                "quantity": 1,
+                "role": "drink"
+              }
+            ],
+            "checks": [
+              {
+                "attribute": "sugar_free_drink",
+                "expected": true,
+                "status": "verified",
+                "source": "官方query-meal-detail／饮品官方名称明确标注无糖"
+              }
+            ]
+          }
+        ],
+        "preference_matches": 0,
+        "total_cents": 1240,
+        "price_status": "official_verified",
+        "pricing_source": "官方calculate-price",
+        "new_card_cents": 0,
+        "steps": {
+          "order_count": 1,
+          "new_card_count": 0
+        },
+        "within_budget": true,
+        "quoted_at": "2026-10-19T02:00:56.267431+00:00",
+        "fee_breakdown": {
+          "productPrice": 1240,
+          "deliveryPrice": null,
+          "packingPrice": null,
+          "tablewarePrice": null
+        }
+      }
+    ],
+    "coverage": {
+      "menu_entries": 90,
+      "detail_queries": 2,
+      "skipped_errors": 0,
+      "coupon_count": 1,
+      "note": "有界单人套餐搜索，未穷尽全菜单；辣度等缺失仍未知"
+    },
+    "quote_attempts": 1,
+    "verified_quotes": 1,
+    "quote_errors": [],
+    "read_only_audit": [
+      {
+        "tool": "query-meals",
+        "success": true,
+        "elapsed_ms": 797
+      },
+      {
+        "tool": "query-store-coupons",
+        "success": true,
+        "elapsed_ms": 562
+      },
+      {
+        "tool": "query-meal-detail",
+        "success": true,
+        "elapsed_ms": 610
+      },
+      {
+        "tool": "query-meal-detail",
+        "success": true,
+        "elapsed_ms": 528
+      },
+      {
+        "tool": "calculate-price",
+        "success": true,
+        "elapsed_ms": 520
+      }
+    ]
+  }
+}
