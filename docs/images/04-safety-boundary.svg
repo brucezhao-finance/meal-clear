@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 640" width="1200" height="640" role="img" aria-labelledby="sf-t sf-d">
+<title id="sf-t">安全边界:会做与不会做</title>
+<desc id="sf-d">会做:逐人核对要求、比较预算内方案、算差价、不知道就明确说不知道。不会做:下单、领券、支付、买卡或积分兑换、取消订单。Token 不出现在对话或仓库。</desc>
+<style>text{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif} text:not([fill]){fill:#3A2A1A} .m{font-family:Menlo,Consolas,'PingFang SC','Microsoft YaHei',monospace}</style>
+<rect width="1200" height="640" fill="#FFF8E1"/>
+<rect x="0" y="0" width="1200" height="70" rx="0" fill="#DA291C"/>
+<g transform="translate(24,10) scale(0.6)"><rect width="96" height="80" rx="16" fill="#DA291C"/><path d="M14 62 C14 14 48 14 48 62 C48 14 82 14 82 62" fill="none" stroke="#FFC72C" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/></g>
+<text x="90" y="46" font-size="30" text-anchor="start" font-weight="bold" fill="#FFFFFF">它做什么 · 不做什么</text>
+<rect x="30" y="95" width="555" height="400" rx="14" fill="#FFFFFF" stroke="#2E7D32" stroke-width="4"/>
+<rect x="30" y="95" width="555" height="56" rx="14" fill="#2E7D32"/>
+<rect x="30" y="135" width="555" height="16" rx="0" fill="#2E7D32"/>
+<text x="307" y="134" font-size="28" text-anchor="middle" font-weight="bold" fill="#FFFFFF">会做(只读)</text>
+<text x="60" y="205" font-size="28" text-anchor="start" font-weight="bold" fill="#2E7D32">✓</text>
+<text x="100" y="205" font-size="23" text-anchor="start" font-weight="normal">逐人核对:不辣、无糖、主食肉类</text>
+<text x="60" y="263" font-size="28" text-anchor="start" font-weight="bold" fill="#2E7D32">✓</text>
+<text x="100" y="263" font-size="23" text-anchor="start" font-weight="normal">在预算内比较已检查的候选</text>
+<text x="60" y="321" font-size="28" text-anchor="start" font-weight="bold" fill="#2E7D32">✓</text>
+<text x="100" y="321" font-size="23" text-anchor="start" font-weight="normal">改一句,只重算受影响部分</text>
+<text x="60" y="379" font-size="28" text-anchor="start" font-weight="bold" fill="#2E7D32">✓</text>
+<text x="100" y="379" font-size="23" text-anchor="start" font-weight="normal">算出差价,说明哪里变了</text>
+<text x="60" y="437" font-size="28" text-anchor="start" font-weight="bold" fill="#2E7D32">✓</text>
+<text x="100" y="437" font-size="23" text-anchor="start" font-weight="normal">不知道,就明确说不知道</text>
+<rect x="615" y="95" width="555" height="400" rx="14" fill="#FFFFFF" stroke="#DA291C" stroke-width="4"/>
+<rect x="615" y="95" width="555" height="56" rx="14" fill="#DA291C"/>
+<rect x="615" y="135" width="555" height="16" rx="0" fill="#DA291C"/>
+<text x="892" y="134" font-size="28" text-anchor="middle" font-weight="bold" fill="#FFFFFF">不会做</text>
+<text x="645" y="205" font-size="28" text-anchor="start" font-weight="bold" fill="#DA291C">✕</text>
+<text x="685" y="205" font-size="23" text-anchor="start" font-weight="normal">下单</text>
+<text x="645" y="263" font-size="28" text-anchor="start" font-weight="bold" fill="#DA291C">✕</text>
+<text x="685" y="263" font-size="23" text-anchor="start" font-weight="normal">领券</text>
+<text x="645" y="321" font-size="28" text-anchor="start" font-weight="bold" fill="#DA291C">✕</text>
+<text x="685" y="321" font-size="23" text-anchor="start" font-weight="normal">支付</text>
+<text x="645" y="379" font-size="28" text-anchor="start" font-weight="bold" fill="#DA291C">✕</text>
+<text x="685" y="379" font-size="23" text-anchor="start" font-weight="normal">买卡 / 积分兑换</text>
+<text x="645" y="437" font-size="28" text-anchor="start" font-weight="bold" fill="#DA291C">✕</text>
+<text x="685" y="437" font-size="23" text-anchor="start" font-weight="normal">取消订单</text>
+<rect x="30" y="515" width="1140" height="95" rx="14" fill="#FFC72C"/>
+<text x="600" y="552" font-size="24" text-anchor="middle" font-weight="bold">Token 不出现在对话、页面或仓库 · 菜单没写辣度 ≠ 不辣</text>
+<text x="600" y="588" font-size="19" text-anchor="middle" font-weight="normal">真实价格以官方当次核价为准 · 示例为模拟数据 · 非麦当劳官方产品</text>
+</svg>

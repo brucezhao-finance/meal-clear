@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" width="1200" height="720" role="img" aria-labelledby="tm-t tm-d">
+<title id="tm-t">对话与程序输出示意</title>
+<desc id="tm-d">左侧为对话示意,右侧为 python3 scripts/meal_clear.py demo 的真实输出节选,38.00 元改后 43.00 元,delta_cents 500。数据均为模拟数据。</desc>
+<style>text{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif} text:not([fill]){fill:#3A2A1A} .m{font-family:Menlo,Consolas,'PingFang SC','Microsoft YaHei',monospace}</style>
+<rect width="1200" height="720" fill="#FFF8E1"/>
+<rect x="0" y="0" width="1200" height="70" rx="0" fill="#DA291C"/>
+<g transform="translate(24,10) scale(0.6)"><rect width="96" height="80" rx="16" fill="#DA291C"/><path d="M14 62 C14 14 48 14 48 62 C48 14 82 14 82 62" fill="none" stroke="#FFC72C" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/></g>
+<text x="90" y="46" font-size="28" text-anchor="start" font-weight="bold" fill="#FFFFFF">麦麦明白点 · 对话与程序输出</text>
+<rect x="1050" y="18" width="112" height="34" rx="17" fill="#FFC72C"/>
+<text x="1106" y="42" font-size="18" text-anchor="middle" font-weight="bold">模拟数据</text>
+<rect x="20" y="100" width="500" height="94" rx="16" fill="#FFC72C"/>
+<text x="36" y="122" font-size="15" text-anchor="start" font-weight="bold" fill="#DA291C">你</text>
+<text x="36" y="154" font-size="22" text-anchor="start" font-weight="normal">两个人,预算 50 元,都要不辣、无糖饮料,</text>
+<text x="36" y="184" font-size="22" text-anchor="start" font-weight="normal">优先鸡肉。</text>
+<rect x="20" y="216" width="500" height="124" rx="16" fill="#FFFFFF" stroke="#FFC72C" stroke-width="3"/>
+<text x="36" y="238" font-size="15" text-anchor="start" font-weight="bold" fill="#DA291C">Agent</text>
+<text x="36" y="270" font-size="22" text-anchor="start" font-weight="normal">A:模拟鸡肉组合 ¥19</text>
+<text x="36" y="300" font-size="22" text-anchor="start" font-weight="normal">B:模拟鸡肉组合 ¥19</text>
+<text x="36" y="330" font-size="22" text-anchor="start" font-weight="normal">合计 ¥38.00,要求已核实</text>
+<rect x="20" y="362" width="500" height="64" rx="16" fill="#FFC72C"/>
+<text x="36" y="384" font-size="15" text-anchor="start" font-weight="bold" fill="#DA291C">你</text>
+<text x="36" y="416" font-size="22" text-anchor="start" font-weight="normal">B 想吃牛肉,其他不变。</text>
+<rect x="20" y="448" width="500" height="94" rx="16" fill="#FFFFFF" stroke="#FFC72C" stroke-width="3"/>
+<text x="36" y="470" font-size="15" text-anchor="start" font-weight="bold" fill="#DA291C">Agent</text>
+<text x="36" y="502" font-size="22" text-anchor="start" font-weight="normal">只改 B:模拟牛肉组合 ¥24</text>
+<text x="36" y="532" font-size="22" text-anchor="start" font-weight="normal">合计 ¥43.00,增加 ¥5,仍在预算内</text>
+<text x="20" y="584" font-size="16" text-anchor="start" font-weight="normal">左侧对话为示意;右侧为真实 demo 输出节选。</text>
+<rect x="550" y="90" width="630" height="600" rx="14" fill="#2B2118"/>
+<circle cx="576" cy="114" r="8" fill="#DA291C"/>
+<circle cx="602" cy="114" r="8" fill="#FFC72C"/>
+<circle cx="628" cy="114" r="8" fill="#FFF8E1"/>
+<text class="m" x="574" y="160" font-size="19" fill="#FFC72C" xml:space="preserve">$ python3 scripts/meal_clear.py demo</text>
+<text class="m" x="574" y="198" font-size="19" fill="#FFFFFF" xml:space="preserve">模拟演示，不是真实菜单/价格</text>
+<text class="m" x="574" y="236" font-size="19" fill="#FFFFFF" xml:space="preserve">本次报价（未下单）：¥38.00</text>
+<text class="m" x="574" y="274" font-size="19" fill="#FFFFFF" xml:space="preserve">- A：模拟非辣鸡肉堡×1＋模拟无糖饮料×1</text>
+<text class="m" x="574" y="312" font-size="19" fill="#FFFFFF" xml:space="preserve">  - 不辣=True：已核实</text>
+<text class="m" x="574" y="350" font-size="19" fill="#FFFFFF" xml:space="preserve">- B：模拟非辣鸡肉堡×1＋模拟无糖饮料×1</text>
+<text class="m" x="574" y="388" font-size="19" fill="#FFFFFF" xml:space="preserve">范围：仅比较已检查的候选；未领券、买卡或下单。</text>
+<text class="m" x="574" y="426" font-size="19" fill="#FFC72C" xml:space="preserve">--- 改一句：B想吃牛肉，其他要求不变 ---</text>
+<text class="m" x="574" y="464" font-size="19" fill="#FF8A80" xml:space="preserve">本次报价（未下单）：¥43.00</text>
+<text class="m" x="574" y="502" font-size="19" fill="#FF8A80" xml:space="preserve">- B：模拟非辣牛肉堡×1＋模拟无糖饮料×1</text>
+<text class="m" x="574" y="540" font-size="19" fill="#FFFFFF" xml:space="preserve">  - 主食肉类=beef：已核实</text>
+<text class="m" x="574" y="578" font-size="19" fill="#FF8A80" xml:space="preserve">… "delta_cents": 500, "new_status": "simulation",</text>
+<text class="m" x="574" y="616" font-size="19" fill="#FF8A80" xml:space="preserve">"old_quote_reused": false}</text>
+<text class="m" x="574" y="660" font-size="15" fill="#FFC72C">（节选,省略部分行;数据为模拟数据）</text>
+</svg>

@@ -1,8 +1,8 @@
 {
   "package": "meal-clear.skill",
-  "file_count": 36,
-  "bytes": 163328,
-  "sha256": "44f427b9b0a19b3c4896c82da20f3be6042900d0a5764dd920f64d7086d46134",
+  "file_count": 39,
+  "bytes": 81692,
+  "sha256": "bc86592417ada45d112263c6d937606f2aebd975a99c1169bb3574450e7a6afd",
   "secret_scan": "passed",
   "excluded": [
     "verification",
@@ -12,6 +12,6 @@
     "缓存",
     "工作区私有目录(.agents)"
   ],
-  "offline_behavior_tests": 87,
+  "offline_behavior_tests": 88,
   "note": "bytes 与 sha256 针对 .skill 文件本身；验证记录见源码仓库 verification/，不随包发布。"
 }
