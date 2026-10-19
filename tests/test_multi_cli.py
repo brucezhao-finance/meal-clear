@@ -98,12 +98,6 @@ class MultiCliTests(unittest.TestCase):
             self.assertEqual(code, 2)
             self.assertIn("没有可确认的预算内方案", text)
 
-    def test_live_plan_v2_not_yet_available(self):
-        """v2 live-plan 本特性未实现，明确报错且不联网。"""
-        code, text = run("live-plan", "--request", REQ3)
-        self.assertEqual(code, 1)
-        self.assertIn("后续特性", text)
-
 
 if __name__ == "__main__":
     unittest.main()

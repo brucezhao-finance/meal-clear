@@ -104,7 +104,7 @@ def _detail(name: str) -> Dict[str, Any]:
         "name": name,
         "rounds": [
             {"id": 1, "name": "主食", "quantity": 1, "minQuantity": 1, "maxQuantity": 1,
-             "choices": [{"code": "MAIN", "name": "模拟主食", "isDefault": 1}]},
+             "choices": [{"code": "MAIN", "name": name.replace("套餐", ""), "isDefault": 1}]},
             {"id": 2, "name": "饮料", "quantity": 1, "minQuantity": 1, "maxQuantity": 1,
              "choices": [{"code": "DRINK", "name": "模拟含糖可乐", "isDefault": 1},
                          {"code": "ZERO", "name": "模拟无糖可乐", "isDefault": 0}]},
