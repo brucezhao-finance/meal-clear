@@ -1,0 +1,444 @@
+{
+  "id": "SH-4",
+  "task": "加入不辣要求检查未知不得通过",
+  "finished_at": "2026-10-19T02:30:55.381296+00:00",
+  "elapsed_ms": 7327,
+  "passed": true,
+  "output": {
+    "result": {
+      "request": {
+        "context": {
+          "store_code": "1450002",
+          "channel": "pickup",
+          "meal_time": "now"
+        },
+        "budget_cents": 15000,
+        "people": [
+          {
+            "id": "A",
+            "hard": {
+              "sugar_free_drink": true,
+              "non_spicy": true
+            },
+            "prefer": {}
+          }
+        ]
+      },
+      "request_id": "dd8534707800d26f",
+      "mode": "live",
+      "as_of": "2026-10-19T02:30:55.380328+00:00",
+      "status": "no_verified_plan",
+      "plans": [],
+      "diagnostics": [
+        {
+          "person_id": "A",
+          "reason": "没有证据完整且满足硬要求的组合",
+          "examples": [
+            {
+              "offer_id": "9900015602-db7aaf0c",
+              "checks": [
+                {
+                  "attribute": "sugar_free_drink",
+                  "expected": true,
+                  "status": "unknown",
+                  "source": null
+                },
+                {
+                  "attribute": "non_spicy",
+                  "expected": true,
+                  "status": "unknown",
+                  "source": null
+                }
+              ]
+            },
+            {
+              "offer_id": "9900015602-edf93d28",
+              "checks": [
+                {
+                  "attribute": "non_spicy",
+                  "expected": true,
+                  "status": "unknown",
+                  "source": null
+                }
+              ]
+            },
+            {
+              "offer_id": "9900005449-ac20c5fa",
+              "checks": [
+                {
+                  "attribute": "sugar_free_drink",
+                  "expected": true,
+                  "status": "unknown",
+                  "source": null
+                },
+                {
+                  "attribute": "non_spicy",
+                  "expected": true,
+                  "status": "unknown",
+                  "source": null
+                }
+              ]
+            },
+            {
+              "offer_id": "9900005449-bdfa3866",
+              "checks": [
+                {
+                  "attribute": "non_spicy",
+                  "expected": true,
+                  "status": "unknown",
+                  "source": null
+                }
+              ]
+            },
+            {
+              "offer_id": "9900015850-f5e7773f",
+              "checks": [
+                {
+                  "attribute": "sugar_free_drink",
+                  "expected": true,
+                  "status": "unknown",
+                  "source": null
+                },
+                {
+                  "attribute": "non_spicy",
+                  "expected": true,
+                  "status": "unknown",
+                  "source": null
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "search": {
+        "catalog_offers": 11,
+        "max_offers_per_person": 30,
+        "max_combinations": 900
+      },
+      "coverage": {
+        "menu_entries": 115,
+        "detail_queries": 8,
+        "skipped_errors": 0,
+        "coupon_count": 2,
+        "note": "有界单人套餐搜索，未穷尽全菜单；辣度等缺失仍未知"
+      },
+      "quote_attempts": 0,
+      "verified_quotes": 0,
+      "quote_errors": [],
+      "read_only_audit": [
+        {
+          "tool": "now-time-info",
+          "success": true,
+          "elapsed_ms": 410
+        },
+        {
+          "tool": "campaign-calendar",
+          "success": true,
+          "elapsed_ms": 790
+        },
+        {
+          "tool": "query-nearby-stores",
+          "success": true,
+          "elapsed_ms": 1698
+        },
+        {
+          "tool": "query-meals",
+          "success": true,
+          "elapsed_ms": 1787
+        },
+        {
+          "tool": "query-store-coupons",
+          "success": true,
+          "elapsed_ms": 784
+        },
+        {
+          "tool": "query-meal-detail",
+          "success": true,
+          "elapsed_ms": 678
+        },
+        {
+          "tool": "query-meal-detail",
+          "success": true,
+          "elapsed_ms": 620
+        },
+        {
+          "tool": "query-meal-detail",
+          "success": true,
+          "elapsed_ms": 623
+        },
+        {
+          "tool": "query-meal-detail",
+          "success": true,
+          "elapsed_ms": 673
+        },
+        {
+          "tool": "query-meal-detail",
+          "success": true,
+          "elapsed_ms": 746
+        },
+        {
+          "tool": "query-meal-detail",
+          "success": true,
+          "elapsed_ms": 748
+        },
+        {
+          "tool": "query-meal-detail",
+          "success": true,
+          "elapsed_ms": 575
+        },
+        {
+          "tool": "query-meal-detail",
+          "success": true,
+          "elapsed_ms": 529
+        },
+        {
+          "tool": "calculate-price",
+          "success": true,
+          "elapsed_ms": 643
+        },
+        {
+          "tool": "calculate-price",
+          "success": true,
+          "elapsed_ms": 559
+        },
+        {
+          "tool": "calculate-price",
+          "success": true,
+          "elapsed_ms": 754
+        },
+        {
+          "tool": "query-meals",
+          "success": true,
+          "elapsed_ms": 1023
+        },
+        {
+          "tool": "query-store-coupons",
+          "success": true,
+          "elapsed_ms": 488
+        },
+        {
+          "tool": "query-meal-detail",
+          "success": true,
+          "elapsed_ms": 841
+        },
+        {
+          "tool": "query-meal-detail",
+          "success": true,
+          "elapsed_ms": 599
+        },
+        {
+          "tool": "query-meal-detail",
+          "success": true,
+          "elapsed_ms": 830
+        },
+        {
+          "tool": "query-meal-detail",
+          "success": true,
+          "elapsed_ms": 1776
+        },
+        {
+          "tool": "query-meal-detail",
+          "success": true,
+          "elapsed_ms": 529
+        },
+        {
+          "tool": "query-meal-detail",
+          "success": true,
+          "elapsed_ms": 691
+        },
+        {
+          "tool": "query-meal-detail",
+          "success": true,
+          "elapsed_ms": 589
+        },
+        {
+          "tool": "query-meal-detail",
+          "success": true,
+          "elapsed_ms": 698
+        },
+        {
+          "tool": "calculate-price",
+          "success": true,
+          "elapsed_ms": 612
+        },
+        {
+          "tool": "calculate-price",
+          "success": true,
+          "elapsed_ms": 669
+        },
+        {
+          "tool": "calculate-price",
+          "success": true,
+          "elapsed_ms": 982
+        },
+        {
+          "tool": "query-meals",
+          "success": true,
+          "elapsed_ms": 867
+        },
+        {
+          "tool": "query-store-coupons",
+          "success": true,
+          "elapsed_ms": 748
+        },
+        {
+          "tool": "query-meal-detail",
+          "success": true,
+          "elapsed_ms": 812
+        },
+        {
+          "tool": "query-meal-detail",
+          "success": true,
+          "elapsed_ms": 1189
+        },
+        {
+          "tool": "query-meal-detail",
+          "success": true,
+          "elapsed_ms": 711
+        },
+        {
+          "tool": "query-meal-detail",
+          "success": true,
+          "elapsed_ms": 721
+        },
+        {
+          "tool": "query-meal-detail",
+          "success": true,
+          "elapsed_ms": 704
+        },
+        {
+          "tool": "query-meal-detail",
+          "success": true,
+          "elapsed_ms": 772
+        },
+        {
+          "tool": "query-meal-detail",
+          "success": true,
+          "elapsed_ms": 557
+        },
+        {
+          "tool": "query-meal-detail",
+          "success": true,
+          "elapsed_ms": 592
+        },
+        {
+          "tool": "calculate-price",
+          "success": true,
+          "elapsed_ms": 2038
+        },
+        {
+          "tool": "calculate-price",
+          "success": true,
+          "elapsed_ms": 714
+        },
+        {
+          "tool": "calculate-price",
+          "success": true,
+          "elapsed_ms": 1148
+        },
+        {
+          "tool": "query-meals",
+          "success": true,
+          "elapsed_ms": 909
+        },
+        {
+          "tool": "query-store-coupons",
+          "success": true,
+          "elapsed_ms": 552
+        },
+        {
+          "tool": "query-meal-detail",
+          "success": true,
+          "elapsed_ms": 869
+        },
+        {
+          "tool": "query-meal-detail",
+          "success": true,
+          "elapsed_ms": 723
+        },
+        {
+          "tool": "query-meal-detail",
+          "success": true,
+          "elapsed_ms": 674
+        },
+        {
+          "tool": "query-meal-detail",
+          "success": true,
+          "elapsed_ms": 742
+        },
+        {
+          "tool": "query-meal-detail",
+          "success": true,
+          "elapsed_ms": 672
+        },
+        {
+          "tool": "query-meal-detail",
+          "success": true,
+          "elapsed_ms": 594
+        },
+        {
+          "tool": "query-meal-detail",
+          "success": true,
+          "elapsed_ms": 459
+        },
+        {
+          "tool": "query-meal-detail",
+          "success": true,
+          "elapsed_ms": 630
+        }
+      ]
+    },
+    "case_audit": [
+      {
+        "tool": "query-meals",
+        "success": true,
+        "elapsed_ms": 909
+      },
+      {
+        "tool": "query-store-coupons",
+        "success": true,
+        "elapsed_ms": 552
+      },
+      {
+        "tool": "query-meal-detail",
+        "success": true,
+        "elapsed_ms": 869
+      },
+      {
+        "tool": "query-meal-detail",
+        "success": true,
+        "elapsed_ms": 723
+      },
+      {
+        "tool": "query-meal-detail",
+        "success": true,
+        "elapsed_ms": 674
+      },
+      {
+        "tool": "query-meal-detail",
+        "success": true,
+        "elapsed_ms": 742
+      },
+      {
+        "tool": "query-meal-detail",
+        "success": true,
+        "elapsed_ms": 672
+      },
+      {
+        "tool": "query-meal-detail",
+        "success": true,
+        "elapsed_ms": 594
+      },
+      {
+        "tool": "query-meal-detail",
+        "success": true,
+        "elapsed_ms": 459
+      },
+      {
+        "tool": "query-meal-detail",
+        "success": true,
+        "elapsed_ms": 630
+      }
+    ]
+  }
+}

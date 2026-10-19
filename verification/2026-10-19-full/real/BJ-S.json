@@ -1,0 +1,35 @@
+{
+  "id": "BJ-S",
+  "task": "搜索工程测试店，非用户默认位置",
+  "finished_at": "2026-10-19T02:31:06.517094+00:00",
+  "elapsed_ms": 1043,
+  "passed": true,
+  "output": {
+    "stores": [
+      {
+        "storeCode": "1950526",
+        "storeName": "麦当劳北京新东安二号餐厅"
+      },
+      {
+        "storeCode": "1950482",
+        "storeName": "麦当劳北京王府井东街(澳门中心)餐厅"
+      },
+      {
+        "storeCode": "1950087",
+        "storeName": "麦当劳北京灯市口餐厅"
+      },
+      {
+        "storeCode": "1950514",
+        "storeName": "麦当劳北京东四南大街灯市口地铁餐厅"
+      },
+      {
+        "storeCode": "1950059",
+        "storeName": "麦当劳北京新王府井餐厅"
+      }
+    ],
+    "engineering_selection": {
+      "storeCode": "1950526",
+      "storeName": "麦当劳北京新东安二号餐厅"
+    }
+  }
+}

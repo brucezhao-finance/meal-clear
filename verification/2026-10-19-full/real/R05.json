@@ -1,0 +1,9 @@
+{
+  "id": "R05",
+  "task": "用明确无效的合成凭证进行一次真实认证错误测试，非撞库",
+  "finished_at": "2026-10-19T02:40:54.734479+00:00",
+  "elapsed_ms": 558,
+  "network_attempts": 1,
+  "error": "HTTP 401：认证或访问受限，停止重试",
+  "passed": true
+}

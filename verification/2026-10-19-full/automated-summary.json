@@ -1,0 +1,39 @@
+{
+  "started_at": "2026-10-19T02:39:45.881100+00:00",
+  "finished_at": "2026-10-19T02:39:46.126706+00:00",
+  "python": "3.9.6",
+  "elapsed_ms": 246,
+  "test_methods_run": 81,
+  "failed_methods": 0,
+  "errored_methods": 0,
+  "subcases_observed": 429,
+  "passed": true,
+  "source_commit_before_changes": "c03960f8cbab31209a2cf385a9b8517427ba14ed",
+  "runtime_sha256": {
+    "scripts/meal_clear/__init__.py": "608e4be5c32a4b1f259ffef5bea8b0f5f3b437958bffa30c6281e907d715619c",
+    "scripts/meal_clear/cli.py": "a178cfc8d87b689c8fff77e217306414c13015ec2950f0f3fc4745463d30737b",
+    "scripts/meal_clear/core.py": "c8e563003eca186da9102d6dd3e7a73c6d7d90d0fe1b9cc3f9ad531fb5125230",
+    "scripts/meal_clear/live.py": "e2dd4bea1ac45484dbd8f79cc290ff8ffaa7dd4d24e12c7221225069674317fd",
+    "scripts/meal_clear/mcp.py": "fc87905f93966c6505ab85fe4a54cacab2f6bda5c9ae4887726bff63948ef0c3",
+    "scripts/meal_clear.py": "65b22101430e500534d5b4c64391a591a62c69d408b7577da33626d8e876bef8"
+  },
+  "coverage": {
+    "covered_lines": 790,
+    "num_statements": 791,
+    "percent_covered": 99.83122362869199,
+    "percent_covered_display": "99",
+    "missing_lines": 1,
+    "excluded_lines": 0,
+    "num_branches": 394,
+    "num_partial_branches": 1,
+    "covered_branches": 393,
+    "missing_branches": 1
+  },
+  "reachable_coverage_gate_passed": true,
+  "unexpected_gaps": {},
+  "retained_unreachable_guard": {
+    "file": "scripts/meal_clear/mcp.py",
+    "line": 183,
+    "reason": "三次迭代内每次成功均return，最终一次允许的暂时故障必raise；正常range(3)不可能到达循环后兜底"
+  }
+}

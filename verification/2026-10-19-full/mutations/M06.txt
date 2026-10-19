@@ -1,0 +1,14 @@
+......F......
+======================================================================
+FAIL: test_Q07_live_plan_and_live_update_requery_instead_of_reuse (test_cli_full.CliFullTests)
+The actual live CLI path saves state and a later patch performs fresh quotes.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private<隔离副本>/tests/test_cli_full.py", line 215, in test_Q07_live_plan_and_live_update_requery_instead_of_reuse
+    self.assertNotEqual(old["request_id"], result["request_id"])
+AssertionError: 'ca9b59f619f9993b' == 'ca9b59f619f9993b'
+
+----------------------------------------------------------------------
+Ran 13 tests in 0.050s
+
+FAILED (failures=1)

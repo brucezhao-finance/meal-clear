@@ -1,0 +1,79 @@
+{
+  "method": "八个预先定义的关键缺陷变异；不是整个代码空间的自动变异覆盖率",
+  "count": 8,
+  "detected": 8,
+  "cases": [
+    {
+      "id": "M01",
+      "fault": "未知属性冒充通过",
+      "module": "core.py",
+      "target_suite": "test_core_full.py",
+      "baseline_exit": 0,
+      "mutated_exit": 1,
+      "detected": true
+    },
+    {
+      "id": "M02",
+      "fault": "恰好预算被误拒绝",
+      "module": "core.py",
+      "target_suite": "test_behavior.py",
+      "baseline_exit": 0,
+      "mutated_exit": 1,
+      "detected": true
+    },
+    {
+      "id": "M03",
+      "fault": "漏算本次新卡费",
+      "module": "core.py",
+      "target_suite": "test_behavior.py",
+      "baseline_exit": 0,
+      "mutated_exit": 1,
+      "detected": true
+    },
+    {
+      "id": "M04",
+      "fault": "写工具白名单被移除",
+      "module": "mcp.py",
+      "target_suite": "test_protocol_full.py",
+      "baseline_exit": 0,
+      "mutated_exit": 1,
+      "detected": true
+    },
+    {
+      "id": "M05",
+      "fault": "布尔RPC编号误当整数",
+      "module": "mcp.py",
+      "target_suite": "test_protocol_full.py",
+      "baseline_exit": 0,
+      "mutated_exit": 1,
+      "detected": true
+    },
+    {
+      "id": "M06",
+      "fault": "实时改单复用旧会话",
+      "module": "cli.py",
+      "target_suite": "test_cli_full.py",
+      "baseline_exit": 0,
+      "mutated_exit": 1,
+      "detected": true
+    },
+    {
+      "id": "M07",
+      "fault": "错误上下文报价被接受",
+      "module": "core.py",
+      "target_suite": "test_behavior.py",
+      "baseline_exit": 0,
+      "mutated_exit": 1,
+      "detected": true
+    },
+    {
+      "id": "M08",
+      "fault": "会员回本错误向下取整",
+      "module": "core.py",
+      "target_suite": "test_behavior.py",
+      "baseline_exit": 0,
+      "mutated_exit": 1,
+      "detected": true
+    }
+  ]
+}

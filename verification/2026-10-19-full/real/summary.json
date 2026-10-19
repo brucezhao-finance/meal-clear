@@ -1,0 +1,125 @@
+{
+  "finished_at": "2026-10-19T02:31:52.579875+00:00",
+  "elapsed_ms": 101190,
+  "passed": 15,
+  "failed": 0,
+  "cases": [
+    {
+      "id": "R00",
+      "task": "当前工具发现",
+      "finished_at": "2026-10-19T02:30:11.390512+00:00",
+      "elapsed_ms": 0,
+      "passed": true
+    },
+    {
+      "id": "R01",
+      "task": "白名单工具实际查询：now-time-info",
+      "finished_at": "2026-10-19T02:30:11.801223+00:00",
+      "elapsed_ms": 410,
+      "passed": true
+    },
+    {
+      "id": "R02",
+      "task": "白名单工具实际查询：campaign-calendar",
+      "finished_at": "2026-10-19T02:30:12.593203+00:00",
+      "elapsed_ms": 790,
+      "passed": true
+    },
+    {
+      "id": "SH-S",
+      "task": "搜索工程测试店，非用户默认位置",
+      "finished_at": "2026-10-19T02:30:14.292257+00:00",
+      "elapsed_ms": 1698,
+      "passed": true
+    },
+    {
+      "id": "SH-1",
+      "task": "单人默认组合真实核价",
+      "finished_at": "2026-10-19T02:30:24.672191+00:00",
+      "elapsed_ms": 10379,
+      "passed": true
+    },
+    {
+      "id": "SH-2",
+      "task": "增加无糖要求后重新取数核价",
+      "finished_at": "2026-10-19T02:30:35.929544+00:00",
+      "elapsed_ms": 11253,
+      "passed": true
+    },
+    {
+      "id": "SH-3",
+      "task": "两人逐人无糖核价",
+      "finished_at": "2026-10-19T02:30:48.047635+00:00",
+      "elapsed_ms": 12114,
+      "passed": true
+    },
+    {
+      "id": "SH-4",
+      "task": "加入不辣要求检查未知不得通过",
+      "finished_at": "2026-10-19T02:30:55.381296+00:00",
+      "elapsed_ms": 7327,
+      "passed": true
+    },
+    {
+      "id": "SH-5",
+      "task": "极低预算不可静默放宽",
+      "finished_at": "2026-10-19T02:31:05.470000+00:00",
+      "elapsed_ms": 10085,
+      "passed": true
+    },
+    {
+      "id": "BJ-S",
+      "task": "搜索工程测试店，非用户默认位置",
+      "finished_at": "2026-10-19T02:31:06.517094+00:00",
+      "elapsed_ms": 1043,
+      "passed": true
+    },
+    {
+      "id": "BJ-1",
+      "task": "单人默认组合真实核价",
+      "finished_at": "2026-10-19T02:31:16.711509+00:00",
+      "elapsed_ms": 10193,
+      "passed": true
+    },
+    {
+      "id": "BJ-2",
+      "task": "增加无糖要求后重新取数核价",
+      "finished_at": "2026-10-19T02:31:25.736196+00:00",
+      "elapsed_ms": 9020,
+      "passed": true
+    },
+    {
+      "id": "BJ-3",
+      "task": "两人逐人无糖核价",
+      "finished_at": "2026-10-19T02:31:35.444180+00:00",
+      "elapsed_ms": 9702,
+      "passed": true
+    },
+    {
+      "id": "BJ-4",
+      "task": "加入不辣要求检查未知不得通过",
+      "finished_at": "2026-10-19T02:31:42.273891+00:00",
+      "elapsed_ms": 6824,
+      "passed": true
+    },
+    {
+      "id": "BJ-5",
+      "task": "极低预算不可静默放宽",
+      "finished_at": "2026-10-19T02:31:52.574145+00:00",
+      "elapsed_ms": 10296,
+      "passed": true
+    }
+  ],
+  "called_read_only_tools": [
+    "calculate-price",
+    "campaign-calendar",
+    "now-time-info",
+    "query-meal-detail",
+    "query-meals",
+    "query-nearby-stores",
+    "query-store-coupons"
+  ],
+  "all_seven_tools_called": true,
+  "transactions_executed": 0,
+  "note": "单账户、当次两城工程门店；不代表多账户或未来餐段；无原始账户回包"
+}

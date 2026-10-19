@@ -1,0 +1,14 @@
+....E........................
+======================================================================
+ERROR: test_budget_equality_is_allowed (test_behavior.BehaviorTests)
+预算等于实际全单价属于可行。
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private<隔离副本>/tests/test_behavior.py", line 197, in test_budget_equality_is_allowed
+    self.assertTrue(compose(self.request, self.catalog)["recommendations"])
+KeyError: 'recommendations'
+
+----------------------------------------------------------------------
+Ran 29 tests in 0.006s
+
+FAILED (errors=1)

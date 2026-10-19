@@ -1,0 +1,166 @@
+{
+  "baseline_commit": "c03960f8cbab31209a2cf385a9b8517427ba14ed",
+  "modules": [
+    {
+      "file": "scripts/meal_clear/__init__.py",
+      "functions": []
+    },
+    {
+      "file": "scripts/meal_clear/cli.py",
+      "functions": [
+        {
+          "name": "read_json",
+          "line": 18
+        },
+        {
+          "name": "save_json",
+          "line": 26
+        },
+        {
+          "name": "render",
+          "line": 42
+        },
+        {
+          "name": "client_from_args",
+          "line": 114
+        },
+        {
+          "name": "main",
+          "line": 121
+        }
+      ]
+    },
+    {
+      "file": "scripts/meal_clear/core.py",
+      "functions": [
+        {
+          "name": "money_to_cents",
+          "line": 17
+        },
+        {
+          "name": "integer",
+          "line": 33
+        },
+        {
+          "name": "validate_request",
+          "line": 40
+        },
+        {
+          "name": "fingerprint",
+          "line": 81
+        },
+        {
+          "name": "amend_request",
+          "line": 87
+        },
+        {
+          "name": "validate_catalog",
+          "line": 124
+        },
+        {
+          "name": "check_person",
+          "line": 168
+        },
+        {
+          "name": "quote_signature",
+          "line": 191
+        },
+        {
+          "name": "compose",
+          "line": 206
+        },
+        {
+          "name": "compare_results",
+          "line": 382
+        },
+        {
+          "name": "break_even",
+          "line": 417
+        }
+      ]
+    },
+    {
+      "file": "scripts/meal_clear/live.py",
+      "functions": [
+        {
+          "name": "timestamp",
+          "line": 15
+        },
+        {
+          "name": "classify_role",
+          "line": 20
+        },
+        {
+          "name": "default_modification",
+          "line": 48
+        },
+        {
+          "name": "facts_for",
+          "line": 70
+        },
+        {
+          "name": "detail_offers",
+          "line": 114
+        },
+        {
+          "name": "check_pricing",
+          "line": 204
+        },
+        {
+          "name": "__init__",
+          "line": 239
+        },
+        {
+          "name": "catalog",
+          "line": 243
+        },
+        {
+          "name": "plan",
+          "line": 347
+        },
+        {
+          "name": "rank",
+          "line": 287
+        }
+      ]
+    },
+    {
+      "file": "scripts/meal_clear/mcp.py",
+      "functions": [
+        {
+          "name": "decode_response",
+          "line": 42
+        },
+        {
+          "name": "unwrap_tool",
+          "line": 69
+        },
+        {
+          "name": "redirect_request",
+          "line": 35
+        },
+        {
+          "name": "__init__",
+          "line": 97
+        },
+        {
+          "name": "_post",
+          "line": 116
+        },
+        {
+          "name": "initialize",
+          "line": 175
+        },
+        {
+          "name": "list_tools",
+          "line": 189
+        },
+        {
+          "name": "call",
+          "line": 204
+        }
+      ]
+    }
+  ],
+  "scope": "修改前基线函数清单；最终35函数见函数覆盖矩阵.csv"
+}

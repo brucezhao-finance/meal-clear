@@ -1,0 +1,11 @@
+{
+  "feature_points": 65,
+  "functions_exercised": 35,
+  "functions_total": 35,
+  "original_acceptance_cases": 18,
+  "agent_exercises": 8,
+  "automated_methods": 81,
+  "subcases": 429,
+  "real_records": 18,
+  "scope": "当前声明实现，可达覆盖门禁通过；外部条件和人工审阅单列"
+}

@@ -1,0 +1,4098 @@
+[
+  {
+    "id": "test_behavior.BehaviorTests.test_alternatives_have_real_tradeoff",
+    "kind": "method",
+    "passed": true,
+    "description": "更贵但偏好更匹配时保留备选，不重复相同购物篮。",
+    "elapsed_ms": 0.92
+  },
+  {
+    "id": "test_behavior.BehaviorTests.test_break_even_boundary",
+    "kind": "method",
+    "passed": true,
+    "description": "回本向上取整，零/负节省不生成有限次数。",
+    "elapsed_ms": 0.113
+  },
+  {
+    "id": "test_behavior.BehaviorTests.test_breakfast_combo_reaches_detail_without_member_card",
+    "kind": "method",
+    "passed": true,
+    "description": "普通早餐组合必须进入详情核验，附带会员条件的组合仍被排除。",
+    "elapsed_ms": 0.37
+  },
+  {
+    "id": "test_behavior.BehaviorTests.test_budget_conflict_is_not_silently_relaxed",
+    "kind": "method",
+    "passed": true,
+    "description": "无解时保留要求，不为了生成推荐自动换掉约束。",
+    "elapsed_ms": 0.447
+  },
+  {
+    "id": "test_behavior.BehaviorTests.test_budget_equality_is_allowed",
+    "kind": "method",
+    "passed": true,
+    "description": "预算等于实际全单价属于可行。",
+    "elapsed_ms": 0.466
+  },
+  {
+    "id": "test_behavior.BehaviorTests.test_change_preserves_other_person_and_budget",
+    "kind": "method",
+    "passed": true,
+    "description": "改B口味不会丢掉A的要求或修改预算。",
+    "elapsed_ms": 0.803
+  },
+  {
+    "id": "test_behavior.BehaviorTests.test_context_change_requires_new_menu",
+    "kind": "method",
+    "passed": true,
+    "description": "换店后不使用旧店价格或优惠。",
+    "elapsed_ms": 0.272
+  },
+  {
+    "id": "test_behavior.BehaviorTests.test_coupon_reuse_does_not_pass",
+    "kind": "method",
+    "passed": true,
+    "description": "首版单券边界阻止一张券重复给两个人用。",
+    "elapsed_ms": 0.183
+  },
+  {
+    "id": "test_behavior.BehaviorTests.test_demo_does_not_call_unknown_safe",
+    "kind": "method",
+    "passed": true,
+    "description": "低价但辣度未知的餐不会混入符合要求的方案。",
+    "elapsed_ms": 0.454
+  },
+  {
+    "id": "test_behavior.BehaviorTests.test_explicit_nonspicy_not_misread_as_spicy",
+    "kind": "method",
+    "passed": true,
+    "description": "非辣的“辣”字不能反向判为辣味。",
+    "elapsed_ms": 0.107
+  },
+  {
+    "id": "test_behavior.BehaviorTests.test_false_boolean_not_integer_zero",
+    "kind": "method",
+    "passed": true,
+    "description": "避免Python将False与0视作相同而误判。",
+    "elapsed_ms": 0.085
+  },
+  {
+    "id": "test_behavior.BehaviorTests.test_invalid_request_modes_rejected",
+    "kind": "subcase",
+    "parameters": {
+      "change": "{'budget_cents': True}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_behavior.BehaviorTests.test_invalid_request_modes_rejected",
+    "kind": "subcase",
+    "parameters": {
+      "change": "{'people': []}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_behavior.BehaviorTests.test_invalid_request_modes_rejected",
+    "kind": "subcase",
+    "parameters": {
+      "change": "{'context': {'store_code': 'DEMO', 'channel': 'delivery', 'meal_time': 'now'}}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_behavior.BehaviorTests.test_invalid_request_modes_rejected",
+    "kind": "method",
+    "passed": true,
+    "description": "超范围人群、模式和布尔预算不会悄悄运行。",
+    "elapsed_ms": 0.203
+  },
+  {
+    "id": "test_behavior.BehaviorTests.test_live_never_uses_local_menu_price",
+    "kind": "method",
+    "passed": true,
+    "description": "实时模式即使给了菜单价也必须等官方报价。",
+    "elapsed_ms": 0.417
+  },
+  {
+    "id": "test_behavior.BehaviorTests.test_malformed_catalog_containers_raise_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "catalog": "{'mode': 'simulation', 'as_of': '2026-10-17（模拟数据创建日期，非真实采集）', 'context': {'store_code': 'DEMO', 'channel': 'pickup', 'meal_time': 'demo-time'}, 'order_fee_cents': 0, 'price_source'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_behavior.BehaviorTests.test_malformed_catalog_containers_raise_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "catalog": "{'mode': 'simulation', 'as_of': '2026-10-17（模拟数据创建日期，非真实采集）', 'context': {'store_code': 'DEMO', 'channel': 'pickup', 'meal_time': 'demo-time'}, 'order_fee_cents': 0, 'price_source'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_behavior.BehaviorTests.test_malformed_catalog_containers_raise_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "catalog": "{'mode': 'simulation', 'as_of': '2026-10-17（模拟数据创建日期，非真实采集）', 'context': {'store_code': 'DEMO', 'channel': 'pickup', 'meal_time': 'demo-time'}, 'order_fee_cents': 0, 'price_source'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_behavior.BehaviorTests.test_malformed_catalog_containers_raise_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "catalog": "{'mode': 'simulation', 'as_of': '2026-10-17（模拟数据创建日期，非真实采集）', 'context': {'store_code': 'DEMO', 'channel': 'pickup', 'meal_time': 'demo-time'}, 'order_fee_cents': 0, 'price_source'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_behavior.BehaviorTests.test_malformed_catalog_containers_raise_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "catalog": "{'mode': 'simulation', 'as_of': '2026-10-17（模拟数据创建日期，非真实采集）', 'context': {'store_code': 'DEMO', 'channel': 'pickup', 'meal_time': 'demo-time'}, 'order_fee_cents': 0, 'price_source'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_behavior.BehaviorTests.test_malformed_catalog_containers_raise_input_error",
+    "kind": "method",
+    "passed": true,
+    "description": "损坏套餐、餐品或事实容器应产生受控错误，不能抛AttributeError。",
+    "elapsed_ms": 0.991
+  },
+  {
+    "id": "test_behavior.BehaviorTests.test_missing_offline_fee_not_zero",
+    "kind": "method",
+    "passed": true,
+    "description": "缺失本地费用时不声称算出完整实付。",
+    "elapsed_ms": 0.446
+  },
+  {
+    "id": "test_behavior.BehaviorTests.test_mixed_meat_not_exclusively_beef",
+    "kind": "method",
+    "passed": true,
+    "description": "牛鸡混合名称不被标成单一牛肉属性。",
+    "elapsed_ms": 0.09
+  },
+  {
+    "id": "test_behavior.BehaviorTests.test_money_units_and_precision",
+    "kind": "subcase",
+    "parameters": {
+      "amount": "True",
+      "unit": "'cent'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_behavior.BehaviorTests.test_money_units_and_precision",
+    "kind": "subcase",
+    "parameters": {
+      "amount": "'NaN'",
+      "unit": "'CNY'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_behavior.BehaviorTests.test_money_units_and_precision",
+    "kind": "subcase",
+    "parameters": {
+      "amount": "-1",
+      "unit": "'cent'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_behavior.BehaviorTests.test_money_units_and_precision",
+    "kind": "subcase",
+    "parameters": {
+      "amount": "1",
+      "unit": "'unknown'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_behavior.BehaviorTests.test_money_units_and_precision",
+    "kind": "subcase",
+    "parameters": {
+      "amount": "'1.001'",
+      "unit": "'CNY'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_behavior.BehaviorTests.test_money_units_and_precision",
+    "kind": "subcase",
+    "parameters": {
+      "amount": "1.5",
+      "unit": "'cent'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_behavior.BehaviorTests.test_money_units_and_precision",
+    "kind": "method",
+    "passed": true,
+    "description": "金额单位显式处理，不口算/猜单位或舍入。",
+    "elapsed_ms": 0.165
+  },
+  {
+    "id": "test_behavior.BehaviorTests.test_new_card_not_disguised_as_cheap",
+    "kind": "method",
+    "passed": true,
+    "description": "低餐费加高卡费不能挤掉无卡更便宜的同内容方案。",
+    "elapsed_ms": 0.45
+  },
+  {
+    "id": "test_behavior.BehaviorTests.test_official_total_can_have_unknown_breakdown",
+    "kind": "method",
+    "passed": true,
+    "description": "真实到店回包可缺费用拆分，采用官方总额但不伪填零。",
+    "elapsed_ms": 0.1
+  },
+  {
+    "id": "test_behavior.BehaviorTests.test_private_state_permissions",
+    "kind": "method",
+    "passed": true,
+    "description": "保存会话只给当前用户读写，不因默认umask开放。",
+    "elapsed_ms": 0.933
+  },
+  {
+    "id": "test_behavior.BehaviorTests.test_quote_consistency_and_missing_total",
+    "kind": "subcase",
+    "parameters": {
+      "patch": "{'price': None}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_behavior.BehaviorTests.test_quote_consistency_and_missing_total",
+    "kind": "subcase",
+    "parameters": {
+      "patch": "{'price': 999}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_behavior.BehaviorTests.test_quote_consistency_and_missing_total",
+    "kind": "subcase",
+    "parameters": {
+      "patch": "{'productPrice': 1100}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_behavior.BehaviorTests.test_quote_consistency_and_missing_total",
+    "kind": "subcase",
+    "parameters": {
+      "patch": "{'productList': [{'productCode': 'Y', 'quantity': 1}]}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_behavior.BehaviorTests.test_quote_consistency_and_missing_total",
+    "kind": "method",
+    "passed": true,
+    "description": "费用冲突、商品错配或总价缺失不会作为可确认方案。",
+    "elapsed_ms": 0.195
+  },
+  {
+    "id": "test_behavior.BehaviorTests.test_same_request_fingerprint_stable",
+    "kind": "method",
+    "passed": true,
+    "description": "字段顺序不改变身份，预算或用餐时间改变会更新身份。",
+    "elapsed_ms": 0.25
+  },
+  {
+    "id": "test_behavior.BehaviorTests.test_unknown_people_and_fields_rejected",
+    "kind": "subcase",
+    "parameters": {
+      "patch": "{'people': {'C': {'hard': {}}}}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_behavior.BehaviorTests.test_unknown_people_and_fields_rejected",
+    "kind": "subcase",
+    "parameters": {
+      "patch": "{'budegt_cents': 1}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_behavior.BehaviorTests.test_unknown_people_and_fields_rejected",
+    "kind": "subcase",
+    "parameters": {
+      "patch": "{'people': {'A': {'preferences': {}}}}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_behavior.BehaviorTests.test_unknown_people_and_fields_rejected",
+    "kind": "method",
+    "passed": true,
+    "description": "修改不误创建陌生用餐者或忽略拼错字段。",
+    "elapsed_ms": 0.225
+  },
+  {
+    "id": "test_behavior.BehaviorTests.test_unknown_sugar_not_replaced_with_low_sugar",
+    "kind": "method",
+    "passed": true,
+    "description": "低糖/原味不自动等于无糖/不辣。",
+    "elapsed_ms": 0.092
+  },
+  {
+    "id": "test_behavior.BehaviorTests.test_wrong_context_quote_rejected",
+    "kind": "method",
+    "passed": true,
+    "description": "其他门店的报价即使商品相同也不能采纳。",
+    "elapsed_ms": 0.716
+  },
+  {
+    "id": "test_behavior.ProtocolTests.test_business_failure_sanitized",
+    "kind": "method",
+    "passed": true,
+    "description": "业务失败不能因为HTTP成功被接受，消息内容不泄漏。",
+    "elapsed_ms": 0.025
+  },
+  {
+    "id": "test_behavior.ProtocolTests.test_explicit_sugar_free_variant_uses_actual_code",
+    "kind": "method",
+    "passed": true,
+    "description": "无糖替换使用返回的选项编码，不靠备注。",
+    "elapsed_ms": 0.085
+  },
+  {
+    "id": "test_behavior.ProtocolTests.test_readonly_client_rejects_mutations_without_network",
+    "kind": "subcase",
+    "parameters": {
+      "tool": "'create-order'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_behavior.ProtocolTests.test_readonly_client_rejects_mutations_without_network",
+    "kind": "subcase",
+    "parameters": {
+      "tool": "'auto-bind-coupons'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_behavior.ProtocolTests.test_readonly_client_rejects_mutations_without_network",
+    "kind": "subcase",
+    "parameters": {
+      "tool": "'cancel-order'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_behavior.ProtocolTests.test_readonly_client_rejects_mutations_without_network",
+    "kind": "subcase",
+    "parameters": {
+      "tool": "'draw-lottery'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_behavior.ProtocolTests.test_readonly_client_rejects_mutations_without_network",
+    "kind": "subcase",
+    "parameters": {
+      "tool": "'mall-create-order'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_behavior.ProtocolTests.test_readonly_client_rejects_mutations_without_network",
+    "kind": "method",
+    "passed": true,
+    "description": "所有交易工具在任何网络调用前被拒绝。",
+    "elapsed_ms": 0.068
+  },
+  {
+    "id": "test_behavior.ProtocolTests.test_sse_selects_matching_response",
+    "kind": "method",
+    "passed": true,
+    "description": "通知不被误读为工具成功。",
+    "elapsed_ms": 0.296
+  },
+  {
+    "id": "test_cli_full.CliFullTests.test_Q01_all_help_entries_are_available",
+    "kind": "subcase",
+    "parameters": {
+      "args": "['--help']"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_cli_full.CliFullTests.test_Q01_all_help_entries_are_available",
+    "kind": "subcase",
+    "parameters": {
+      "args": "['demo', '--help']"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_cli_full.CliFullTests.test_Q01_all_help_entries_are_available",
+    "kind": "subcase",
+    "parameters": {
+      "args": "['plan', '--help']"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_cli_full.CliFullTests.test_Q01_all_help_entries_are_available",
+    "kind": "subcase",
+    "parameters": {
+      "args": "['update', '--help']"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_cli_full.CliFullTests.test_Q01_all_help_entries_are_available",
+    "kind": "subcase",
+    "parameters": {
+      "args": "['stores', '--help']"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_cli_full.CliFullTests.test_Q01_all_help_entries_are_available",
+    "kind": "subcase",
+    "parameters": {
+      "args": "['live-plan', '--help']"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_cli_full.CliFullTests.test_Q01_all_help_entries_are_available",
+    "kind": "subcase",
+    "parameters": {
+      "args": "['inspect-tools', '--help']"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_cli_full.CliFullTests.test_Q01_all_help_entries_are_available",
+    "kind": "subcase",
+    "parameters": {
+      "args": "['break-even', '--help']"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_cli_full.CliFullTests.test_Q01_all_help_entries_are_available",
+    "kind": "subcase",
+    "parameters": {
+      "args": "[]"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_cli_full.CliFullTests.test_Q01_all_help_entries_are_available",
+    "kind": "subcase",
+    "parameters": {
+      "args": "['unknown']"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_cli_full.CliFullTests.test_Q01_all_help_entries_are_available",
+    "kind": "subcase",
+    "parameters": {
+      "args": "['plan']"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_cli_full.CliFullTests.test_Q01_all_help_entries_are_available",
+    "kind": "subcase",
+    "parameters": {
+      "args": "['break-even', '--fee', 'bad', '--saving', '1']"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_cli_full.CliFullTests.test_Q01_all_help_entries_are_available",
+    "kind": "method",
+    "passed": true,
+    "description": "Each advertised subcommand has discoverable parser help.",
+    "elapsed_ms": 15.196
+  },
+  {
+    "id": "test_cli_full.CliFullTests.test_Q02_demo_text_and_json_are_consistent",
+    "kind": "method",
+    "passed": true,
+    "description": "Both modes reproduce 38→43 without a network client.",
+    "elapsed_ms": 7.457
+  },
+  {
+    "id": "test_cli_full.CliFullTests.test_Q03_plan_save_update_text_json_and_exit_codes",
+    "kind": "method",
+    "passed": true,
+    "description": "A saved plan can be amended in both presentation modes; a failed plan exits 2.",
+    "elapsed_ms": 11.482
+  },
+  {
+    "id": "test_cli_full.CliFullTests.test_Q04_file_and_json_errors_are_sanitized",
+    "kind": "subcase",
+    "parameters": {
+      "path": "'missing.json'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_cli_full.CliFullTests.test_Q04_file_and_json_errors_are_sanitized",
+    "kind": "subcase",
+    "parameters": {
+      "path": "'list.json'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_cli_full.CliFullTests.test_Q04_file_and_json_errors_are_sanitized",
+    "kind": "subcase",
+    "parameters": {
+      "path": "'bad.json'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_cli_full.CliFullTests.test_Q04_file_and_json_errors_are_sanitized",
+    "kind": "subcase",
+    "parameters": {
+      "path": "'bytes.json'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_cli_full.CliFullTests.test_Q04_file_and_json_errors_are_sanitized",
+    "kind": "method",
+    "passed": true,
+    "description": "Missing/bad/top-level-array/non-UTF8 files return controlled JSON with no trace.",
+    "elapsed_ms": 5.61
+  },
+  {
+    "id": "test_cli_full.CliFullTests.test_Q05_offline_update_without_catalog_and_missing_state_fields",
+    "kind": "method",
+    "passed": true,
+    "description": "Missing menu or malformed saved state cannot silently reuse or invent prices.",
+    "elapsed_ms": 3.43
+  },
+  {
+    "id": "test_cli_full.CliFullTests.test_Q06_inspect_stores_and_card_subcommands",
+    "kind": "method",
+    "passed": true,
+    "description": "Tool discovery exposes only whitelist names; store output drops private fields.",
+    "elapsed_ms": 4.626
+  },
+  {
+    "id": "test_cli_full.CliFullTests.test_Q07_live_plan_and_live_update_requery_instead_of_reuse",
+    "kind": "method",
+    "passed": true,
+    "description": "The actual live CLI path saves state and a later patch performs fresh quotes.",
+    "elapsed_ms": 7.901
+  },
+  {
+    "id": "test_cli_full.CliFullTests.test_Q08_client_initialization_failure_is_controlled",
+    "kind": "method",
+    "passed": true,
+    "description": "Client initialization failures return a safe error instead of printing secrets.",
+    "elapsed_ms": 2.386
+  },
+  {
+    "id": "test_cli_full.CliFullTests.test_Q09_render_all_modes_diagnostics_quote_errors_and_unknown_fees",
+    "kind": "method",
+    "passed": true,
+    "description": "Rendering explains provenance, hard checks, pricing time and missing breakdowns.",
+    "elapsed_ms": 2.823
+  },
+  {
+    "id": "test_cli_full.CliFullTests.test_Q10_state_save_failure_preserves_original_and_cleans_temporary",
+    "kind": "method",
+    "passed": true,
+    "description": "Atomic replace failure leaves the previous file untouched and removes partial output.",
+    "elapsed_ms": 1.659
+  },
+  {
+    "id": "test_cli_full.CliFullTests.test_Q11_state_save_does_not_follow_predictable_temp_symlink",
+    "kind": "method",
+    "passed": true,
+    "description": "A pre-existing .tmp symlink cannot overwrite another user's chosen file.",
+    "elapsed_ms": 1.532
+  },
+  {
+    "id": "test_cli_full.CliFullTests.test_Q12_state_save_permissions_and_serialization_failure",
+    "kind": "method",
+    "passed": true,
+    "description": "Both new and overwritten states are private; serialization failure keeps old state.",
+    "elapsed_ms": 1.711
+  },
+  {
+    "id": "test_cli_full.CliFullTests.test_Q13_actual_script_entrypoint_and_import_guard",
+    "kind": "method",
+    "passed": true,
+    "description": "The distributable entry script runs as __main__ and stays inert when imported.",
+    "elapsed_ms": 6.584
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C01_money_invalid_and_large_exact_values",
+    "kind": "subcase",
+    "parameters": {
+      "value": "'bad'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C01_money_invalid_and_large_exact_values",
+    "kind": "subcase",
+    "parameters": {
+      "value": "None"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C01_money_invalid_and_large_exact_values",
+    "kind": "subcase",
+    "parameters": {
+      "value": "{}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C01_money_invalid_and_large_exact_values",
+    "kind": "subcase",
+    "parameters": {
+      "value": "'Infinity'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C01_money_invalid_and_large_exact_values",
+    "kind": "subcase",
+    "parameters": {
+      "value": "'-Infinity'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C01_money_invalid_and_large_exact_values",
+    "kind": "subcase",
+    "parameters": {
+      "value": "'-0.001'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C01_money_invalid_and_large_exact_values",
+    "kind": "method",
+    "passed": true,
+    "description": "Invalid units/precision/nonfinite values fail; large cents remain exact.",
+    "elapsed_ms": 0.199
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C02_request_top_level_and_context_contract",
+    "kind": "subcase",
+    "parameters": {
+      "request": "None"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C02_request_top_level_and_context_contract",
+    "kind": "subcase",
+    "parameters": {
+      "request": "[]"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C02_request_top_level_and_context_contract",
+    "kind": "subcase",
+    "parameters": {
+      "request": "'bad'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C02_request_top_level_and_context_contract",
+    "kind": "subcase",
+    "parameters": {
+      "request": "{'context': {'store_code': 'DEMO', 'channel': 'pickup', 'meal_time': 'demo-time'}, 'budget_cents': 5000, 'people': [{'id': 'A', 'hard': {'non_spicy': True, 'sugar_free_drink': True"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C02_request_top_level_and_context_contract",
+    "kind": "subcase",
+    "parameters": {
+      "request": "{'context': None, 'budget_cents': 5000, 'people': [{'id': 'A', 'hard': {'non_spicy': True, 'sugar_free_drink': True}, 'prefer': {'main_meat': 'chicken'}}, {'id': 'B', 'hard': {'non"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C02_request_top_level_and_context_contract",
+    "kind": "subcase",
+    "parameters": {
+      "request": "{'context': {}, 'budget_cents': 5000, 'people': [{'id': 'A', 'hard': {'non_spicy': True, 'sugar_free_drink': True}, 'prefer': {'main_meat': 'chicken'}}, {'id': 'B', 'hard': {'non_s"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C02_request_top_level_and_context_contract",
+    "kind": "subcase",
+    "parameters": {
+      "request": "{'context': {'store_code': 'DEMO'}, 'budget_cents': 5000, 'people': [{'id': 'A', 'hard': {'non_spicy': True, 'sugar_free_drink': True}, 'prefer': {'main_meat': 'chicken'}}, {'id': "
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C02_request_top_level_and_context_contract",
+    "kind": "subcase",
+    "parameters": {
+      "request": "{'context': {'store_code': ' ', 'channel': 'pickup', 'meal_time': 'demo-time'}, 'budget_cents': 5000, 'people': [{'id': 'A', 'hard': {'non_spicy': True, 'sugar_free_drink': True}, "
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C02_request_top_level_and_context_contract",
+    "kind": "subcase",
+    "parameters": {
+      "request": "{'context': {'store_code': 'DEMO', 'channel': 'delivery', 'meal_time': 'demo-time'}, 'budget_cents': 5000, 'people': [{'id': 'A', 'hard': {'non_spicy': True, 'sugar_free_drink': Tr"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C02_request_top_level_and_context_contract",
+    "kind": "subcase",
+    "parameters": {
+      "request": "{'context': {'store_code': 'DEMO', 'channel': 'pickup', 'meal_time': 1}, 'budget_cents': 5000, 'people': [{'id': 'A', 'hard': {'non_spicy': True, 'sugar_free_drink': True}, 'prefer"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C02_request_top_level_and_context_contract",
+    "kind": "subcase",
+    "parameters": {
+      "request": "{'context': {'store_code': 'DEMO', 'channel': 'pickup', 'meal_time': 'demo-time', 'extra': 'x'}, 'budget_cents': 5000, 'people': [{'id': 'A', 'hard': {'non_spicy': True, 'sugar_fre"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C02_request_top_level_and_context_contract",
+    "kind": "method",
+    "passed": true,
+    "description": "Missing, unknown and wrongly typed context fields are rejected.",
+    "elapsed_ms": 0.401
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C03_people_and_atomic_values_contract",
+    "kind": "subcase",
+    "parameters": {
+      "people": "[]"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C03_people_and_atomic_values_contract",
+    "kind": "subcase",
+    "parameters": {
+      "people": "None"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C03_people_and_atomic_values_contract",
+    "kind": "subcase",
+    "parameters": {
+      "people": "[{}, {}, {}]"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C03_people_and_atomic_values_contract",
+    "kind": "subcase",
+    "parameters": {
+      "people": "[None]"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C03_people_and_atomic_values_contract",
+    "kind": "subcase",
+    "parameters": {
+      "people": "[{'id': 'A', 'extra': 1}]"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C03_people_and_atomic_values_contract",
+    "kind": "subcase",
+    "parameters": {
+      "people": "[{'id': ''}]"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C03_people_and_atomic_values_contract",
+    "kind": "subcase",
+    "parameters": {
+      "people": "[{'id': ' '}]"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C03_people_and_atomic_values_contract",
+    "kind": "subcase",
+    "parameters": {
+      "people": "[{'id': 'A'}, {'id': 'A'}]"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C03_people_and_atomic_values_contract",
+    "kind": "subcase",
+    "parameters": {
+      "people": "[{'id': 'A', 'hard': []}]"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C03_people_and_atomic_values_contract",
+    "kind": "subcase",
+    "parameters": {
+      "people": "[{'id': 'A', 'hard': {'0': True, '1': True, '2': True, '3': True, '4': True, '5': True, '6': True, '7': True, '8': True, '9': True, '10': True, '11': True, '12': True}}]"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C03_people_and_atomic_values_contract",
+    "kind": "subcase",
+    "parameters": {
+      "people": "[{'id': 'A', 'hard': {'x': []}}]"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C03_people_and_atomic_values_contract",
+    "kind": "subcase",
+    "parameters": {
+      "people": "[{'id': 'A', 'prefer': {'x': 1.5}}]"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C03_people_and_atomic_values_contract",
+    "kind": "subcase",
+    "parameters": {
+      "people": "[{'id': 'A', 'hard': {1: True}}]"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C03_people_and_atomic_values_contract",
+    "kind": "method",
+    "passed": true,
+    "description": "Reject invalid person counts, IDs, field containers and atom types.",
+    "elapsed_ms": 0.436
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C04_patch_merge_delete_and_invalid_shapes",
+    "kind": "subcase",
+    "parameters": {
+      "patch": "None"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C04_patch_merge_delete_and_invalid_shapes",
+    "kind": "subcase",
+    "parameters": {
+      "patch": "[]"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C04_patch_merge_delete_and_invalid_shapes",
+    "kind": "subcase",
+    "parameters": {
+      "patch": "{'x': 1}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C04_patch_merge_delete_and_invalid_shapes",
+    "kind": "subcase",
+    "parameters": {
+      "patch": "{'context': []}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C04_patch_merge_delete_and_invalid_shapes",
+    "kind": "subcase",
+    "parameters": {
+      "patch": "{'people': []}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C04_patch_merge_delete_and_invalid_shapes",
+    "kind": "subcase",
+    "parameters": {
+      "patch": "{'people': {'B': None}}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C04_patch_merge_delete_and_invalid_shapes",
+    "kind": "subcase",
+    "parameters": {
+      "patch": "{'people': {'B': {'hard': []}}}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C04_patch_merge_delete_and_invalid_shapes",
+    "kind": "method",
+    "passed": true,
+    "description": "Deletion is explicit; unchanged people, context and source request survive.",
+    "elapsed_ms": 0.462
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C05_catalog_contract_rejects_malformed_values",
+    "kind": "subcase",
+    "parameters": {
+      "catalog": "None"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C05_catalog_contract_rejects_malformed_values",
+    "kind": "subcase",
+    "parameters": {
+      "catalog": "[]"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C05_catalog_contract_rejects_malformed_values",
+    "kind": "subcase",
+    "parameters": {
+      "catalog": "{'mode': [], 'as_of': '2026-10-17（模拟数据创建日期，非真实采集）', 'context': {'store_code': 'DEMO', 'channel': 'pickup', 'meal_time': 'demo-time'}, 'order_fee_cents': 0, 'price_source': '完全虚构的测试"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C05_catalog_contract_rejects_malformed_values",
+    "kind": "subcase",
+    "parameters": {
+      "catalog": "{'mode': 'pretend', 'as_of': '2026-10-17（模拟数据创建日期，非真实采集）', 'context': {'store_code': 'DEMO', 'channel': 'pickup', 'meal_time': 'demo-time'}, 'order_fee_cents': 0, 'price_source': '"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C05_catalog_contract_rejects_malformed_values",
+    "kind": "subcase",
+    "parameters": {
+      "catalog": "{'mode': 'simulation', 'as_of': None, 'context': {'store_code': 'DEMO', 'channel': 'pickup', 'meal_time': 'demo-time'}, 'order_fee_cents': 0, 'price_source': '完全虚构的测试价格，不是麦当劳现价', '"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C05_catalog_contract_rejects_malformed_values",
+    "kind": "subcase",
+    "parameters": {
+      "catalog": "{'mode': 'simulation', 'as_of': '2026-10-17（模拟数据创建日期，非真实采集）', 'context': {'store_code': 'DEMO', 'channel': 'pickup', 'meal_time': 'demo-time'}, 'order_fee_cents': 0, 'price_source'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C05_catalog_contract_rejects_malformed_values",
+    "kind": "subcase",
+    "parameters": {
+      "catalog": "{'mode': 'simulation', 'as_of': '2026-10-17（模拟数据创建日期，非真实采集）', 'context': {'store_code': 'DEMO', 'channel': 'pickup', 'meal_time': 'demo-time'}, 'order_fee_cents': 0, 'price_source'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C05_catalog_contract_rejects_malformed_values",
+    "kind": "subcase",
+    "parameters": {
+      "catalog": "{'mode': 'simulation', 'as_of': '2026-10-17（模拟数据创建日期，非真实采集）', 'context': {'store_code': 'DEMO', 'channel': 'pickup', 'meal_time': 'demo-time'}, 'order_fee_cents': 0, 'price_source'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C05_catalog_contract_rejects_malformed_values",
+    "kind": "subcase",
+    "parameters": {
+      "catalog": "{'mode': 'simulation', 'as_of': '2026-10-17（模拟数据创建日期，非真实采集）', 'context': {'store_code': 'DEMO', 'channel': 'pickup', 'meal_time': 'demo-time'}, 'order_fee_cents': 0, 'price_source'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C05_catalog_contract_rejects_malformed_values",
+    "kind": "subcase",
+    "parameters": {
+      "catalog": "{'mode': 'simulation', 'as_of': '2026-10-17（模拟数据创建日期，非真实采集）', 'context': {'store_code': 'DEMO', 'channel': 'pickup', 'meal_time': 'demo-time'}, 'order_fee_cents': 0, 'price_source'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C05_catalog_contract_rejects_malformed_values",
+    "kind": "subcase",
+    "parameters": {
+      "catalog": "{'mode': 'simulation', 'as_of': '2026-10-17（模拟数据创建日期，非真实采集）', 'context': {'store_code': 'DEMO', 'channel': 'pickup', 'meal_time': 'demo-time'}, 'order_fee_cents': 0, 'price_source'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C05_catalog_contract_rejects_malformed_values",
+    "kind": "subcase",
+    "parameters": {
+      "catalog": "{'mode': 'simulation', 'as_of': '2026-10-17（模拟数据创建日期，非真实采集）', 'context': {'store_code': 'DEMO', 'channel': 'pickup', 'meal_time': 'demo-time'}, 'order_fee_cents': 0, 'price_source'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C05_catalog_contract_rejects_malformed_values",
+    "kind": "subcase",
+    "parameters": {
+      "catalog": "{'mode': 'simulation', 'as_of': '2026-10-17（模拟数据创建日期，非真实采集）', 'context': {'store_code': 'DEMO', 'channel': 'pickup', 'meal_time': 'demo-time'}, 'order_fee_cents': 0, 'price_source'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C05_catalog_contract_rejects_malformed_values",
+    "kind": "subcase",
+    "parameters": {
+      "catalog": "{'mode': 'simulation', 'as_of': '2026-10-17（模拟数据创建日期，非真实采集）', 'context': {'store_code': 'DEMO', 'channel': 'pickup', 'meal_time': 'demo-time'}, 'order_fee_cents': 0, 'price_source'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C05_catalog_contract_rejects_malformed_values",
+    "kind": "subcase",
+    "parameters": {
+      "catalog": "{'mode': 'simulation', 'as_of': '2026-10-17（模拟数据创建日期，非真实采集）', 'context': {'store_code': 'DEMO', 'channel': 'pickup', 'meal_time': 'demo-time'}, 'order_fee_cents': 0, 'price_source'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C05_catalog_contract_rejects_malformed_values",
+    "kind": "subcase",
+    "parameters": {
+      "catalog": "{'mode': 'simulation', 'as_of': '2026-10-17（模拟数据创建日期，非真实采集）', 'context': {'store_code': 'DEMO', 'channel': 'pickup', 'meal_time': 'demo-time'}, 'order_fee_cents': 0, 'price_source'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C05_catalog_contract_rejects_malformed_values",
+    "kind": "subcase",
+    "parameters": {
+      "catalog": "{'mode': 'simulation', 'as_of': '2026-10-17（模拟数据创建日期，非真实采集）', 'context': {'store_code': 'DEMO', 'channel': 'pickup', 'meal_time': 'demo-time'}, 'order_fee_cents': 0, 'price_source'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C05_catalog_contract_rejects_malformed_values",
+    "kind": "subcase",
+    "parameters": {
+      "catalog": "{'mode': False, 'as_of': '2026-10-17（模拟数据创建日期，非真实采集）', 'context': {'store_code': 'DEMO', 'channel': 'pickup', 'meal_time': 'demo-time'}, 'order_fee_cents': 0, 'price_source': '完全虚构"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C05_catalog_contract_rejects_malformed_values",
+    "kind": "method",
+    "passed": true,
+    "description": "Malformed metadata, missing meal roles and price/quantity errors fail safely.",
+    "elapsed_ms": 2.076
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C06_three_state_and_strict_fact_type",
+    "kind": "subcase",
+    "parameters": {
+      "fact": "None"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C06_three_state_and_strict_fact_type",
+    "kind": "subcase",
+    "parameters": {
+      "fact": "{'value': None, 'source': 'x'}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C06_three_state_and_strict_fact_type",
+    "kind": "subcase",
+    "parameters": {
+      "fact": "{'value': False, 'source': 'x'}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C06_three_state_and_strict_fact_type",
+    "kind": "subcase",
+    "parameters": {
+      "fact": "{'value': True, 'source': 'x'}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C06_three_state_and_strict_fact_type",
+    "kind": "subcase",
+    "parameters": {
+      "fact": "{'value': 0, 'source': 'x'}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C06_three_state_and_strict_fact_type",
+    "kind": "method",
+    "passed": true,
+    "description": "Absent/null evidence is unknown; false and conflicting values stay distinct.",
+    "elapsed_ms": 0.134
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C07_live_quotes_bind_context_signature_and_verification",
+    "kind": "subcase",
+    "parameters": {
+      "change": "{'signature': 'bad'}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C07_live_quotes_bind_context_signature_and_verification",
+    "kind": "subcase",
+    "parameters": {
+      "change": "{'context': {}}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C07_live_quotes_bind_context_signature_and_verification",
+    "kind": "subcase",
+    "parameters": {
+      "change": "{'verified': False}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C07_live_quotes_bind_context_signature_and_verification",
+    "kind": "subcase",
+    "parameters": {
+      "change": "{'total_cents': True}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C07_live_quotes_bind_context_signature_and_verification",
+    "kind": "subcase",
+    "parameters": {
+      "change": "{'total_cents': -1}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C07_live_quotes_bind_context_signature_and_verification",
+    "kind": "subcase",
+    "parameters": {
+      "change": "{'total_cents': None}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C07_live_quotes_bind_context_signature_and_verification",
+    "kind": "method",
+    "passed": true,
+    "description": "Local prices cannot become live quotes; invalid/missing evidence is not ready.",
+    "elapsed_ms": 2.671
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C08_unknown_price_and_fee_never_assume_zero",
+    "kind": "subcase",
+    "parameters": {
+      "fee": "None"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C08_unknown_price_and_fee_never_assume_zero",
+    "kind": "subcase",
+    "parameters": {
+      "fee": "True"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C08_unknown_price_and_fee_never_assume_zero",
+    "kind": "subcase",
+    "parameters": {
+      "fee": "-1"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C08_unknown_price_and_fee_never_assume_zero",
+    "kind": "method",
+    "passed": true,
+    "description": "Missing price, missing fees and bool fees cannot produce a final amount.",
+    "elapsed_ms": 1.905
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C09_search_limits_and_no_input_mutation",
+    "kind": "method",
+    "passed": true,
+    "description": "At most 30 candidates per person and 900 pairs, with zero input mutation.",
+    "elapsed_ms": 23.327
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C10_difference_missing_price_and_unchanged_plan",
+    "kind": "method",
+    "passed": true,
+    "description": "No false delta on failure; unchanged chosen meal reports a zero price delta.",
+    "elapsed_ms": 1.761
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C11_card_rounding_and_invalid_amount_types",
+    "kind": "subcase",
+    "parameters": {
+      "fee": "-1",
+      "saving": "100"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C11_card_rounding_and_invalid_amount_types",
+    "kind": "subcase",
+    "parameters": {
+      "fee": "True",
+      "saving": "100"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C11_card_rounding_and_invalid_amount_types",
+    "kind": "subcase",
+    "parameters": {
+      "fee": "100",
+      "saving": "True"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C11_card_rounding_and_invalid_amount_types",
+    "kind": "subcase",
+    "parameters": {
+      "fee": "100",
+      "saving": "1.0"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C11_card_rounding_and_invalid_amount_types",
+    "kind": "method",
+    "passed": true,
+    "description": "Zero fee is immediate break even; invalid fees/savings must not be coerced.",
+    "elapsed_ms": 0.163
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C12_signatures_track_context_items_and_card_fee",
+    "kind": "subcase",
+    "parameters": {
+      "change": "{'card_fee_cents': 1}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C12_signatures_track_context_items_and_card_fee",
+    "kind": "subcase",
+    "parameters": {
+      "change": "{'items': [{'code': 'changed'}]}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C12_signatures_track_context_items_and_card_fee",
+    "kind": "subcase",
+    "parameters": {
+      "change": "{'wire_items': [{'code': 'X'}]}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C12_signatures_track_context_items_and_card_fee",
+    "kind": "method",
+    "passed": true,
+    "description": "Identity is stable by field order but changes with transaction-affecting input.",
+    "elapsed_ms": 0.293
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "0"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "1"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "2"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "3"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "4"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "5"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "6"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "7"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "8"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "9"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "10"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "11"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "12"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "13"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "14"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "15"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "16"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "17"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "18"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "19"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "20"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "21"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "22"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "23"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "24"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "25"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "26"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "27"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "28"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "29"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "30"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "31"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "32"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "33"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "34"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "35"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "36"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "37"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "38"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "39"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "40"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "41"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "42"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "43"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "44"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "45"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "46"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "47"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "48"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "49"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "50"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "51"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "52"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "53"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "54"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "55"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "56"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "57"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "58"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "59"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "60"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "61"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "62"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "63"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "64"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "65"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "66"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "67"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "68"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "69"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "70"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "71"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "72"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "73"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "74"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "75"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "76"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "77"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "78"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "79"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "80"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "81"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "82"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "83"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "84"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "85"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "86"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "87"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "88"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "89"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "90"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "91"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "92"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "93"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "94"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "95"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "96"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "97"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "98"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "99"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "100"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "101"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "102"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "103"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "104"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "105"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "106"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "107"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "108"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "109"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "110"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "111"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "112"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "113"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "114"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "115"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "116"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "117"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "118"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "subcase",
+    "parameters": {
+      "menu": "119"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle",
+    "kind": "method",
+    "passed": true,
+    "description": "For 120 small menus, every feasible outcome matches an independent enumerator.",
+    "elapsed_ms": 48.804
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'context'",
+      "atom": "None"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'context'",
+      "atom": "False"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'context'",
+      "atom": "True"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'context'",
+      "atom": "0"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'context'",
+      "atom": "1"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'context'",
+      "atom": "1.25"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'context'",
+      "atom": "''"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'context'",
+      "atom": "'value'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'context'",
+      "atom": "[]"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'context'",
+      "atom": "[None]"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'context'",
+      "atom": "{}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'context'",
+      "atom": "{'x': None}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'budget_cents'",
+      "atom": "None"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'budget_cents'",
+      "atom": "False"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'budget_cents'",
+      "atom": "True"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'budget_cents'",
+      "atom": "0"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'budget_cents'",
+      "atom": "1"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'budget_cents'",
+      "atom": "1.25"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'budget_cents'",
+      "atom": "''"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'budget_cents'",
+      "atom": "'value'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'budget_cents'",
+      "atom": "[]"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'budget_cents'",
+      "atom": "[None]"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'budget_cents'",
+      "atom": "{}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'budget_cents'",
+      "atom": "{'x': None}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'people'",
+      "atom": "None"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'people'",
+      "atom": "False"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'people'",
+      "atom": "True"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'people'",
+      "atom": "0"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'people'",
+      "atom": "1"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'people'",
+      "atom": "1.25"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'people'",
+      "atom": "''"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'people'",
+      "atom": "'value'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'people'",
+      "atom": "[]"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'people'",
+      "atom": "[None]"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'people'",
+      "atom": "{}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'people'",
+      "atom": "{'x': None}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'mode'",
+      "atom": "None"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'mode'",
+      "atom": "False"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'mode'",
+      "atom": "True"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'mode'",
+      "atom": "0"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'mode'",
+      "atom": "1"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'mode'",
+      "atom": "1.25"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'mode'",
+      "atom": "''"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'mode'",
+      "atom": "'value'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'mode'",
+      "atom": "[]"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'mode'",
+      "atom": "[None]"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'mode'",
+      "atom": "{}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'mode'",
+      "atom": "{'x': None}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'as_of'",
+      "atom": "None"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'as_of'",
+      "atom": "False"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'as_of'",
+      "atom": "True"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'as_of'",
+      "atom": "0"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'as_of'",
+      "atom": "1"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'as_of'",
+      "atom": "1.25"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'as_of'",
+      "atom": "''"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'as_of'",
+      "atom": "'value'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'as_of'",
+      "atom": "[]"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'as_of'",
+      "atom": "[None]"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'as_of'",
+      "atom": "{}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'as_of'",
+      "atom": "{'x': None}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'context'",
+      "atom": "None"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'context'",
+      "atom": "False"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'context'",
+      "atom": "True"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'context'",
+      "atom": "0"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'context'",
+      "atom": "1"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'context'",
+      "atom": "1.25"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'context'",
+      "atom": "''"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'context'",
+      "atom": "'value'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'context'",
+      "atom": "[]"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'context'",
+      "atom": "[None]"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'context'",
+      "atom": "{}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'context'",
+      "atom": "{'x': None}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'offers'",
+      "atom": "None"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'offers'",
+      "atom": "False"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'offers'",
+      "atom": "True"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'offers'",
+      "atom": "0"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'offers'",
+      "atom": "1"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'offers'",
+      "atom": "1.25"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'offers'",
+      "atom": "''"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'offers'",
+      "atom": "'value'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'offers'",
+      "atom": "[]"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'offers'",
+      "atom": "[None]"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'offers'",
+      "atom": "{}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'offers'",
+      "atom": "{'x': None}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error",
+    "kind": "method",
+    "passed": true,
+    "description": "Single-field JSON type mutations return a valid result or controlled InputError.",
+    "elapsed_ms": 8.319
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C15_corrupt_saved_recommendations_are_not_used_as_price_evidence",
+    "kind": "subcase",
+    "parameters": {
+      "case": "0"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C15_corrupt_saved_recommendations_are_not_used_as_price_evidence",
+    "kind": "subcase",
+    "parameters": {
+      "case": "1"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C15_corrupt_saved_recommendations_are_not_used_as_price_evidence",
+    "kind": "subcase",
+    "parameters": {
+      "case": "2"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C15_corrupt_saved_recommendations_are_not_used_as_price_evidence",
+    "kind": "subcase",
+    "parameters": {
+      "case": "3"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C15_corrupt_saved_recommendations_are_not_used_as_price_evidence",
+    "kind": "subcase",
+    "parameters": {
+      "case": "4"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C15_corrupt_saved_recommendations_are_not_used_as_price_evidence",
+    "kind": "subcase",
+    "parameters": {
+      "case": "5"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C15_corrupt_saved_recommendations_are_not_used_as_price_evidence",
+    "kind": "subcase",
+    "parameters": {
+      "case": "6"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C15_corrupt_saved_recommendations_are_not_used_as_price_evidence",
+    "kind": "subcase",
+    "parameters": {
+      "case": "7"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C15_corrupt_saved_recommendations_are_not_used_as_price_evidence",
+    "kind": "method",
+    "passed": true,
+    "description": "Malformed saved plan containers and monetary types must not escape as a traceback.",
+    "elapsed_ms": 1.681
+  },
+  {
+    "id": "test_core_full.CoreFullTests.test_C16_hard_constraints_are_checked_per_person_not_per_whole_basket",
+    "kind": "method",
+    "passed": true,
+    "description": "A must receive chicken and B beef even when the reversed basket costs the same.",
+    "elapsed_ms": 0.337
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L01_role_and_facts_cover_all_food_and_drink_states",
+    "kind": "subcase",
+    "parameters": {
+      "items": "[{'role': 'main', 'name': '非辣牛肉堡'}, {'role': 'drink', 'name': '无糖可乐'}]"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L01_role_and_facts_cover_all_food_and_drink_states",
+    "kind": "subcase",
+    "parameters": {
+      "items": "[{'role': 'main', 'name': '辣鸡肉堡'}, {'role': 'drink', 'name': '含糖可乐'}]"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L01_role_and_facts_cover_all_food_and_drink_states",
+    "kind": "subcase",
+    "parameters": {
+      "items": "[{'role': 'main', 'name': '原味鸡肉堡'}, {'role': 'side', 'name': '辣薯条'}, {'role': 'drink', 'name': '低糖饮料'}]"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L01_role_and_facts_cover_all_food_and_drink_states",
+    "kind": "subcase",
+    "parameters": {
+      "items": "[{'role': 'main', 'name': '牛鸡混合堡'}]"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L01_role_and_facts_cover_all_food_and_drink_states",
+    "kind": "subcase",
+    "parameters": {
+      "items": "[]"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L01_role_and_facts_cover_all_food_and_drink_states",
+    "kind": "method",
+    "passed": true,
+    "description": "Classification must never turn missing sugar/spice/meat evidence into safety.",
+    "elapsed_ms": 0.136
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L02_modification_preserves_only_complete_declared_defaults",
+    "kind": "subcase",
+    "parameters": {
+      "changes": "{'minValues': 2}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L02_modification_preserves_only_complete_declared_defaults",
+    "kind": "subcase",
+    "parameters": {
+      "changes": "{'values': [{'code': 'ICE', 'selectedQuantity': 1}]}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L02_modification_preserves_only_complete_declared_defaults",
+    "kind": "method",
+    "passed": true,
+    "description": "Required modification defaults retain server codes, not invented notes.",
+    "elapsed_ms": 0.079
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L03_complete_default_and_sugar_free_wire_variants",
+    "kind": "method",
+    "passed": true,
+    "description": "The two variants use exact explicit option codes and intact modifications.",
+    "elapsed_ms": 0.135
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L04_reject_incomplete_unsupported_and_ambiguous_meals",
+    "kind": "subcase",
+    "parameters": {
+      "detail": "None"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L04_reject_incomplete_unsupported_and_ambiguous_meals",
+    "kind": "subcase",
+    "parameters": {
+      "detail": "{'rounds': {'bad': True}}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L04_reject_incomplete_unsupported_and_ambiguous_meals",
+    "kind": "subcase",
+    "parameters": {
+      "detail": "{}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L04_reject_incomplete_unsupported_and_ambiguous_meals",
+    "kind": "subcase",
+    "parameters": {
+      "detail": "{'rounds': []}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L04_reject_incomplete_unsupported_and_ambiguous_meals",
+    "kind": "subcase",
+    "parameters": {
+      "detail": "{'rounds': [None]}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L04_reject_incomplete_unsupported_and_ambiguous_meals",
+    "kind": "subcase",
+    "parameters": {
+      "detail": "{'rounds': None}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L04_reject_incomplete_unsupported_and_ambiguous_meals",
+    "kind": "subcase",
+    "parameters": {
+      "detail": "{'name': '模拟鸡肉堡套餐', 'rounds': [{'id': 1, 'name': '主食', 'quantity': 2, 'minQuantity': 1, 'maxQuantity': 1, 'choices': [{'code': 'MAIN', 'name': '模拟非辣鸡肉堡', 'isDefault': 1}]}, {'id': "
+    },
+    "passed": true
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L04_reject_incomplete_unsupported_and_ambiguous_meals",
+    "kind": "subcase",
+    "parameters": {
+      "detail": "{'name': '模拟鸡肉堡套餐', 'rounds': [{'id': 1, 'name': '主食', 'quantity': 1, 'minQuantity': 1, 'maxQuantity': 0, 'choices': [{'code': 'MAIN', 'name': '模拟非辣鸡肉堡', 'isDefault': 1}]}, {'id': "
+    },
+    "passed": true
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L04_reject_incomplete_unsupported_and_ambiguous_meals",
+    "kind": "subcase",
+    "parameters": {
+      "detail": "{'name': '模拟鸡肉堡套餐', 'rounds': [{'id': 1, 'name': '主食', 'quantity': 1, 'minQuantity': 1, 'maxQuantity': 1, 'choices': [{'code': 'MAIN', 'name': '模拟非辣鸡肉堡', 'isDefault': 0}]}, {'id': "
+    },
+    "passed": true
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L04_reject_incomplete_unsupported_and_ambiguous_meals",
+    "kind": "subcase",
+    "parameters": {
+      "detail": "{'name': '模拟鸡肉堡套餐', 'rounds': [{'id': 1, 'name': '主食', 'quantity': 1, 'minQuantity': 1, 'maxQuantity': 1, 'choices': [{'code': 'MAIN', 'name': '模拟非辣鸡肉堡', 'isDefault': 1}, {'code': "
+    },
+    "passed": true
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L04_reject_incomplete_unsupported_and_ambiguous_meals",
+    "kind": "subcase",
+    "parameters": {
+      "detail": "{'name': '模拟鸡肉堡套餐', 'rounds': [{'id': 1, 'name': '主食', 'quantity': 1, 'minQuantity': 1, 'maxQuantity': 1, 'choices': [{'code': '', 'name': '模拟非辣鸡肉堡', 'isDefault': 1}]}, {'id': 2, '"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L04_reject_incomplete_unsupported_and_ambiguous_meals",
+    "kind": "subcase",
+    "parameters": {
+      "detail": "{'name': '模拟鸡肉堡套餐', 'rounds': [{'id': 1, 'name': '主食', 'quantity': 1, 'minQuantity': 1, 'maxQuantity': 1, 'choices': [{'code': 'MAIN', 'name': '模拟非辣鸡肉堡', 'isDefault': 1}]}]}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L04_reject_incomplete_unsupported_and_ambiguous_meals",
+    "kind": "subcase",
+    "parameters": {
+      "detail": "{'name': '模拟鸡肉堡套餐', 'rounds': [{'id': 2, 'name': '饮料', 'quantity': 1, 'minQuantity': 1, 'maxQuantity': 1, 'choices': [{'code': 'DRINK', 'name': '模拟含糖可乐', 'isDefault': 1}, {'code': "
+    },
+    "passed": true
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L04_reject_incomplete_unsupported_and_ambiguous_meals",
+    "kind": "subcase",
+    "parameters": {
+      "detail": "{'name': '模拟鸡肉堡套餐', 'rounds': [{'id': 1, 'name': '主食', 'quantity': 0, 'minQuantity': 0, 'maxQuantity': 1, 'choices': [{'code': 'MAIN', 'name': '模拟非辣鸡肉堡', 'isDefault': 1}]}, {'id': "
+    },
+    "passed": true
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L04_reject_incomplete_unsupported_and_ambiguous_meals",
+    "kind": "subcase",
+    "parameters": {
+      "detail": "{'name': '模拟鸡肉堡套餐', 'rounds': [{'name': '主食', 'quantity': 1, 'minQuantity': 1, 'maxQuantity': 1, 'choices': [{'code': 'MAIN', 'name': '模拟非辣鸡肉堡', 'isDefault': 1}]}, {'id': 2, 'name'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L04_reject_incomplete_unsupported_and_ambiguous_meals",
+    "kind": "method",
+    "passed": true,
+    "description": "Incomplete rounds, multi-select defaults, zero mains and bad codes are skipped.",
+    "elapsed_ms": 0.289
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L05_identical_variants_and_coupon_parameters_are_bounded",
+    "kind": "method",
+    "passed": true,
+    "description": "Repeated default variants deduplicate; valid coupon codes stay only in wire input.",
+    "elapsed_ms": 0.168
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L06_pricing_requires_complete_matching_product_identity",
+    "kind": "subcase",
+    "parameters": {
+      "data": "None"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L06_pricing_requires_complete_matching_product_identity",
+    "kind": "subcase",
+    "parameters": {
+      "data": "{}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L06_pricing_requires_complete_matching_product_identity",
+    "kind": "subcase",
+    "parameters": {
+      "data": "[]"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L06_pricing_requires_complete_matching_product_identity",
+    "kind": "subcase",
+    "parameters": {
+      "data": "{'price': True, 'productPrice': 2000, 'deliveryPrice': 0, 'packingPrice': 0, 'tablewarePrice': 0, 'productList': [{'productCode': 'P', 'quantity': 2}]}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L06_pricing_requires_complete_matching_product_identity",
+    "kind": "subcase",
+    "parameters": {
+      "data": "{'price': 2000.0, 'productPrice': 2000, 'deliveryPrice': 0, 'packingPrice': 0, 'tablewarePrice': 0, 'productList': [{'productCode': 'P', 'quantity': 2}]}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L06_pricing_requires_complete_matching_product_identity",
+    "kind": "subcase",
+    "parameters": {
+      "data": "{'price': 2000, 'productPrice': -1, 'deliveryPrice': 0, 'packingPrice': 0, 'tablewarePrice': 0, 'productList': [{'productCode': 'P', 'quantity': 2}]}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L06_pricing_requires_complete_matching_product_identity",
+    "kind": "subcase",
+    "parameters": {
+      "data": "{'price': 2000, 'productPrice': 2000, 'deliveryPrice': 1, 'packingPrice': 0, 'tablewarePrice': 0, 'productList': [{'productCode': 'P', 'quantity': 2}]}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L06_pricing_requires_complete_matching_product_identity",
+    "kind": "subcase",
+    "parameters": {
+      "data": "{'price': 2001, 'productPrice': 2000, 'deliveryPrice': 0, 'packingPrice': 0, 'tablewarePrice': 0, 'productList': [{'productCode': 'P', 'quantity': 2}]}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L06_pricing_requires_complete_matching_product_identity",
+    "kind": "subcase",
+    "parameters": {
+      "data": "{'price': 2000, 'productPrice': 2000, 'deliveryPrice': 0, 'packingPrice': 0, 'tablewarePrice': 0, 'productList': []}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L06_pricing_requires_complete_matching_product_identity",
+    "kind": "subcase",
+    "parameters": {
+      "data": "{'price': 2000, 'productPrice': 2000, 'deliveryPrice': 0, 'packingPrice': 0, 'tablewarePrice': 0, 'productList': [{'productCode': 'P', 'quantity': 1}]}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L06_pricing_requires_complete_matching_product_identity",
+    "kind": "subcase",
+    "parameters": {
+      "data": "{'price': 2000, 'productPrice': 2000, 'deliveryPrice': 0, 'packingPrice': 0, 'tablewarePrice': 0, 'productList': [{'productCode': 'P', 'quantity': 0}]}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L06_pricing_requires_complete_matching_product_identity",
+    "kind": "subcase",
+    "parameters": {
+      "data": "{'price': 2000, 'productPrice': 2000, 'deliveryPrice': 0, 'packingPrice': 0, 'tablewarePrice': 0, 'productList': None}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L06_pricing_requires_complete_matching_product_identity",
+    "kind": "subcase",
+    "parameters": {
+      "data": "{'price': 2000, 'productPrice': 2000, 'deliveryPrice': 0, 'packingPrice': 0, 'tablewarePrice': 0, 'productList': [None]}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L06_pricing_requires_complete_matching_product_identity",
+    "kind": "method",
+    "passed": true,
+    "description": "Total, nonnegative integer units, fee sums, quantities and SKUs must agree.",
+    "elapsed_ms": 0.215
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L07_planner_schema_context_and_container_failures",
+    "kind": "subcase",
+    "parameters": {
+      "changes": "{'meal_time': 'tomorrow'}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L07_planner_schema_context_and_container_failures",
+    "kind": "subcase",
+    "parameters": {
+      "changes": "{'store_code': 'not-a-code'}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L07_planner_schema_context_and_container_failures",
+    "kind": "subcase",
+    "parameters": {
+      "mutation": "'no_tools'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L07_planner_schema_context_and_container_failures",
+    "kind": "subcase",
+    "parameters": {
+      "mutation": "'schema_change'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L07_planner_schema_context_and_container_failures",
+    "kind": "subcase",
+    "parameters": {
+      "mutation": "'menu_list'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L07_planner_schema_context_and_container_failures",
+    "kind": "subcase",
+    "parameters": {
+      "mutation": "'menu_data_null'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L07_planner_schema_context_and_container_failures",
+    "kind": "subcase",
+    "parameters": {
+      "mutation": "'coupons_dict'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L07_planner_schema_context_and_container_failures",
+    "kind": "method",
+    "passed": true,
+    "description": "Unsupported time/store/schema and malformed service containers stop safely.",
+    "elapsed_ms": 0.421
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L08_catalog_filter_rank_and_finite_detail_limit",
+    "kind": "method",
+    "passed": true,
+    "description": "Skip members/groups/sides; sort malformed hints safely; fetch at most six regulars.",
+    "elapsed_ms": 0.765
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L09_coupon_detail_failures_are_visible_and_bounded",
+    "kind": "method",
+    "passed": true,
+    "description": "At most two coupon products; skipped failed details are counted.",
+    "elapsed_ms": 0.311
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L10_real_planner_path_ready_no_price_overbudget_and_partial_failure",
+    "kind": "subcase",
+    "parameters": {
+      "mutation": "'ready'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L10_real_planner_path_ready_no_price_overbudget_and_partial_failure",
+    "kind": "subcase",
+    "parameters": {
+      "mutation": "'all_fail'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L10_real_planner_path_ready_no_price_overbudget_and_partial_failure",
+    "kind": "subcase",
+    "parameters": {
+      "mutation": "'partial_fail'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L10_real_planner_path_ready_no_price_overbudget_and_partial_failure",
+    "kind": "subcase",
+    "parameters": {
+      "mutation": "'bad_price'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L10_real_planner_path_ready_no_price_overbudget_and_partial_failure",
+    "kind": "subcase",
+    "parameters": {
+      "mutation": "'over_budget'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L10_real_planner_path_ready_no_price_overbudget_and_partial_failure",
+    "kind": "subcase",
+    "parameters": {
+      "mutation": "'no_evidence'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L10_real_planner_path_ready_no_price_overbudget_and_partial_failure",
+    "kind": "subcase",
+    "parameters": {
+      "mutation": "'no_offers'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L10_real_planner_path_ready_no_price_overbudget_and_partial_failure",
+    "kind": "method",
+    "passed": true,
+    "description": "Exercise the entire real planner against deterministic official-schema fixtures.",
+    "elapsed_ms": 5.337
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L11_duplicate_baskets_do_not_spend_quote_budget_twice",
+    "kind": "method",
+    "passed": true,
+    "description": "Person ordering duplicates share one request opportunity, capped at three.",
+    "elapsed_ms": 0.694
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L12_corrupt_detail_options_and_modifications_fail_closed",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'choices'",
+      "value": "[None]"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L12_corrupt_detail_options_and_modifications_fail_closed",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'choices'",
+      "value": "None"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L12_corrupt_detail_options_and_modifications_fail_closed",
+    "kind": "subcase",
+    "parameters": {
+      "target": "'name'",
+      "value": "None"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L12_corrupt_detail_options_and_modifications_fail_closed",
+    "kind": "subcase",
+    "parameters": {
+      "modification": "[]"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L12_corrupt_detail_options_and_modifications_fail_closed",
+    "kind": "subcase",
+    "parameters": {
+      "modification": "{'items': [None]}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L12_corrupt_detail_options_and_modifications_fail_closed",
+    "kind": "subcase",
+    "parameters": {
+      "modification": "{'items': None}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L12_corrupt_detail_options_and_modifications_fail_closed",
+    "kind": "subcase",
+    "parameters": {
+      "modification": "{'items': [{'values': [None]}]}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L12_corrupt_detail_options_and_modifications_fail_closed",
+    "kind": "method",
+    "passed": true,
+    "description": "Broken upstream default/choice/modification containers never produce a fabricated meal.",
+    "elapsed_ms": 0.187
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L13_corrupt_schemas_and_coupons_fail_with_safe_protocol_errors",
+    "kind": "subcase",
+    "parameters": {
+      "mutation": "'schema_null'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L13_corrupt_schemas_and_coupons_fail_with_safe_protocol_errors",
+    "kind": "subcase",
+    "parameters": {
+      "mutation": "'schema_required_dict'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L13_corrupt_schemas_and_coupons_fail_with_safe_protocol_errors",
+    "kind": "subcase",
+    "parameters": {
+      "mutation": "'coupon_null'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L13_corrupt_schemas_and_coupons_fail_with_safe_protocol_errors",
+    "kind": "subcase",
+    "parameters": {
+      "mutation": "'coupon_products_null'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L13_corrupt_schemas_and_coupons_fail_with_safe_protocol_errors",
+    "kind": "method",
+    "passed": true,
+    "description": "Malformed remote schemas/coupon lists stop before using guessed wire parameters.",
+    "elapsed_ms": 0.299
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L14_unpriced_candidates_keep_pending_status_despite_overbudget_quotes",
+    "kind": "method",
+    "passed": true,
+    "description": "Three over-budget quotes do not resolve remaining unquoted candidates.",
+    "elapsed_ms": 1.154
+  },
+  {
+    "id": "test_live_full.LiveFullTests.test_L15_inapplicable_coupon_cannot_become_verified_recommendation",
+    "kind": "method",
+    "passed": true,
+    "description": "A coupon offered by lookup is still unusable if official pricing rejects it.",
+    "elapsed_ms": 0.393
+  },
+  {
+    "id": "test_protocol_full.ProtocolFullTests.test_P01_credentials_environment_file_precedence_and_rejection",
+    "kind": "method",
+    "passed": true,
+    "description": "Missing, ambiguous and whitespace credentials fail without revealing content.",
+    "elapsed_ms": 4.895
+  },
+  {
+    "id": "test_protocol_full.ProtocolFullTests.test_P02_json_sse_bom_multiline_and_invalid_bytes",
+    "kind": "subcase",
+    "parameters": {
+      "raw": "b'[]'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_protocol_full.ProtocolFullTests.test_P02_json_sse_bom_multiline_and_invalid_bytes",
+    "kind": "subcase",
+    "parameters": {
+      "raw": "b'not-json'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_protocol_full.ProtocolFullTests.test_P02_json_sse_bom_multiline_and_invalid_bytes",
+    "kind": "subcase",
+    "parameters": {
+      "raw": "b'data: []\\n\\n'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_protocol_full.ProtocolFullTests.test_P02_json_sse_bom_multiline_and_invalid_bytes",
+    "kind": "subcase",
+    "parameters": {
+      "raw": "b'data: {\"id\":2}\\n\\n'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_protocol_full.ProtocolFullTests.test_P02_json_sse_bom_multiline_and_invalid_bytes",
+    "kind": "subcase",
+    "parameters": {
+      "raw": "b'\\xff\\xfe'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_protocol_full.ProtocolFullTests.test_P02_json_sse_bom_multiline_and_invalid_bytes",
+    "kind": "method",
+    "passed": true,
+    "description": "JSON and SSE select the right ID; malformed payloads fail with safe errors.",
+    "elapsed_ms": 0.141
+  },
+  {
+    "id": "test_protocol_full.ProtocolFullTests.test_P03_tool_content_modes_and_business_errors_sanitize",
+    "kind": "subcase",
+    "parameters": {
+      "data": "None"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_protocol_full.ProtocolFullTests.test_P03_tool_content_modes_and_business_errors_sanitize",
+    "kind": "subcase",
+    "parameters": {
+      "data": "{'isError': True}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_protocol_full.ProtocolFullTests.test_P03_tool_content_modes_and_business_errors_sanitize",
+    "kind": "subcase",
+    "parameters": {
+      "data": "{'content': []}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_protocol_full.ProtocolFullTests.test_P03_tool_content_modes_and_business_errors_sanitize",
+    "kind": "subcase",
+    "parameters": {
+      "data": "{'structuredContent': {'code': 'PRIVATE-SENTINEL', 'message': 'PRIVATE-SENTINEL'}}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_protocol_full.ProtocolFullTests.test_P03_tool_content_modes_and_business_errors_sanitize",
+    "kind": "subcase",
+    "parameters": {
+      "data": "{'structuredContent': {'code': 500, 'message': 'PRIVATE-SENTINEL'}}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_protocol_full.ProtocolFullTests.test_P03_tool_content_modes_and_business_errors_sanitize",
+    "kind": "subcase",
+    "parameters": {
+      "data": "{'content': None}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_protocol_full.ProtocolFullTests.test_P03_tool_content_modes_and_business_errors_sanitize",
+    "kind": "subcase",
+    "parameters": {
+      "data": "{'content': [None]}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_protocol_full.ProtocolFullTests.test_P03_tool_content_modes_and_business_errors_sanitize",
+    "kind": "method",
+    "passed": true,
+    "description": "Tool failures never expose account messages; both structured/text formats work.",
+    "elapsed_ms": 0.102
+  },
+  {
+    "id": "test_protocol_full.ProtocolFullTests.test_P04_post_rpc_errors_ids_types_size_and_notification",
+    "kind": "subcase",
+    "parameters": {
+      "kind": "\"<class 'dict'>\""
+    },
+    "passed": true
+  },
+  {
+    "id": "test_protocol_full.ProtocolFullTests.test_P04_post_rpc_errors_ids_types_size_and_notification",
+    "kind": "subcase",
+    "parameters": {
+      "kind": "\"<class 'dict'>\""
+    },
+    "passed": true
+  },
+  {
+    "id": "test_protocol_full.ProtocolFullTests.test_P04_post_rpc_errors_ids_types_size_and_notification",
+    "kind": "subcase",
+    "parameters": {
+      "kind": "\"<class 'dict'>\""
+    },
+    "passed": true
+  },
+  {
+    "id": "test_protocol_full.ProtocolFullTests.test_P04_post_rpc_errors_ids_types_size_and_notification",
+    "kind": "subcase",
+    "parameters": {
+      "kind": "\"<class 'dict'>\""
+    },
+    "passed": true
+  },
+  {
+    "id": "test_protocol_full.ProtocolFullTests.test_P04_post_rpc_errors_ids_types_size_and_notification",
+    "kind": "subcase",
+    "parameters": {
+      "kind": "\"<class 'bytes'>\""
+    },
+    "passed": true
+  },
+  {
+    "id": "test_protocol_full.ProtocolFullTests.test_P04_post_rpc_errors_ids_types_size_and_notification",
+    "kind": "method",
+    "passed": true,
+    "description": "Invalid envelopes, oversized responses and mismatched IDs are not accepted.",
+    "elapsed_ms": 5.628
+  },
+  {
+    "id": "test_protocol_full.ProtocolFullTests.test_P05_initialization_protocol_and_session_reused",
+    "kind": "method",
+    "passed": true,
+    "description": "Initialize/notification propagate the negotiated protocol and opaque session.",
+    "elapsed_ms": 1.011
+  },
+  {
+    "id": "test_protocol_full.ProtocolFullTests.test_P06_http_and_network_retry_budget",
+    "kind": "subcase",
+    "parameters": {
+      "code": "400"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_protocol_full.ProtocolFullTests.test_P06_http_and_network_retry_budget",
+    "kind": "subcase",
+    "parameters": {
+      "code": "401"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_protocol_full.ProtocolFullTests.test_P06_http_and_network_retry_budget",
+    "kind": "subcase",
+    "parameters": {
+      "code": "403"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_protocol_full.ProtocolFullTests.test_P06_http_and_network_retry_budget",
+    "kind": "subcase",
+    "parameters": {
+      "code": "302"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_protocol_full.ProtocolFullTests.test_P06_http_and_network_retry_budget",
+    "kind": "subcase",
+    "parameters": {
+      "code": "429"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_protocol_full.ProtocolFullTests.test_P06_http_and_network_retry_budget",
+    "kind": "subcase",
+    "parameters": {
+      "code": "500"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_protocol_full.ProtocolFullTests.test_P06_http_and_network_retry_budget",
+    "kind": "subcase",
+    "parameters": {
+      "code": "502"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_protocol_full.ProtocolFullTests.test_P06_http_and_network_retry_budget",
+    "kind": "subcase",
+    "parameters": {
+      "code": "503"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_protocol_full.ProtocolFullTests.test_P06_http_and_network_retry_budget",
+    "kind": "subcase",
+    "parameters": {
+      "code": "504"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_protocol_full.ProtocolFullTests.test_P06_http_and_network_retry_budget",
+    "kind": "subcase",
+    "parameters": {
+      "error": "'URLError'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_protocol_full.ProtocolFullTests.test_P06_http_and_network_retry_budget",
+    "kind": "subcase",
+    "parameters": {
+      "error": "'TimeoutError'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_protocol_full.ProtocolFullTests.test_P06_http_and_network_retry_budget",
+    "kind": "subcase",
+    "parameters": {
+      "error": "'OSError'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_protocol_full.ProtocolFullTests.test_P06_http_and_network_retry_budget",
+    "kind": "method",
+    "passed": true,
+    "description": "Authentication, redirect and bad request stop; transient errors retry at most twice.",
+    "elapsed_ms": 10.699
+  },
+  {
+    "id": "test_protocol_full.ProtocolFullTests.test_P07_tools_paginate_and_reject_cycles_and_overflow",
+    "kind": "subcase",
+    "parameters": {
+      "malformed": "{'tools': None}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_protocol_full.ProtocolFullTests.test_P07_tools_paginate_and_reject_cycles_and_overflow",
+    "kind": "subcase",
+    "parameters": {
+      "malformed": "{'tools': [None]}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_protocol_full.ProtocolFullTests.test_P07_tools_paginate_and_reject_cycles_and_overflow",
+    "kind": "subcase",
+    "parameters": {
+      "malformed": "{'tools': [], 'nextCursor': []}"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_protocol_full.ProtocolFullTests.test_P07_tools_paginate_and_reject_cycles_and_overflow",
+    "kind": "method",
+    "passed": true,
+    "description": "All pages are combined once; repeated cursors and overlong sequences stop.",
+    "elapsed_ms": 3.559
+  },
+  {
+    "id": "test_protocol_full.ProtocolFullTests.test_P08_whitelist_and_audit_exclude_payloads_and_credentials",
+    "kind": "subcase",
+    "parameters": {
+      "name": "'create-order'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_protocol_full.ProtocolFullTests.test_P08_whitelist_and_audit_exclude_payloads_and_credentials",
+    "kind": "subcase",
+    "parameters": {
+      "name": "'auto-bind-coupons'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_protocol_full.ProtocolFullTests.test_P08_whitelist_and_audit_exclude_payloads_and_credentials",
+    "kind": "subcase",
+    "parameters": {
+      "name": "'cancel-order'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_protocol_full.ProtocolFullTests.test_P08_whitelist_and_audit_exclude_payloads_and_credentials",
+    "kind": "subcase",
+    "parameters": {
+      "name": "'pay-order'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_protocol_full.ProtocolFullTests.test_P08_whitelist_and_audit_exclude_payloads_and_credentials",
+    "kind": "subcase",
+    "parameters": {
+      "name": "'mall-create-order'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_protocol_full.ProtocolFullTests.test_P08_whitelist_and_audit_exclude_payloads_and_credentials",
+    "kind": "subcase",
+    "parameters": {
+      "name": "'draw-lottery'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_protocol_full.ProtocolFullTests.test_P08_whitelist_and_audit_exclude_payloads_and_credentials",
+    "kind": "subcase",
+    "parameters": {
+      "name": "'unknown'"
+    },
+    "passed": true
+  },
+  {
+    "id": "test_protocol_full.ProtocolFullTests.test_P08_whitelist_and_audit_exclude_payloads_and_credentials",
+    "kind": "method",
+    "passed": true,
+    "description": "Every allowed tool uses readonly transport; every mutation remains unreachable.",
+    "elapsed_ms": 0.824
+  }
+]

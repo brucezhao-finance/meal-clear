@@ -1,0 +1,66 @@
+﻿编号,分类,测试点,状态,用例,证据
+F001,入口,脚本执行及导入保护,自动执行通过,test_cli_full.CliFullTests.test_Q13_actual_script_entrypoint_and_import_guard,test-events.json; logs/final-tests.txt
+F002,入口,八个子命令帮助、错误命令与参数,自动执行通过,test_cli_full.CliFullTests.test_Q01_all_help_entries_are_available,test-events.json; logs/final-tests.txt
+F003,入口,demo文本与JSON输出且不联网,自动执行通过,test_cli_full.CliFullTests.test_Q02_demo_text_and_json_are_consistent,test-events.json; logs/final-tests.txt
+F004,入口,plan保存、update合并、结构化输出与退出码,自动执行通过,test_cli_full.CliFullTests.test_Q03_plan_save_update_text_json_and_exit_codes; test_cli_full.CliFullTests.test_Q05_offline_update_without_catalog_and_missing_state_fields; test_cli_full.CliFullTests.test_Q07_live_plan_and_live_update_requery_instead_of_reuse,test-events.json; logs/final-tests.txt
+F005,入口,stores只返回公共门店字段,自动执行通过,test_cli_full.CliFullTests.test_Q06_inspect_stores_and_card_subcommands,test-events.json; logs/final-tests.txt
+F006,入口,inspect-tools不暴露非白名单为可调用工具,自动执行通过,test_cli_full.CliFullTests.test_Q06_inspect_stores_and_card_subcommands,test-events.json; logs/final-tests.txt
+F007,入口,break-even整数分CLI与回本取整,自动执行通过,test_cli_full.CliFullTests.test_Q06_inspect_stores_and_card_subcommands; test_core_full.CoreFullTests.test_C11_card_rounding_and_invalid_amount_types,test-events.json; logs/final-tests.txt
+F008,入口,认证或文件失败安全输出、不打印内容,自动执行通过,test_cli_full.CliFullTests.test_Q04_file_and_json_errors_are_sanitized; test_cli_full.CliFullTests.test_Q08_client_initialization_failure_is_controlled,test-events.json; logs/final-tests.txt
+F009,请求,顶层及门店、渠道、时间的缺失/非法值,自动执行通过,test_core_full.CoreFullTests.test_C02_request_top_level_and_context_contract; test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error,test-events.json; logs/final-tests.txt
+F010,请求,1–2人、唯一ID、约束容器和原子类型,自动执行通过,test_core_full.CoreFullTests.test_C03_people_and_atomic_values_contract,test-events.json; logs/final-tests.txt
+F011,请求,只改指定人，保留其他人、预算、上下文,自动执行通过,test_cli_full.CliFullTests.test_Q07_live_plan_and_live_update_requery_instead_of_reuse; test_core_full.CoreFullTests.test_C04_patch_merge_delete_and_invalid_shapes,test-events.json; logs/final-tests.txt
+F012,请求,null明确删除约束，不隐式删除,自动执行通过,test_core_full.CoreFullTests.test_C04_patch_merge_delete_and_invalid_shapes,test-events.json; logs/final-tests.txt
+F013,请求,未知用户、拼错字段、错误patch结构拒绝,自动执行通过,test_core_full.CoreFullTests.test_C04_patch_merge_delete_and_invalid_shapes,test-events.json; logs/final-tests.txt
+F014,请求,指纹字段顺序稳定，预算/时间变化失效,自动执行通过,test_core_full.CoreFullTests.test_C12_signatures_track_context_items_and_card_fee,test-events.json; logs/final-tests.txt
+F015,菜单,来源模式、日期、套餐ID和完整主食饮品校验,自动执行通过,test_core_full.CoreFullTests.test_C05_catalog_contract_rejects_malformed_values,test-events.json; logs/final-tests.txt
+F016,菜单,损坏容器、价格与数量受控拒绝,自动执行通过,test_core_full.CoreFullTests.test_C05_catalog_contract_rejects_malformed_values; test_core_full.CoreFullTests.test_C14_json_shape_mutations_never_escape_input_error,test-events.json; logs/final-tests.txt
+F017,菜单,来源必须有证据、未知不可当通过,自动执行通过,test_core_full.CoreFullTests.test_C06_three_state_and_strict_fact_type,test-events.json; logs/final-tests.txt
+F018,约束,verified/violated/unknown三态及布尔整数区分,自动执行通过,test_core_full.CoreFullTests.test_C06_three_state_and_strict_fact_type,test-events.json; logs/final-tests.txt
+F019,约束,同一购物篮仍按每个人分别满足硬约束,自动执行通过,test_core_full.CoreFullTests.test_C16_hard_constraints_are_checked_per_person_not_per_whole_basket,test-events.json; logs/final-tests.txt
+F020,约束,软偏好与便宜方案形成真实取舍,自动执行通过,test_behavior.BehaviorTests.test_alternatives_have_real_tradeoff,test-events.json; logs/final-tests.txt
+F021,金额,元/分、精度、非有限值、大整数精确计算,自动执行通过,test_core_full.CoreFullTests.test_C01_money_invalid_and_large_exact_values,test-events.json; logs/final-tests.txt
+F022,金额,当前餐费加新卡费，不能只报餐费,自动执行通过,test_behavior.BehaviorTests.test_new_card_not_disguised_as_cheap,test-events.json; logs/final-tests.txt
+F023,金额,预算包含相等边界，超预算不放宽,自动执行通过,test_behavior.BehaviorTests.test_budget_equality_is_allowed; test_cli_full.CliFullTests.test_Q03_plan_save_update_text_json_and_exit_codes,test-events.json; logs/final-tests.txt
+F024,金额,缺价或缺费用不补0,自动执行通过,test_core_full.CoreFullTests.test_C08_unknown_price_and_fee_never_assume_zero,test-events.json; logs/final-tests.txt
+F025,组合,最多每人30候选、双人900组合,自动执行通过,test_core_full.CoreFullTests.test_C09_search_limits_and_no_input_mutation,test-events.json; logs/final-tests.txt
+F026,组合,单券不可重复，多券不假设叠加,自动执行通过,test_behavior.BehaviorTests.test_coupon_reuse_does_not_pass,test-events.json; logs/final-tests.txt
+F027,组合,剔除被支配方案、限制1–2个不重复结果,自动执行通过,test_behavior.BehaviorTests.test_alternatives_have_real_tradeoff; test_core_full.CoreFullTests.test_C09_search_limits_and_no_input_mutation,test-events.json; logs/final-tests.txt
+F028,组合,120组固定随机菜单独立枚举核对可行性与最低金额,自动执行通过,test_core_full.CoreFullTests.test_C13_seeded_menus_against_independent_exhaustive_oracle,test-events.json; logs/final-tests.txt
+F029,报价,实时不使用本地宣传价作为最终应付,自动执行通过,test_core_full.CoreFullTests.test_C07_live_quotes_bind_context_signature_and_verification,test-events.json; logs/final-tests.txt
+F030,报价,上下文、签名、verified及整数金额绑定,自动执行通过,test_core_full.CoreFullTests.test_C07_live_quotes_bind_context_signature_and_verification,test-events.json; logs/final-tests.txt
+F031,报价,官方费用分项冲突/缺总额/商品数量或编码错拒绝,自动执行通过,test_live_full.LiveFullTests.test_L06_pricing_requires_complete_matching_product_identity,test-events.json; logs/final-tests.txt
+F032,报价,拆分费用缺失保留未知，不伪填0,自动执行通过,test_behavior.BehaviorTests.test_official_total_can_have_unknown_breakdown; test_cli_full.CliFullTests.test_Q09_render_all_modes_diagnostics_quote_errors_and_unknown_fees,test-events.json; logs/final-tests.txt
+F033,报价,修改有价计算差额、无推荐或缺价差额null,自动执行通过,test_core_full.CoreFullTests.test_C10_difference_missing_price_and_unchanged_plan,test-events.json; logs/final-tests.txt
+F034,报价,损坏旧会话价格及分配结构拒绝,自动执行通过,test_core_full.CoreFullTests.test_C15_corrupt_saved_recommendations_are_not_used_as_price_evidence,test-events.json; logs/final-tests.txt
+F035,实时,仅now与数字门店编码，不伪造预约,自动执行通过,test_live_full.LiveFullTests.test_L07_planner_schema_context_and_container_failures,test-events.json; logs/final-tests.txt
+F036,实时,必需工具缺失或Schema变化停止,自动执行通过,test_live_full.LiveFullTests.test_L07_planner_schema_context_and_container_failures; test_live_full.LiveFullTests.test_L13_corrupt_schemas_and_coupons_fail_with_safe_protocol_errors,test-events.json; logs/final-tests.txt
+F037,实时,餐品角色与明确无糖/不辣/肉类标签,自动执行通过,test_live_full.LiveFullTests.test_L01_role_and_facts_cover_all_food_and_drink_states,test-events.json; logs/final-tests.txt
+F038,实时,含辣配餐不能被主食非辣标签掩盖,自动执行通过,test_live_full.LiveFullTests.test_L01_role_and_facts_cover_all_food_and_drink_states,test-events.json; logs/final-tests.txt
+F039,实时,默认特制保留服务编码、不创造备注定制,自动执行通过,test_live_full.LiveFullTests.test_L02_modification_preserves_only_complete_declared_defaults; test_live_full.LiveFullTests.test_L03_complete_default_and_sugar_free_wire_variants,test-events.json; logs/final-tests.txt
+F040,实时,多件必选、缺默认、重复默认、不完整餐拒绝,自动执行通过,test_live_full.LiveFullTests.test_L04_reject_incomplete_unsupported_and_ambiguous_meals,test-events.json; logs/final-tests.txt
+F041,实时,明确无糖选项使用实际编码，重复变体去重,自动执行通过,test_live_full.LiveFullTests.test_L03_complete_default_and_sugar_free_wire_variants; test_live_full.LiveFullTests.test_L05_identical_variants_and_coupon_parameters_are_bounded,test-events.json; logs/final-tests.txt
+F042,实时,会员、多人与小食候选过滤，早餐组合进入详情,自动执行通过,test_behavior.BehaviorTests.test_breakfast_combo_reaches_detail_without_member_card; test_live_full.LiveFullTests.test_L08_catalog_filter_rank_and_finite_detail_limit,test-events.json; logs/final-tests.txt
+F043,实时,坏价格提示只影响搜索启发，不影响实付,自动执行通过,test_live_full.LiveFullTests.test_L08_catalog_filter_rank_and_finite_detail_limit,test-events.json; logs/final-tests.txt
+F044,实时,最多6普通详情加2券商品，详情失败统计,自动执行通过,test_live_full.LiveFullTests.test_L08_catalog_filter_rank_and_finite_detail_limit; test_live_full.LiveFullTests.test_L09_coupon_detail_failures_are_visible_and_bounded,test-events.json; logs/final-tests.txt
+F045,实时,门店券缺字段不生成有效券餐、券标识脱敏,自动执行通过,test_live_full.LiveFullTests.test_L05_identical_variants_and_coupon_parameters_are_bounded; test_live_full.LiveFullTests.test_L09_coupon_detail_failures_are_visible_and_bounded,test-events.json; logs/final-tests.txt
+F046,实时,当前券仍需官方核价；不适用券不能冒充可用,自动执行通过,test_live_full.LiveFullTests.test_L15_inapplicable_coupon_cannot_become_verified_recommendation,test-events.json; logs/final-tests.txt
+F047,实时,核价最多3次、同购物篮不重复占用机会,自动执行通过,test_live_full.LiveFullTests.test_L10_real_planner_path_ready_no_price_overbudget_and_partial_failure; test_live_full.LiveFullTests.test_L11_duplicate_baskets_do_not_spend_quote_budget_twice,test-events.json; logs/final-tests.txt
+F048,实时,核价全失败/部分失败/无证据/无候选,自动执行通过,test_live_full.LiveFullTests.test_L10_real_planner_path_ready_no_price_overbudget_and_partial_failure,test-events.json; logs/final-tests.txt
+F049,实时,还有未核价候选时不能断言全门店超预算,自动执行通过,test_live_full.LiveFullTests.test_L14_unpriced_candidates_keep_pending_status_despite_overbudget_quotes,test-events.json; logs/final-tests.txt
+F050,实时,实时改单重新查询菜单和核价，不复用旧结果,自动执行通过,test_cli_full.CliFullTests.test_Q07_live_plan_and_live_update_requery_instead_of_reuse,test-events.json; logs/final-tests.txt
+F051,协议,环境变量优先、文件解析、多凭证和空值拒绝,自动执行通过,test_protocol_full.ProtocolFullTests.test_P01_credentials_environment_file_precedence_and_rejection,test-events.json; logs/final-tests.txt
+F052,协议,JSON/SSE/BOM/多行/通知/错ID与UTF8处理,自动执行通过,test_protocol_full.ProtocolFullTests.test_P02_json_sse_bom_multiline_and_invalid_bytes; test_protocol_full.ProtocolFullTests.test_P04_post_rpc_errors_ids_types_size_and_notification,test-events.json; logs/final-tests.txt
+F053,协议,结构化和文本工具结果、业务失败脱敏,自动执行通过,test_protocol_full.ProtocolFullTests.test_P03_tool_content_modes_and_business_errors_sanitize,test-events.json; logs/final-tests.txt
+F054,协议,RPC错误、布尔ID错配、结果结构与8MB上限,自动执行通过,test_protocol_full.ProtocolFullTests.test_P04_post_rpc_errors_ids_types_size_and_notification,test-events.json; logs/final-tests.txt
+F055,协议,初始化、协议版本与session传递,自动执行通过,test_protocol_full.ProtocolFullTests.test_P05_initialization_protocol_and_session_reused,test-events.json; logs/final-tests.txt
+F056,协议,固定官方端点，阻止重定向,自动执行通过,test_protocol_full.ProtocolFullTests.test_P05_initialization_protocol_and_session_reused; test_protocol_full.ProtocolFullTests.test_P06_http_and_network_retry_budget,test-events.json; logs/final-tests.txt
+F057,协议,401/403/400不重试，429/5xx/网络有限重试及恢复,自动执行通过,test_protocol_full.ProtocolFullTests.test_P06_http_and_network_retry_budget,test-events.json; logs/final-tests.txt
+F058,协议,分页合并、重复游标、上限及坏页拒绝,自动执行通过,test_protocol_full.ProtocolFullTests.test_P07_tools_paginate_and_reject_cycles_and_overflow,test-events.json; logs/final-tests.txt
+F059,协议,七个只读工具可调用，写工具不能到传输层,自动执行通过,test_protocol_full.ProtocolFullTests.test_P08_whitelist_and_audit_exclude_payloads_and_credentials,test-events.json; logs/final-tests.txt
+F060,协议,审计只含工具状态耗时，不含原始回包或凭证,自动执行通过,test_protocol_full.ProtocolFullTests.test_P08_whitelist_and_audit_exclude_payloads_and_credentials,test-events.json; logs/final-tests.txt
+F061,文件,状态新建与覆盖权限600,自动执行通过,test_cli_full.CliFullTests.test_Q12_state_save_permissions_and_serialization_failure,test-events.json; logs/final-tests.txt
+F062,文件,原子替换失败及序列化失败保留旧文件、清临时,自动执行通过,test_cli_full.CliFullTests.test_Q10_state_save_failure_preserves_original_and_cleans_temporary; test_cli_full.CliFullTests.test_Q12_state_save_permissions_and_serialization_failure,test-events.json; logs/final-tests.txt
+F063,文件,固定临时文件符号链接不能覆盖旁边文件,自动执行通过,test_cli_full.CliFullTests.test_Q11_state_save_does_not_follow_predictable_temp_symlink,test-events.json; logs/final-tests.txt
+F064,展示,模拟、历史、用户提供、实时来源显著标识,自动执行通过,test_cli_full.CliFullTests.test_Q02_demo_text_and_json_are_consistent; test_cli_full.CliFullTests.test_Q09_render_all_modes_diagnostics_quote_errors_and_unknown_fees,test-events.json; logs/final-tests.txt
+F065,展示,逐人硬要求、核价时间、诊断、错误与范围提示,自动执行通过,test_cli_full.CliFullTests.test_Q09_render_all_modes_diagnostics_quote_errors_and_unknown_fees,test-events.json; logs/final-tests.txt

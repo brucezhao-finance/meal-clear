@@ -1,0 +1,14 @@
+.F...........................
+======================================================================
+FAIL: test_break_even_boundary (test_behavior.BehaviorTests)
+回本向上取整，零/负节省不生成有限次数。
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private<隔离副本>/tests/test_behavior.py", line 296, in test_break_even_boundary
+    self.assertEqual(break_even(1401, 200), 8)
+AssertionError: 7 != 8
+
+----------------------------------------------------------------------
+Ran 29 tests in 0.006s
+
+FAILED (failures=1)

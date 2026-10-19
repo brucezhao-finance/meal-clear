@@ -1,0 +1,35 @@
+{
+  "id": "SH-S",
+  "task": "搜索工程测试店，非用户默认位置",
+  "finished_at": "2026-10-19T02:30:14.292257+00:00",
+  "elapsed_ms": 1698,
+  "passed": true,
+  "output": {
+    "stores": [
+      {
+        "storeCode": "1450002",
+        "storeName": "麦当劳上海静安寺餐厅"
+      },
+      {
+        "storeCode": "1450133",
+        "storeName": "麦当劳上海越洋广场餐厅"
+      },
+      {
+        "storeCode": "1450224",
+        "storeName": "麦当劳上海南京西路Eco1788餐厅"
+      },
+      {
+        "storeCode": "1450400",
+        "storeName": "麦当劳上海CP静安餐厅"
+      },
+      {
+        "storeCode": "1450650",
+        "storeName": "麦当劳上海静安延平路德必餐厅"
+      }
+    ],
+    "engineering_selection": {
+      "storeCode": "1450002",
+      "storeName": "麦当劳上海静安寺餐厅"
+    }
+  }
+}

@@ -1,0 +1,365 @@
+test_alternatives_have_real_tradeoff (test_behavior.BehaviorTests)
+更贵但偏好更匹配时保留备选，不重复相同购物篮。 ... ok
+test_break_even_boundary (test_behavior.BehaviorTests)
+回本向上取整，零/负节省不生成有限次数。 ... ok
+test_breakfast_combo_reaches_detail_without_member_card (test_behavior.BehaviorTests)
+普通早餐组合必须进入详情核验，附带会员条件的组合仍被排除。 ... ok
+test_budget_conflict_is_not_silently_relaxed (test_behavior.BehaviorTests)
+无解时保留要求，不为了生成推荐自动换掉约束。 ... ok
+test_budget_equality_is_allowed (test_behavior.BehaviorTests)
+预算等于实际全单价属于可行。 ... ok
+test_change_preserves_other_person_and_budget (test_behavior.BehaviorTests)
+改B口味不会丢掉A的要求或修改预算。 ... ok
+test_context_change_requires_new_menu (test_behavior.BehaviorTests)
+换店后不使用旧店价格或优惠。 ... ok
+test_coupon_reuse_does_not_pass (test_behavior.BehaviorTests)
+首版单券边界阻止一张券重复给两个人用。 ... ok
+test_demo_does_not_call_unknown_safe (test_behavior.BehaviorTests)
+低价但辣度未知的餐不会混入符合要求的方案。 ... ok
+test_explicit_nonspicy_not_misread_as_spicy (test_behavior.BehaviorTests)
+非辣的“辣”字不能反向判为辣味。 ... ok
+test_false_boolean_not_integer_zero (test_behavior.BehaviorTests)
+避免Python将False与0视作相同而误判。 ... ok
+test_invalid_request_modes_rejected (test_behavior.BehaviorTests)
+超范围人群、模式和布尔预算不会悄悄运行。 ... ok
+test_live_never_uses_local_menu_price (test_behavior.BehaviorTests)
+实时模式即使给了菜单价也必须等官方报价。 ... ok
+test_malformed_catalog_containers_raise_input_error (test_behavior.BehaviorTests)
+损坏套餐、餐品或事实容器应产生受控错误，不能抛AttributeError。 ... ok
+test_missing_offline_fee_not_zero (test_behavior.BehaviorTests)
+缺失本地费用时不声称算出完整实付。 ... ok
+test_mixed_meat_not_exclusively_beef (test_behavior.BehaviorTests)
+牛鸡混合名称不被标成单一牛肉属性。 ... ok
+test_money_units_and_precision (test_behavior.BehaviorTests)
+金额单位显式处理，不口算/猜单位或舍入。 ... ok
+test_new_card_not_disguised_as_cheap (test_behavior.BehaviorTests)
+低餐费加高卡费不能挤掉无卡更便宜的同内容方案。 ... ok
+test_official_total_can_have_unknown_breakdown (test_behavior.BehaviorTests)
+真实到店回包可缺费用拆分，采用官方总额但不伪填零。 ... ok
+test_private_state_permissions (test_behavior.BehaviorTests)
+保存会话只给当前用户读写，不因默认umask开放。 ... ok
+test_quote_consistency_and_missing_total (test_behavior.BehaviorTests)
+费用冲突、商品错配或总价缺失不会作为可确认方案。 ... ok
+test_same_request_fingerprint_stable (test_behavior.BehaviorTests)
+字段顺序不改变身份，预算或用餐时间改变会更新身份。 ... ok
+test_unknown_people_and_fields_rejected (test_behavior.BehaviorTests)
+修改不误创建陌生用餐者或忽略拼错字段。 ... ok
+test_unknown_sugar_not_replaced_with_low_sugar (test_behavior.BehaviorTests)
+低糖/原味不自动等于无糖/不辣。 ... ok
+test_wrong_context_quote_rejected (test_behavior.BehaviorTests)
+其他门店的报价即使商品相同也不能采纳。 ... ok
+test_business_failure_sanitized (test_behavior.ProtocolTests)
+业务失败不能因为HTTP成功被接受，消息内容不泄漏。 ... ok
+test_explicit_sugar_free_variant_uses_actual_code (test_behavior.ProtocolTests)
+无糖替换使用返回的选项编码，不靠备注。 ... ok
+test_readonly_client_rejects_mutations_without_network (test_behavior.ProtocolTests)
+所有交易工具在任何网络调用前被拒绝。 ... ok
+test_sse_selects_matching_response (test_behavior.ProtocolTests)
+通知不被误读为工具成功。 ... ok
+test_Q01_all_help_entries_are_available (test_cli_full.CliFullTests)
+Each advertised subcommand has discoverable parser help. ... ok
+test_Q02_demo_text_and_json_are_consistent (test_cli_full.CliFullTests)
+Both modes reproduce 38→43 without a network client. ... ok
+test_Q03_plan_save_update_text_json_and_exit_codes (test_cli_full.CliFullTests)
+A saved plan can be amended in both presentation modes; a failed plan exits 2. ... ok
+test_Q04_file_and_json_errors_are_sanitized (test_cli_full.CliFullTests)
+Missing/bad/top-level-array/non-UTF8 files return controlled JSON with no trace. ... ERROR
+test_Q05_offline_update_without_catalog_and_missing_state_fields (test_cli_full.CliFullTests)
+Missing menu or malformed saved state cannot silently reuse or invent prices. ... ok
+test_Q06_inspect_stores_and_card_subcommands (test_cli_full.CliFullTests)
+Tool discovery exposes only whitelist names; store output drops private fields. ... ok
+test_Q07_live_plan_and_live_update_requery_instead_of_reuse (test_cli_full.CliFullTests)
+The actual live CLI path saves state and a later patch performs fresh quotes. ... ok
+test_Q08_client_initialization_failure_is_controlled (test_cli_full.CliFullTests)
+Client initialization failures return a safe error instead of printing secrets. ... ok
+test_Q09_render_all_modes_diagnostics_quote_errors_and_unknown_fees (test_cli_full.CliFullTests)
+Rendering explains provenance, hard checks, pricing time and missing breakdowns. ... ok
+test_Q10_state_save_failure_preserves_original_and_cleans_temporary (test_cli_full.CliFullTests)
+Atomic replace failure leaves the previous file untouched and removes partial output. ... ok
+test_Q11_state_save_does_not_follow_predictable_temp_symlink (test_cli_full.CliFullTests)
+A pre-existing .tmp symlink cannot overwrite another user's chosen file. ... FAIL
+test_Q12_state_save_permissions_and_serialization_failure (test_cli_full.CliFullTests)
+Both new and overwritten states are private; serialization failure keeps old state. ... ok
+test_C01_money_invalid_and_large_exact_values (test_core_full.CoreFullTests)
+Invalid units/precision/nonfinite values fail; large cents remain exact. ... ok
+test_C02_request_top_level_and_context_contract (test_core_full.CoreFullTests)
+Missing, unknown and wrongly typed context fields are rejected. ... test_C03_people_and_atomic_values_contract (test_core_full.CoreFullTests)
+Reject invalid person counts, IDs, field containers and atom types. ... ok
+test_C04_patch_merge_delete_and_invalid_shapes (test_core_full.CoreFullTests)
+Deletion is explicit; unchanged people, context and source request survive. ... ok
+test_C05_catalog_contract_rejects_malformed_values (test_core_full.CoreFullTests)
+Malformed metadata, missing meal roles and price/quantity errors fail safely. ... test_C06_three_state_and_strict_fact_type (test_core_full.CoreFullTests)
+Absent/null evidence is unknown; false and conflicting values stay distinct. ... ok
+test_C07_live_quotes_bind_context_signature_and_verification (test_core_full.CoreFullTests)
+Local prices cannot become live quotes; invalid/missing evidence is not ready. ... ok
+test_C08_unknown_price_and_fee_never_assume_zero (test_core_full.CoreFullTests)
+Missing price, missing fees and bool fees cannot produce a final amount. ... ok
+test_C09_search_limits_and_no_input_mutation (test_core_full.CoreFullTests)
+At most 30 candidates per person and 900 pairs, with zero input mutation. ... ok
+test_C10_difference_missing_price_and_unchanged_plan (test_core_full.CoreFullTests)
+No false delta on failure; unchanged chosen meal reports a zero price delta. ... ok
+test_C11_card_rounding_and_invalid_amount_types (test_core_full.CoreFullTests)
+Zero fee is immediate break even; invalid fees/savings must not be coerced. ... ok
+test_C12_signatures_track_context_items_and_card_fee (test_core_full.CoreFullTests)
+Identity is stable by field order but changes with transaction-affecting input. ... ok
+test_C13_seeded_menus_against_independent_exhaustive_oracle (test_core_full.CoreFullTests)
+For 120 small menus, every feasible outcome matches an independent enumerator. ... ok
+test_L01_role_and_facts_cover_all_food_and_drink_states (test_live_full.LiveFullTests)
+Classification must never turn missing sugar/spice/meat evidence into safety. ... ok
+test_L02_modification_preserves_only_complete_declared_defaults (test_live_full.LiveFullTests)
+Required modification defaults retain server codes, not invented notes. ... ok
+test_L03_complete_default_and_sugar_free_wire_variants (test_live_full.LiveFullTests)
+The two variants use exact explicit option codes and intact modifications. ... ok
+test_L04_reject_incomplete_unsupported_and_ambiguous_meals (test_live_full.LiveFullTests)
+Incomplete rounds, multi-select defaults, zero mains and bad codes are skipped. ... test_L05_identical_variants_and_coupon_parameters_are_bounded (test_live_full.LiveFullTests)
+Repeated default variants deduplicate; valid coupon codes stay only in wire input. ... ok
+test_L06_pricing_requires_complete_matching_product_identity (test_live_full.LiveFullTests)
+Total, nonnegative integer units, fee sums, quantities and SKUs must agree. ... test_L07_planner_schema_context_and_container_failures (test_live_full.LiveFullTests)
+Unsupported time/store/schema and malformed service containers stop safely. ... test_L08_catalog_filter_rank_and_finite_detail_limit (test_live_full.LiveFullTests)
+Skip members/groups/sides; sort malformed hints safely; fetch at most six regulars. ... ok
+test_L09_coupon_detail_failures_are_visible_and_bounded (test_live_full.LiveFullTests)
+At most two coupon products; skipped failed details are counted. ... ok
+test_L10_real_planner_path_ready_no_price_overbudget_and_partial_failure (test_live_full.LiveFullTests)
+Exercise the entire real planner against deterministic official-schema fixtures. ... test_L11_duplicate_baskets_do_not_spend_quote_budget_twice (test_live_full.LiveFullTests)
+Person ordering duplicates share one request opportunity, capped at three. ... ok
+test_P01_credentials_environment_file_precedence_and_rejection (test_protocol_full.ProtocolFullTests)
+Missing, ambiguous and whitespace credentials fail without revealing content. ... ok
+test_P02_json_sse_bom_multiline_and_invalid_bytes (test_protocol_full.ProtocolFullTests)
+JSON and SSE select the right ID; malformed payloads fail with safe errors. ... test_P03_tool_content_modes_and_business_errors_sanitize (test_protocol_full.ProtocolFullTests)
+Tool failures never expose account messages; both structured/text formats work. ... ERROR
+test_P04_post_rpc_errors_ids_types_size_and_notification (test_protocol_full.ProtocolFullTests)
+Invalid envelopes, oversized responses and mismatched IDs are not accepted. ... ERROR
+test_P05_initialization_protocol_and_session_reused (test_protocol_full.ProtocolFullTests)
+Initialize/notification propagate the negotiated protocol and opaque session. ... ok
+test_P06_http_and_network_retry_budget (test_protocol_full.ProtocolFullTests)
+Authentication, redirect and bad request stop; transient errors retry at most twice. ... ok
+test_P07_tools_paginate_and_reject_cycles_and_overflow (test_protocol_full.ProtocolFullTests)
+All pages are combined once; repeated cursors and overlong sequences stop. ... test_P08_whitelist_and_audit_exclude_payloads_and_credentials (test_protocol_full.ProtocolFullTests)
+Every allowed tool uses readonly transport; every mutation remains unreachable. ... ok
+
+======================================================================
+ERROR: test_Q04_file_and_json_errors_are_sanitized (test_cli_full.CliFullTests)
+Missing/bad/top-level-array/non-UTF8 files return controlled JSON with no trace.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<repo>/tests/test_cli_full.py", line 88, in test_Q04_file_and_json_errors_are_sanitized
+    code,out,err=self.invoke(['plan','--request',file,'--catalog',self.cat,'--json'])
+  File "<repo>/tests/test_cli_full.py", line 44, in invoke
+    if fake is None:code=main(args)
+  File "<repo>/scripts/meal_clear/cli.py", line 249, in main
+    result = compose(read_json(args.request), read_json(args.catalog))
+  File "<repo>/scripts/meal_clear/cli.py", line 20, in read_json
+    value = json.loads(Path(path).read_text(encoding="utf-8"))
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/pathlib.py", line 1257, in read_text
+    return f.read()
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/codecs.py", line 322, in decode
+    (result, consumed) = self._buffer_decode(data, self.errors, final)
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
+
+======================================================================
+ERROR: test_C02_request_top_level_and_context_contract (test_core_full.CoreFullTests) (request=None)
+Missing, unknown and wrongly typed context fields are rejected.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<repo>/tests/test_core_full.py", line 41, in test_C02_request_top_level_and_context_contract
+    with self.subTest(request=request),self.assertRaises(InputError):validate_request(request)
+  File "<repo>/scripts/meal_clear/core.py", line 43, in validate_request
+    if set(req) - {"context", "budget_cents", "people"}:
+TypeError: 'NoneType' object is not iterable
+
+======================================================================
+ERROR: test_C02_request_top_level_and_context_contract (test_core_full.CoreFullTests) (request=[])
+Missing, unknown and wrongly typed context fields are rejected.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<repo>/tests/test_core_full.py", line 41, in test_C02_request_top_level_and_context_contract
+    with self.subTest(request=request),self.assertRaises(InputError):validate_request(request)
+  File "<repo>/scripts/meal_clear/core.py", line 45, in validate_request
+    if not isinstance(req.get("context"), dict):
+AttributeError: 'list' object has no attribute 'get'
+
+======================================================================
+ERROR: test_C05_catalog_contract_rejects_malformed_values (test_core_full.CoreFullTests) (catalog=None)
+Malformed metadata, missing meal roles and price/quantity errors fail safely.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<repo>/tests/test_core_full.py", line 90, in test_C05_catalog_contract_rejects_malformed_values
+    with self.subTest(catalog=cat),self.assertRaises(InputError):validate_catalog(cat)
+  File "<repo>/scripts/meal_clear/core.py", line 126, in validate_catalog
+    if catalog.get("mode") not in {"simulation", "live", "historical", "user_supplied"}:
+AttributeError: 'NoneType' object has no attribute 'get'
+
+======================================================================
+ERROR: test_C05_catalog_contract_rejects_malformed_values (test_core_full.CoreFullTests) (catalog=[])
+Malformed metadata, missing meal roles and price/quantity errors fail safely.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<repo>/tests/test_core_full.py", line 90, in test_C05_catalog_contract_rejects_malformed_values
+    with self.subTest(catalog=cat),self.assertRaises(InputError):validate_catalog(cat)
+  File "<repo>/scripts/meal_clear/core.py", line 126, in validate_catalog
+    if catalog.get("mode") not in {"simulation", "live", "historical", "user_supplied"}:
+AttributeError: 'list' object has no attribute 'get'
+
+======================================================================
+ERROR: test_C05_catalog_contract_rejects_malformed_values (test_core_full.CoreFullTests) (catalog={'mode': [], 'as_of': '2026-10-17（模拟数据创建日期，非真实采集）', 'context': {'store_code': 'DEMO', 'channel': 'pickup', 'meal_time': 'demo-time'}, 'order_fee_cents': 0, 'price_source': '完全虚构的测试价格，不是麦当劳现价', 'offers': [{'id': 'demo-chicken', 'name': '模拟鸡肉组合', 'price_cents': 1900, 'card_fee_cents': 0, 'facts': {'sugar_free_drink': {'value': True, 'source': '模拟数据：饮料无糖'}, 'main_meat': {'value': 'chicken', 'source': '模拟数据：主食肉类'}, 'non_spicy': {'value': True, 'source': '模拟数据：辣度声明'}}, 'items': [{'code': 'demo-chicken-main', 'name': '模拟非辣鸡肉堡', 'quantity': 1, 'role': 'main'}, {'code': 'demo-drink', 'name': '模拟无糖饮料', 'quantity': 1, 'role': 'drink'}]}, {'id': 'demo-beef', 'name': '模拟牛肉组合', 'price_cents': 2400, 'card_fee_cents': 0, 'facts': {'sugar_free_drink': {'value': True, 'source': '模拟数据：饮料无糖'}, 'main_meat': {'value': 'beef', 'source': '模拟数据：主食肉类'}, 'non_spicy': {'value': True, 'source': '模拟数据：辣度声明'}}, 'items': [{'code': 'demo-beef-main', 'name': '模拟非辣牛肉堡', 'quantity': 1, 'role': 'main'}, {'code': 'demo-drink', 'name': '模拟无糖饮料', 'quantity': 1, 'role': 'drink'}]}, {'id': 'demo-spicy', 'name': '模拟辣味组合', 'price_cents': 1500, 'card_fee_cents': 0, 'facts': {'sugar_free_drink': {'value': True, 'source': '模拟数据：饮料无糖'}, 'main_meat': {'value': 'chicken', 'source': '模拟数据：主食肉类'}, 'non_spicy': {'value': False, 'source': '模拟数据：辣度声明'}}, 'items': [{'code': 'demo-spicy-main', 'name': '模拟辣鸡堡', 'quantity': 1, 'role': 'main'}, {'code': 'demo-drink', 'name': '模拟无糖饮料', 'quantity': 1, 'role': 'drink'}]}, {'id': 'demo-unknown', 'name': '模拟辣度未知组合', 'price_cents': 1000, 'card_fee_cents': 0, 'facts': {'sugar_free_drink': {'value': True, 'source': '模拟数据：饮料无糖'}, 'main_meat': {'value': 'unknown', 'source': '模拟数据：主食肉类'}}, 'items': [{'code': 'demo-unknown-main', 'name': '模拟未知口味汉堡', 'quantity': 1, 'role': 'main'}, {'code': 'demo-drink', 'name': '模拟无糖饮料', 'quantity': 1, 'role': 'drink'}]}, {'id': 'demo-card', 'name': '模拟需新卡鸡肉组合', 'price_cents': 1600, 'card_fee_cents': 900, 'facts': {'sugar_free_drink': {'value': True, 'source': '模拟数据：饮料无糖'}, 'main_meat': {'value': 'chicken', 'source': '模拟数据：主食肉类'}, 'non_spicy': {'value': True, 'source': '模拟数据：辣度声明'}}, 'items': [{'code': 'demo-card-main', 'name': '模拟非辣鸡肉堡', 'quantity': 1, 'role': 'main'}, {'code': 'demo-drink', 'name': '模拟无糖饮料', 'quantity': 1, 'role': 'drink'}]}]})
+Malformed metadata, missing meal roles and price/quantity errors fail safely.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<repo>/tests/test_core_full.py", line 90, in test_C05_catalog_contract_rejects_malformed_values
+    with self.subTest(catalog=cat),self.assertRaises(InputError):validate_catalog(cat)
+  File "<repo>/scripts/meal_clear/core.py", line 126, in validate_catalog
+    if catalog.get("mode") not in {"simulation", "live", "historical", "user_supplied"}:
+TypeError: unhashable type: 'list'
+
+======================================================================
+ERROR: test_L04_reject_incomplete_unsupported_and_ambiguous_meals (test_live_full.LiveFullTests) (detail={'rounds': [None]})
+Incomplete rounds, multi-select defaults, zero mains and bad codes are skipped.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<repo>/tests/test_live_full.py", line 70, in test_L04_reject_incomplete_unsupported_and_ambiguous_meals
+    with self.subTest(detail=data):self.assertEqual(detail_offers('P',data,'模拟'),[])
+  File "<repo>/scripts/meal_clear/live.py", line 131, in detail_offers
+    count = max(rnd.get("minQuantity", 0), rnd.get("quantity", 0))
+AttributeError: 'NoneType' object has no attribute 'get'
+
+======================================================================
+ERROR: test_L06_pricing_requires_complete_matching_product_identity (test_live_full.LiveFullTests) (data={'price': 2000, 'productPrice': 2000, 'deliveryPrice': 0, 'packingPrice': 0, 'tablewarePrice': 0, 'productList': None})
+Total, nonnegative integer units, fee sums, quantities and SKUs must agree.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<repo>/tests/test_live_full.py", line 93, in test_L06_pricing_requires_complete_matching_product_identity
+    with self.subTest(data=data),self.assertRaises(InputError):check_pricing({'data':data},items)
+  File "<repo>/scripts/meal_clear/live.py", line 227, in check_pricing
+    for item in data.get("productList", []):
+TypeError: 'NoneType' object is not iterable
+
+======================================================================
+ERROR: test_L06_pricing_requires_complete_matching_product_identity (test_live_full.LiveFullTests) (data={'price': 2000, 'productPrice': 2000, 'deliveryPrice': 0, 'packingPrice': 0, 'tablewarePrice': 0, 'productList': [None]})
+Total, nonnegative integer units, fee sums, quantities and SKUs must agree.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<repo>/tests/test_live_full.py", line 93, in test_L06_pricing_requires_complete_matching_product_identity
+    with self.subTest(data=data),self.assertRaises(InputError):check_pricing({'data':data},items)
+  File "<repo>/scripts/meal_clear/live.py", line 228, in check_pricing
+    quantity = integer(item.get("quantity"), "报价商品数量", 1)
+AttributeError: 'NoneType' object has no attribute 'get'
+
+======================================================================
+ERROR: test_L07_planner_schema_context_and_container_failures (test_live_full.LiveFullTests) (mutation='menu_data_null')
+Unsupported time/store/schema and malformed service containers stop safely.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<repo>/tests/test_live_full.py", line 107, in test_L07_planner_schema_context_and_container_failures
+    with self.subTest(mutation=mutation),self.assertRaises(McpError):LivePlanner(client).catalog(request())
+  File "<repo>/scripts/meal_clear/live.py", line 274, in catalog
+    meals = menu.get("meals", {})
+AttributeError: 'NoneType' object has no attribute 'get'
+
+======================================================================
+ERROR: test_P02_json_sse_bom_multiline_and_invalid_bytes (test_protocol_full.ProtocolFullTests) (raw=b'\xff\xfe')
+JSON and SSE select the right ID; malformed payloads fail with safe errors.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<repo>/tests/test_protocol_full.py", line 54, in test_P02_json_sse_bom_multiline_and_invalid_bytes
+    with self.subTest(raw=raw),self.assertRaises(McpError):decode_response(raw,1)
+  File "<repo>/scripts/meal_clear/mcp.py", line 44, in decode_response
+    text = raw.decode("utf-8-sig").strip()
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/encodings/utf_8_sig.py", line 23, in decode
+    (output, consumed) = codecs.utf_8_decode(input, errors, True)
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
+
+======================================================================
+ERROR: test_P03_tool_content_modes_and_business_errors_sanitize (test_protocol_full.ProtocolFullTests) (data={'content': None})
+Tool failures never expose account messages; both structured/text formats work.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<repo>/tests/test_protocol_full.py", line 64, in test_P03_tool_content_modes_and_business_errors_sanitize
+    with self.subTest(data=data),self.assertRaises(McpError) as caught:unwrap_tool(data)
+  File "<repo>/scripts/meal_clear/mcp.py", line 76, in unwrap_tool
+    for part in result.get("content", []):
+TypeError: 'NoneType' object is not iterable
+
+======================================================================
+ERROR: test_P03_tool_content_modes_and_business_errors_sanitize (test_protocol_full.ProtocolFullTests)
+Tool failures never expose account messages; both structured/text formats work.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<repo>/tests/test_protocol_full.py", line 65, in test_P03_tool_content_modes_and_business_errors_sanitize
+    self.assertNotIn('PRIVATE-SENTINEL',str(caught.exception))
+AttributeError: '_AssertRaisesContext' object has no attribute 'exception'
+
+======================================================================
+ERROR: test_P04_post_rpc_errors_ids_types_size_and_notification (test_protocol_full.ProtocolFullTests)
+Invalid envelopes, oversized responses and mismatched IDs are not accepted.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<repo>/tests/test_protocol_full.py", line 73, in test_P04_post_rpc_errors_ids_types_size_and_notification
+    self.assertNotIn('PRIVATE-SENTINEL',str(error.exception))
+AttributeError: '_AssertRaisesContext' object has no attribute 'exception'
+
+======================================================================
+ERROR: test_P07_tools_paginate_and_reject_cycles_and_overflow (test_protocol_full.ProtocolFullTests) (malformed={'tools': None})
+All pages are combined once; repeated cursors and overlong sequences stop.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<repo>/tests/test_protocol_full.py", line 118, in test_P07_tools_paginate_and_reject_cycles_and_overflow
+    with self.subTest(malformed=malformed),self.assertRaises(McpError):c.list_tools()
+  File "<repo>/scripts/meal_clear/mcp.py", line 192, in list_tools
+    tools = list(result.get("tools", []))
+TypeError: 'NoneType' object is not iterable
+
+======================================================================
+FAIL: test_Q11_state_save_does_not_follow_predictable_temp_symlink (test_cli_full.CliFullTests)
+A pre-existing .tmp symlink cannot overwrite another user's chosen file.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<repo>/tests/test_cli_full.py", line 158, in test_Q11_state_save_does_not_follow_predictable_temp_symlink
+    self.assertEqual(victim.read_text(),'KEEP-ORIGINAL')
+AssertionError: '{\n  "synthetic": 1\n}' != 'KEEP-ORIGINAL'
++ KEEP-ORIGINAL- {
+-   "synthetic": 1
+- }
+
+======================================================================
+FAIL: test_L10_real_planner_path_ready_no_price_overbudget_and_partial_failure (test_live_full.LiveFullTests) (mutation='over_budget')
+Exercise the entire real planner against deterministic official-schema fixtures.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<repo>/tests/test_live_full.py", line 145, in test_L10_real_planner_path_ready_no_price_overbudget_and_partial_failure
+    self.assertEqual(result['status'],expected)
+AssertionError: 'needs_price_verification' != 'over_budget_in_checked_set'
+- needs_price_verification
++ over_budget_in_checked_set
+
+
+======================================================================
+FAIL: test_P04_post_rpc_errors_ids_types_size_and_notification (test_protocol_full.ProtocolFullTests) (kind="<class 'dict'>")
+Invalid envelopes, oversized responses and mismatched IDs are not accepted.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<repo>/tests/test_protocol_full.py", line 72, in test_P04_post_rpc_errors_ids_types_size_and_notification
+    with self.subTest(kind=str(type(payload))),self.assertRaises(McpError) as error:c._post('tools/list',{})
+AssertionError: McpError not raised
+
+======================================================================
+FAIL: test_P07_tools_paginate_and_reject_cycles_and_overflow (test_protocol_full.ProtocolFullTests) (malformed={'tools': [None]})
+All pages are combined once; repeated cursors and overlong sequences stop.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<repo>/tests/test_protocol_full.py", line 118, in test_P07_tools_paginate_and_reject_cycles_and_overflow
+    with self.subTest(malformed=malformed),self.assertRaises(McpError):c.list_tools()
+AssertionError: McpError not raised
+
+======================================================================
+FAIL: test_P07_tools_paginate_and_reject_cycles_and_overflow (test_protocol_full.ProtocolFullTests) (malformed={'tools': [], 'nextCursor': []})
+All pages are combined once; repeated cursors and overlong sequences stop.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<repo>/tests/test_protocol_full.py", line 118, in test_P07_tools_paginate_and_reject_cycles_and_overflow
+    with self.subTest(malformed=malformed),self.assertRaises(McpError):c.list_tools()
+AssertionError: McpError not raised
+
+----------------------------------------------------------------------
+Ran 73 tests in 0.116s
+
+FAILED (failures=5, errors=15)

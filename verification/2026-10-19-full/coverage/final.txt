@@ -1,0 +1,10 @@
+Name                             Stmts   Miss Branch BrPart   Cover
+-------------------------------------------------------------------
+scripts/meal_clear.py                3      0      2      0 100.00%
+scripts/meal_clear/__init__.py       0      0      0      0 100.00%
+scripts/meal_clear/cli.py          143      0     44      0 100.00%
+scripts/meal_clear/core.py         244      0    158      0 100.00%
+scripts/meal_clear/live.py         235      0    118      0 100.00%
+scripts/meal_clear/mcp.py          166      1     72      1  99.16%
+-------------------------------------------------------------------
+TOTAL                              791      1    394      1  99.83%

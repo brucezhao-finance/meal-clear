@@ -1,0 +1,52 @@
+F....F..F........F...........
+======================================================================
+FAIL: test_alternatives_have_real_tradeoff (test_behavior.BehaviorTests)
+更贵但偏好更匹配时保留备选，不重复相同购物篮。
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private<隔离副本>/tests/test_behavior.py", line 189, in test_alternatives_have_real_tradeoff
+    self.assertEqual([p["total_cents"] for p in choices], [3800, 4300])
+AssertionError: Lists differ: [3200, 3500] != [3800, 4300]
+
+First differing element 0:
+3200
+3800
+
+- [3200, 3500]
+?   ^     -
+
++ [3800, 4300]
+?   ^    +
+
+
+======================================================================
+FAIL: test_change_preserves_other_person_and_budget (test_behavior.BehaviorTests)
+改B口味不会丢掉A的要求或修改预算。
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private<隔离副本>/tests/test_behavior.py", line 173, in test_change_preserves_other_person_and_budget
+    self.assertEqual(compare_results(before, after)["delta_cents"], 500)
+AssertionError: 800 != 500
+
+======================================================================
+FAIL: test_demo_does_not_call_unknown_safe (test_behavior.BehaviorTests)
+低价但辣度未知的餐不会混入符合要求的方案。
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private<隔离副本>/tests/test_behavior.py", line 40, in test_demo_does_not_call_unknown_safe
+    self.assertEqual(result["recommendations"][0]["total_cents"], 3800)
+AssertionError: 3200 != 3800
+
+======================================================================
+FAIL: test_new_card_not_disguised_as_cheap (test_behavior.BehaviorTests)
+低餐费加高卡费不能挤掉无卡更便宜的同内容方案。
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private<隔离副本>/tests/test_behavior.py", line 179, in test_new_card_not_disguised_as_cheap
+    self.assertFalse(
+AssertionError: True is not false
+
+----------------------------------------------------------------------
+Ran 29 tests in 0.007s
+
+FAILED (failures=4)

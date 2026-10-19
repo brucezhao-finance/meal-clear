@@ -1,0 +1,533 @@
+..............
+======================================================================
+FAIL: test_C06_three_state_and_strict_fact_type (test_core_full.CoreFullTests) (fact=None)
+Absent/null evidence is unknown; false and conflicting values stay distinct.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private<隔离副本>/tests/test_core_full.py", line 192, in test_C06_three_state_and_strict_fact_type
+    self.assertEqual(check_person(person, offer)[0]["status"], status)
+AssertionError: 'verified' != 'unknown'
+- verified
++ unknown
+
+
+======================================================================
+FAIL: test_C06_three_state_and_strict_fact_type (test_core_full.CoreFullTests) (fact={'value': None, 'source': 'x'})
+Absent/null evidence is unknown; false and conflicting values stay distinct.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private<隔离副本>/tests/test_core_full.py", line 192, in test_C06_three_state_and_strict_fact_type
+    self.assertEqual(check_person(person, offer)[0]["status"], status)
+AssertionError: 'verified' != 'unknown'
+- verified
++ unknown
+
+
+======================================================================
+FAIL: test_C13_seeded_menus_against_independent_exhaustive_oracle (test_core_full.CoreFullTests) (menu=3)
+For 120 small menus, every feasible outcome matches an independent enumerator.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private<隔离副本>/tests/test_core_full.py", line 333, in test_C13_seeded_menus_against_independent_exhaustive_oracle
+    self.assertEqual(bool(result.get("recommendations")), bool(expected))
+AssertionError: True != False
+
+======================================================================
+FAIL: test_C13_seeded_menus_against_independent_exhaustive_oracle (test_core_full.CoreFullTests) (menu=5)
+For 120 small menus, every feasible outcome matches an independent enumerator.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private<隔离副本>/tests/test_core_full.py", line 333, in test_C13_seeded_menus_against_independent_exhaustive_oracle
+    self.assertEqual(bool(result.get("recommendations")), bool(expected))
+AssertionError: True != False
+
+======================================================================
+FAIL: test_C13_seeded_menus_against_independent_exhaustive_oracle (test_core_full.CoreFullTests) (menu=6)
+For 120 small menus, every feasible outcome matches an independent enumerator.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private<隔离副本>/tests/test_core_full.py", line 335, in test_C13_seeded_menus_against_independent_exhaustive_oracle
+    self.assertEqual(
+AssertionError: 999 != 2973
+
+======================================================================
+FAIL: test_C13_seeded_menus_against_independent_exhaustive_oracle (test_core_full.CoreFullTests) (menu=9)
+For 120 small menus, every feasible outcome matches an independent enumerator.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private<隔离副本>/tests/test_core_full.py", line 333, in test_C13_seeded_menus_against_independent_exhaustive_oracle
+    self.assertEqual(bool(result.get("recommendations")), bool(expected))
+AssertionError: True != False
+
+======================================================================
+FAIL: test_C13_seeded_menus_against_independent_exhaustive_oracle (test_core_full.CoreFullTests) (menu=11)
+For 120 small menus, every feasible outcome matches an independent enumerator.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private<隔离副本>/tests/test_core_full.py", line 335, in test_C13_seeded_menus_against_independent_exhaustive_oracle
+    self.assertEqual(
+AssertionError: 1230 != 7524
+
+======================================================================
+FAIL: test_C13_seeded_menus_against_independent_exhaustive_oracle (test_core_full.CoreFullTests) (menu=13)
+For 120 small menus, every feasible outcome matches an independent enumerator.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private<隔离副本>/tests/test_core_full.py", line 333, in test_C13_seeded_menus_against_independent_exhaustive_oracle
+    self.assertEqual(bool(result.get("recommendations")), bool(expected))
+AssertionError: True != False
+
+======================================================================
+FAIL: test_C13_seeded_menus_against_independent_exhaustive_oracle (test_core_full.CoreFullTests) (menu=16)
+For 120 small menus, every feasible outcome matches an independent enumerator.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private<隔离副本>/tests/test_core_full.py", line 333, in test_C13_seeded_menus_against_independent_exhaustive_oracle
+    self.assertEqual(bool(result.get("recommendations")), bool(expected))
+AssertionError: True != False
+
+======================================================================
+FAIL: test_C13_seeded_menus_against_independent_exhaustive_oracle (test_core_full.CoreFullTests) (menu=17)
+For 120 small menus, every feasible outcome matches an independent enumerator.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private<隔离副本>/tests/test_core_full.py", line 333, in test_C13_seeded_menus_against_independent_exhaustive_oracle
+    self.assertEqual(bool(result.get("recommendations")), bool(expected))
+AssertionError: True != False
+
+======================================================================
+FAIL: test_C13_seeded_menus_against_independent_exhaustive_oracle (test_core_full.CoreFullTests) (menu=21)
+For 120 small menus, every feasible outcome matches an independent enumerator.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private<隔离副本>/tests/test_core_full.py", line 335, in test_C13_seeded_menus_against_independent_exhaustive_oracle
+    self.assertEqual(
+AssertionError: 431 != 3683
+
+======================================================================
+FAIL: test_C13_seeded_menus_against_independent_exhaustive_oracle (test_core_full.CoreFullTests) (menu=22)
+For 120 small menus, every feasible outcome matches an independent enumerator.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private<隔离副本>/tests/test_core_full.py", line 335, in test_C13_seeded_menus_against_independent_exhaustive_oracle
+    self.assertEqual(
+AssertionError: 954 != 1808
+
+======================================================================
+FAIL: test_C13_seeded_menus_against_independent_exhaustive_oracle (test_core_full.CoreFullTests) (menu=23)
+For 120 small menus, every feasible outcome matches an independent enumerator.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private<隔离副本>/tests/test_core_full.py", line 333, in test_C13_seeded_menus_against_independent_exhaustive_oracle
+    self.assertEqual(bool(result.get("recommendations")), bool(expected))
+AssertionError: True != False
+
+======================================================================
+FAIL: test_C13_seeded_menus_against_independent_exhaustive_oracle (test_core_full.CoreFullTests) (menu=24)
+For 120 small menus, every feasible outcome matches an independent enumerator.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private<隔离副本>/tests/test_core_full.py", line 335, in test_C13_seeded_menus_against_independent_exhaustive_oracle
+    self.assertEqual(
+AssertionError: 2228 != 4192
+
+======================================================================
+FAIL: test_C13_seeded_menus_against_independent_exhaustive_oracle (test_core_full.CoreFullTests) (menu=26)
+For 120 small menus, every feasible outcome matches an independent enumerator.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private<隔离副本>/tests/test_core_full.py", line 333, in test_C13_seeded_menus_against_independent_exhaustive_oracle
+    self.assertEqual(bool(result.get("recommendations")), bool(expected))
+AssertionError: True != False
+
+======================================================================
+FAIL: test_C13_seeded_menus_against_independent_exhaustive_oracle (test_core_full.CoreFullTests) (menu=27)
+For 120 small menus, every feasible outcome matches an independent enumerator.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private<隔离副本>/tests/test_core_full.py", line 333, in test_C13_seeded_menus_against_independent_exhaustive_oracle
+    self.assertEqual(bool(result.get("recommendations")), bool(expected))
+AssertionError: True != False
+
+======================================================================
+FAIL: test_C13_seeded_menus_against_independent_exhaustive_oracle (test_core_full.CoreFullTests) (menu=28)
+For 120 small menus, every feasible outcome matches an independent enumerator.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private<隔离副本>/tests/test_core_full.py", line 333, in test_C13_seeded_menus_against_independent_exhaustive_oracle
+    self.assertEqual(bool(result.get("recommendations")), bool(expected))
+AssertionError: True != False
+
+======================================================================
+FAIL: test_C13_seeded_menus_against_independent_exhaustive_oracle (test_core_full.CoreFullTests) (menu=30)
+For 120 small menus, every feasible outcome matches an independent enumerator.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private<隔离副本>/tests/test_core_full.py", line 333, in test_C13_seeded_menus_against_independent_exhaustive_oracle
+    self.assertEqual(bool(result.get("recommendations")), bool(expected))
+AssertionError: True != False
+
+======================================================================
+FAIL: test_C13_seeded_menus_against_independent_exhaustive_oracle (test_core_full.CoreFullTests) (menu=31)
+For 120 small menus, every feasible outcome matches an independent enumerator.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private<隔离副本>/tests/test_core_full.py", line 333, in test_C13_seeded_menus_against_independent_exhaustive_oracle
+    self.assertEqual(bool(result.get("recommendations")), bool(expected))
+AssertionError: True != False
+
+======================================================================
+FAIL: test_C13_seeded_menus_against_independent_exhaustive_oracle (test_core_full.CoreFullTests) (menu=34)
+For 120 small menus, every feasible outcome matches an independent enumerator.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private<隔离副本>/tests/test_core_full.py", line 333, in test_C13_seeded_menus_against_independent_exhaustive_oracle
+    self.assertEqual(bool(result.get("recommendations")), bool(expected))
+AssertionError: True != False
+
+======================================================================
+FAIL: test_C13_seeded_menus_against_independent_exhaustive_oracle (test_core_full.CoreFullTests) (menu=36)
+For 120 small menus, every feasible outcome matches an independent enumerator.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private<隔离副本>/tests/test_core_full.py", line 333, in test_C13_seeded_menus_against_independent_exhaustive_oracle
+    self.assertEqual(bool(result.get("recommendations")), bool(expected))
+AssertionError: True != False
+
+======================================================================
+FAIL: test_C13_seeded_menus_against_independent_exhaustive_oracle (test_core_full.CoreFullTests) (menu=39)
+For 120 small menus, every feasible outcome matches an independent enumerator.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private<隔离副本>/tests/test_core_full.py", line 333, in test_C13_seeded_menus_against_independent_exhaustive_oracle
+    self.assertEqual(bool(result.get("recommendations")), bool(expected))
+AssertionError: True != False
+
+======================================================================
+FAIL: test_C13_seeded_menus_against_independent_exhaustive_oracle (test_core_full.CoreFullTests) (menu=41)
+For 120 small menus, every feasible outcome matches an independent enumerator.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private<隔离副本>/tests/test_core_full.py", line 333, in test_C13_seeded_menus_against_independent_exhaustive_oracle
+    self.assertEqual(bool(result.get("recommendations")), bool(expected))
+AssertionError: True != False
+
+======================================================================
+FAIL: test_C13_seeded_menus_against_independent_exhaustive_oracle (test_core_full.CoreFullTests) (menu=50)
+For 120 small menus, every feasible outcome matches an independent enumerator.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private<隔离副本>/tests/test_core_full.py", line 333, in test_C13_seeded_menus_against_independent_exhaustive_oracle
+    self.assertEqual(bool(result.get("recommendations")), bool(expected))
+AssertionError: True != False
+
+======================================================================
+FAIL: test_C13_seeded_menus_against_independent_exhaustive_oracle (test_core_full.CoreFullTests) (menu=51)
+For 120 small menus, every feasible outcome matches an independent enumerator.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private<隔离副本>/tests/test_core_full.py", line 333, in test_C13_seeded_menus_against_independent_exhaustive_oracle
+    self.assertEqual(bool(result.get("recommendations")), bool(expected))
+AssertionError: True != False
+
+======================================================================
+FAIL: test_C13_seeded_menus_against_independent_exhaustive_oracle (test_core_full.CoreFullTests) (menu=55)
+For 120 small menus, every feasible outcome matches an independent enumerator.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private<隔离副本>/tests/test_core_full.py", line 335, in test_C13_seeded_menus_against_independent_exhaustive_oracle
+    self.assertEqual(
+AssertionError: 1820 != 2987
+
+======================================================================
+FAIL: test_C13_seeded_menus_against_independent_exhaustive_oracle (test_core_full.CoreFullTests) (menu=57)
+For 120 small menus, every feasible outcome matches an independent enumerator.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private<隔离副本>/tests/test_core_full.py", line 333, in test_C13_seeded_menus_against_independent_exhaustive_oracle
+    self.assertEqual(bool(result.get("recommendations")), bool(expected))
+AssertionError: True != False
+
+======================================================================
+FAIL: test_C13_seeded_menus_against_independent_exhaustive_oracle (test_core_full.CoreFullTests) (menu=60)
+For 120 small menus, every feasible outcome matches an independent enumerator.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private<隔离副本>/tests/test_core_full.py", line 333, in test_C13_seeded_menus_against_independent_exhaustive_oracle
+    self.assertEqual(bool(result.get("recommendations")), bool(expected))
+AssertionError: True != False
+
+======================================================================
+FAIL: test_C13_seeded_menus_against_independent_exhaustive_oracle (test_core_full.CoreFullTests) (menu=62)
+For 120 small menus, every feasible outcome matches an independent enumerator.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private<隔离副本>/tests/test_core_full.py", line 333, in test_C13_seeded_menus_against_independent_exhaustive_oracle
+    self.assertEqual(bool(result.get("recommendations")), bool(expected))
+AssertionError: True != False
+
+======================================================================
+FAIL: test_C13_seeded_menus_against_independent_exhaustive_oracle (test_core_full.CoreFullTests) (menu=63)
+For 120 small menus, every feasible outcome matches an independent enumerator.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private<隔离副本>/tests/test_core_full.py", line 333, in test_C13_seeded_menus_against_independent_exhaustive_oracle
+    self.assertEqual(bool(result.get("recommendations")), bool(expected))
+AssertionError: True != False
+
+======================================================================
+FAIL: test_C13_seeded_menus_against_independent_exhaustive_oracle (test_core_full.CoreFullTests) (menu=68)
+For 120 small menus, every feasible outcome matches an independent enumerator.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private<隔离副本>/tests/test_core_full.py", line 333, in test_C13_seeded_menus_against_independent_exhaustive_oracle
+    self.assertEqual(bool(result.get("recommendations")), bool(expected))
+AssertionError: True != False
+
+======================================================================
+FAIL: test_C13_seeded_menus_against_independent_exhaustive_oracle (test_core_full.CoreFullTests) (menu=69)
+For 120 small menus, every feasible outcome matches an independent enumerator.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private<隔离副本>/tests/test_core_full.py", line 335, in test_C13_seeded_menus_against_independent_exhaustive_oracle
+    self.assertEqual(
+AssertionError: 704 != 1005
+
+======================================================================
+FAIL: test_C13_seeded_menus_against_independent_exhaustive_oracle (test_core_full.CoreFullTests) (menu=71)
+For 120 small menus, every feasible outcome matches an independent enumerator.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private<隔离副本>/tests/test_core_full.py", line 335, in test_C13_seeded_menus_against_independent_exhaustive_oracle
+    self.assertEqual(
+AssertionError: 2311 != 4717
+
+======================================================================
+FAIL: test_C13_seeded_menus_against_independent_exhaustive_oracle (test_core_full.CoreFullTests) (menu=72)
+For 120 small menus, every feasible outcome matches an independent enumerator.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private<隔离副本>/tests/test_core_full.py", line 333, in test_C13_seeded_menus_against_independent_exhaustive_oracle
+    self.assertEqual(bool(result.get("recommendations")), bool(expected))
+AssertionError: True != False
+
+======================================================================
+FAIL: test_C13_seeded_menus_against_independent_exhaustive_oracle (test_core_full.CoreFullTests) (menu=73)
+For 120 small menus, every feasible outcome matches an independent enumerator.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private<隔离副本>/tests/test_core_full.py", line 333, in test_C13_seeded_menus_against_independent_exhaustive_oracle
+    self.assertEqual(bool(result.get("recommendations")), bool(expected))
+AssertionError: True != False
+
+======================================================================
+FAIL: test_C13_seeded_menus_against_independent_exhaustive_oracle (test_core_full.CoreFullTests) (menu=75)
+For 120 small menus, every feasible outcome matches an independent enumerator.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private<隔离副本>/tests/test_core_full.py", line 335, in test_C13_seeded_menus_against_independent_exhaustive_oracle
+    self.assertEqual(
+AssertionError: 780 != 1492
+
+======================================================================
+FAIL: test_C13_seeded_menus_against_independent_exhaustive_oracle (test_core_full.CoreFullTests) (menu=76)
+For 120 small menus, every feasible outcome matches an independent enumerator.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private<隔离副本>/tests/test_core_full.py", line 333, in test_C13_seeded_menus_against_independent_exhaustive_oracle
+    self.assertEqual(bool(result.get("recommendations")), bool(expected))
+AssertionError: True != False
+
+======================================================================
+FAIL: test_C13_seeded_menus_against_independent_exhaustive_oracle (test_core_full.CoreFullTests) (menu=77)
+For 120 small menus, every feasible outcome matches an independent enumerator.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private<隔离副本>/tests/test_core_full.py", line 333, in test_C13_seeded_menus_against_independent_exhaustive_oracle
+    self.assertEqual(bool(result.get("recommendations")), bool(expected))
+AssertionError: True != False
+
+======================================================================
+FAIL: test_C13_seeded_menus_against_independent_exhaustive_oracle (test_core_full.CoreFullTests) (menu=78)
+For 120 small menus, every feasible outcome matches an independent enumerator.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private<隔离副本>/tests/test_core_full.py", line 333, in test_C13_seeded_menus_against_independent_exhaustive_oracle
+    self.assertEqual(bool(result.get("recommendations")), bool(expected))
+AssertionError: True != False
+
+======================================================================
+FAIL: test_C13_seeded_menus_against_independent_exhaustive_oracle (test_core_full.CoreFullTests) (menu=80)
+For 120 small menus, every feasible outcome matches an independent enumerator.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private<隔离副本>/tests/test_core_full.py", line 333, in test_C13_seeded_menus_against_independent_exhaustive_oracle
+    self.assertEqual(bool(result.get("recommendations")), bool(expected))
+AssertionError: True != False
+
+======================================================================
+FAIL: test_C13_seeded_menus_against_independent_exhaustive_oracle (test_core_full.CoreFullTests) (menu=84)
+For 120 small menus, every feasible outcome matches an independent enumerator.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private<隔离副本>/tests/test_core_full.py", line 335, in test_C13_seeded_menus_against_independent_exhaustive_oracle
+    self.assertEqual(
+AssertionError: 1756 != 3069
+
+======================================================================
+FAIL: test_C13_seeded_menus_against_independent_exhaustive_oracle (test_core_full.CoreFullTests) (menu=85)
+For 120 small menus, every feasible outcome matches an independent enumerator.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private<隔离副本>/tests/test_core_full.py", line 333, in test_C13_seeded_menus_against_independent_exhaustive_oracle
+    self.assertEqual(bool(result.get("recommendations")), bool(expected))
+AssertionError: True != False
+
+======================================================================
+FAIL: test_C13_seeded_menus_against_independent_exhaustive_oracle (test_core_full.CoreFullTests) (menu=86)
+For 120 small menus, every feasible outcome matches an independent enumerator.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private<隔离副本>/tests/test_core_full.py", line 333, in test_C13_seeded_menus_against_independent_exhaustive_oracle
+    self.assertEqual(bool(result.get("recommendations")), bool(expected))
+AssertionError: True != False
+
+======================================================================
+FAIL: test_C13_seeded_menus_against_independent_exhaustive_oracle (test_core_full.CoreFullTests) (menu=87)
+For 120 small menus, every feasible outcome matches an independent enumerator.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private<隔离副本>/tests/test_core_full.py", line 333, in test_C13_seeded_menus_against_independent_exhaustive_oracle
+    self.assertEqual(bool(result.get("recommendations")), bool(expected))
+AssertionError: True != False
+
+======================================================================
+FAIL: test_C13_seeded_menus_against_independent_exhaustive_oracle (test_core_full.CoreFullTests) (menu=88)
+For 120 small menus, every feasible outcome matches an independent enumerator.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private<隔离副本>/tests/test_core_full.py", line 335, in test_C13_seeded_menus_against_independent_exhaustive_oracle
+    self.assertEqual(
+AssertionError: 877 != 2689
+
+======================================================================
+FAIL: test_C13_seeded_menus_against_independent_exhaustive_oracle (test_core_full.CoreFullTests) (menu=89)
+For 120 small menus, every feasible outcome matches an independent enumerator.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private<隔离副本>/tests/test_core_full.py", line 333, in test_C13_seeded_menus_against_independent_exhaustive_oracle
+    self.assertEqual(bool(result.get("recommendations")), bool(expected))
+AssertionError: True != False
+
+======================================================================
+FAIL: test_C13_seeded_menus_against_independent_exhaustive_oracle (test_core_full.CoreFullTests) (menu=91)
+For 120 small menus, every feasible outcome matches an independent enumerator.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private<隔离副本>/tests/test_core_full.py", line 333, in test_C13_seeded_menus_against_independent_exhaustive_oracle
+    self.assertEqual(bool(result.get("recommendations")), bool(expected))
+AssertionError: True != False
+
+======================================================================
+FAIL: test_C13_seeded_menus_against_independent_exhaustive_oracle (test_core_full.CoreFullTests) (menu=95)
+For 120 small menus, every feasible outcome matches an independent enumerator.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private<隔离副本>/tests/test_core_full.py", line 335, in test_C13_seeded_menus_against_independent_exhaustive_oracle
+    self.assertEqual(
+AssertionError: 430 != 566
+
+======================================================================
+FAIL: test_C13_seeded_menus_against_independent_exhaustive_oracle (test_core_full.CoreFullTests) (menu=97)
+For 120 small menus, every feasible outcome matches an independent enumerator.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private<隔离副本>/tests/test_core_full.py", line 333, in test_C13_seeded_menus_against_independent_exhaustive_oracle
+    self.assertEqual(bool(result.get("recommendations")), bool(expected))
+AssertionError: True != False
+
+======================================================================
+FAIL: test_C13_seeded_menus_against_independent_exhaustive_oracle (test_core_full.CoreFullTests) (menu=98)
+For 120 small menus, every feasible outcome matches an independent enumerator.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private<隔离副本>/tests/test_core_full.py", line 333, in test_C13_seeded_menus_against_independent_exhaustive_oracle
+    self.assertEqual(bool(result.get("recommendations")), bool(expected))
+AssertionError: True != False
+
+======================================================================
+FAIL: test_C13_seeded_menus_against_independent_exhaustive_oracle (test_core_full.CoreFullTests) (menu=102)
+For 120 small menus, every feasible outcome matches an independent enumerator.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private<隔离副本>/tests/test_core_full.py", line 333, in test_C13_seeded_menus_against_independent_exhaustive_oracle
+    self.assertEqual(bool(result.get("recommendations")), bool(expected))
+AssertionError: True != False
+
+======================================================================
+FAIL: test_C13_seeded_menus_against_independent_exhaustive_oracle (test_core_full.CoreFullTests) (menu=106)
+For 120 small menus, every feasible outcome matches an independent enumerator.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private<隔离副本>/tests/test_core_full.py", line 333, in test_C13_seeded_menus_against_independent_exhaustive_oracle
+    self.assertEqual(bool(result.get("recommendations")), bool(expected))
+AssertionError: True != False
+
+======================================================================
+FAIL: test_C13_seeded_menus_against_independent_exhaustive_oracle (test_core_full.CoreFullTests) (menu=110)
+For 120 small menus, every feasible outcome matches an independent enumerator.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private<隔离副本>/tests/test_core_full.py", line 333, in test_C13_seeded_menus_against_independent_exhaustive_oracle
+    self.assertEqual(bool(result.get("recommendations")), bool(expected))
+AssertionError: True != False
+
+======================================================================
+FAIL: test_C13_seeded_menus_against_independent_exhaustive_oracle (test_core_full.CoreFullTests) (menu=112)
+For 120 small menus, every feasible outcome matches an independent enumerator.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private<隔离副本>/tests/test_core_full.py", line 333, in test_C13_seeded_menus_against_independent_exhaustive_oracle
+    self.assertEqual(bool(result.get("recommendations")), bool(expected))
+AssertionError: True != False
+
+======================================================================
+FAIL: test_C13_seeded_menus_against_independent_exhaustive_oracle (test_core_full.CoreFullTests) (menu=113)
+For 120 small menus, every feasible outcome matches an independent enumerator.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private<隔离副本>/tests/test_core_full.py", line 333, in test_C13_seeded_menus_against_independent_exhaustive_oracle
+    self.assertEqual(bool(result.get("recommendations")), bool(expected))
+AssertionError: True != False
+
+======================================================================
+FAIL: test_C13_seeded_menus_against_independent_exhaustive_oracle (test_core_full.CoreFullTests) (menu=115)
+For 120 small menus, every feasible outcome matches an independent enumerator.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private<隔离副本>/tests/test_core_full.py", line 333, in test_C13_seeded_menus_against_independent_exhaustive_oracle
+    self.assertEqual(bool(result.get("recommendations")), bool(expected))
+AssertionError: True != False
+
+======================================================================
+FAIL: test_C13_seeded_menus_against_independent_exhaustive_oracle (test_core_full.CoreFullTests) (menu=116)
+For 120 small menus, every feasible outcome matches an independent enumerator.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private<隔离副本>/tests/test_core_full.py", line 335, in test_C13_seeded_menus_against_independent_exhaustive_oracle
+    self.assertEqual(
+AssertionError: 391 != 639
+
+======================================================================
+FAIL: test_C13_seeded_menus_against_independent_exhaustive_oracle (test_core_full.CoreFullTests) (menu=118)
+For 120 small menus, every feasible outcome matches an independent enumerator.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private<隔离副本>/tests/test_core_full.py", line 333, in test_C13_seeded_menus_against_independent_exhaustive_oracle
+    self.assertEqual(bool(result.get("recommendations")), bool(expected))
+AssertionError: True != False
+
+----------------------------------------------------------------------
+Ran 16 tests in 0.049s
+
+FAILED (failures=58)

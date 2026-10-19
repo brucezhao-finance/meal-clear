@@ -1,0 +1,20 @@
+{
+  "id": "R01",
+  "task": "白名单工具实际查询：now-time-info",
+  "finished_at": "2026-10-19T02:30:11.801223+00:00",
+  "elapsed_ms": 410,
+  "passed": true,
+  "output": {
+    "tool": "now-time-info",
+    "business_code": 200,
+    "payload_keys": [
+      "code",
+      "data",
+      "datetime",
+      "message",
+      "success",
+      "traceId"
+    ],
+    "data_type": "dict"
+  }
+}

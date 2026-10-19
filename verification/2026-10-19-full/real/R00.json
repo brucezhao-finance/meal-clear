@@ -1,0 +1,19 @@
+{
+  "id": "R00",
+  "task": "当前工具发现",
+  "finished_at": "2026-10-19T02:30:11.390512+00:00",
+  "elapsed_ms": 0,
+  "passed": true,
+  "output": {
+    "count": 35,
+    "available_read_only": [
+      "now-time-info",
+      "query-meals",
+      "query-meal-detail",
+      "calculate-price",
+      "campaign-calendar",
+      "query-store-coupons",
+      "query-nearby-stores"
+    ]
+  }
+}

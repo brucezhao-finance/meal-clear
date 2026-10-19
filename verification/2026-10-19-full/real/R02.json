@@ -1,0 +1,20 @@
+{
+  "id": "R02",
+  "task": "白名单工具实际查询：campaign-calendar",
+  "finished_at": "2026-10-19T02:30:12.593203+00:00",
+  "elapsed_ms": 790,
+  "passed": true,
+  "output": {
+    "tool": "campaign-calendar",
+    "business_code": 200,
+    "payload_keys": [
+      "code",
+      "data",
+      "datetime",
+      "message",
+      "success",
+      "traceId"
+    ],
+    "data_type": "dict"
+  }
+}

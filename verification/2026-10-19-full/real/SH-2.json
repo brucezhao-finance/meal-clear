@@ -1,0 +1,651 @@
+{
+  "id": "SH-2",
+  "task": "增加无糖要求后重新取数核价",
+  "finished_at": "2026-10-19T02:30:35.929544+00:00",
+  "elapsed_ms": 11253,
+  "passed": true,
+  "output": {
+    "result": {
+      "request": {
+        "context": {
+          "store_code": "1450002",
+          "channel": "pickup",
+          "meal_time": "now"
+        },
+        "budget_cents": 15000,
+        "people": [
+          {
+            "id": "A",
+            "hard": {
+              "sugar_free_drink": true
+            },
+            "prefer": {}
+          }
+        ]
+      },
+      "request_id": "8eadebca8e26e761",
+      "mode": "live",
+      "as_of": "2026-10-19T02:30:33.664080+00:00",
+      "status": "ready",
+      "plans": [
+        {
+          "signature": "5615c228929ba118fe61734e5c14d7b8a2155fceaf28c433e6ee62ae04f09272",
+          "assignments": [
+            {
+              "person_id": "A",
+              "offer_id": "9900015602-edf93d28",
+              "name": "大堡口福三件套（无糖饮料选项）",
+              "items": [
+                {
+                  "code": "521147",
+                  "name": "Hold不住鸡排堡（椒盐风味）",
+                  "quantity": 1,
+                  "role": "main"
+                },
+                {
+                  "code": "4810",
+                  "name": "中薯条",
+                  "quantity": 1,
+                  "role": "side"
+                },
+                {
+                  "code": "3071",
+                  "name": "无糖可口可乐中杯",
+                  "quantity": 1,
+                  "role": "drink"
+                }
+              ],
+              "checks": [
+                {
+                  "attribute": "sugar_free_drink",
+                  "expected": true,
+                  "status": "verified",
+                  "source": "官方query-meal-detail／饮品官方名称明确标注无糖"
+                }
+              ]
+            }
+          ],
+          "preference_matches": 0,
+          "total_cents": 2290,
+          "price_status": "official_verified",
+          "pricing_source": "官方calculate-price",
+          "new_card_cents": 0,
+          "steps": {
+            "order_count": 1,
+            "new_card_count": 0
+          },
+          "within_budget": true,
+          "quoted_at": "2026-10-19T02:30:35.928473+00:00",
+          "fee_breakdown": {
+            "productPrice": 2290,
+            "deliveryPrice": null,
+            "packingPrice": null,
+            "tablewarePrice": null
+          }
+        },
+        {
+          "signature": "534a0216ec1ce221f6e92790504f416a50722c4c7f07b6d61d6c16780f4c30e4",
+          "assignments": [
+            {
+              "person_id": "A",
+              "offer_id": "9900005449-bdfa3866",
+              "name": "吉士汉堡包中套餐（无糖饮料选项）",
+              "items": [
+                {
+                  "code": "1010",
+                  "name": "吉士汉堡包",
+                  "quantity": 1,
+                  "role": "main"
+                },
+                {
+                  "code": "4810",
+                  "name": "中薯条",
+                  "quantity": 1,
+                  "role": "side"
+                },
+                {
+                  "code": "3071",
+                  "name": "无糖可口可乐中杯",
+                  "quantity": 1,
+                  "role": "drink"
+                }
+              ],
+              "checks": [
+                {
+                  "attribute": "sugar_free_drink",
+                  "expected": true,
+                  "status": "verified",
+                  "source": "官方query-meal-detail／饮品官方名称明确标注无糖"
+                }
+              ]
+            }
+          ],
+          "preference_matches": 0,
+          "total_cents": 2650,
+          "price_status": "official_verified",
+          "pricing_source": "官方calculate-price",
+          "new_card_cents": 0,
+          "steps": {
+            "order_count": 1,
+            "new_card_count": 0
+          },
+          "within_budget": true,
+          "quoted_at": "2026-10-19T02:30:34.946285+00:00",
+          "fee_breakdown": {
+            "productPrice": 2650,
+            "deliveryPrice": null,
+            "packingPrice": null,
+            "tablewarePrice": null
+          }
+        },
+        {
+          "signature": "3b8100ba9f1e28865bffb41e3e4b49fbc9b3a0324b50d0f76a9acc2855c660c8",
+          "assignments": [
+            {
+              "person_id": "A",
+              "offer_id": "9900005453-380665a7",
+              "name": "麦香鸡中套餐（无糖饮料选项）",
+              "items": [
+                {
+                  "code": "1450",
+                  "name": "麦香鸡",
+                  "quantity": 1,
+                  "role": "main"
+                },
+                {
+                  "code": "4810",
+                  "name": "中薯条",
+                  "quantity": 1,
+                  "role": "side"
+                },
+                {
+                  "code": "3071",
+                  "name": "无糖可口可乐中杯",
+                  "quantity": 1,
+                  "role": "drink"
+                }
+              ],
+              "checks": [
+                {
+                  "attribute": "sugar_free_drink",
+                  "expected": true,
+                  "status": "verified",
+                  "source": "官方query-meal-detail／饮品官方名称明确标注无糖"
+                }
+              ]
+            }
+          ],
+          "preference_matches": 0,
+          "total_cents": 2800,
+          "price_status": "official_verified",
+          "pricing_source": "官方calculate-price",
+          "new_card_cents": 0,
+          "steps": {
+            "order_count": 1,
+            "new_card_count": 0
+          },
+          "within_budget": true,
+          "quoted_at": "2026-10-19T02:30:34.276701+00:00",
+          "fee_breakdown": {
+            "productPrice": 2800,
+            "deliveryPrice": null,
+            "packingPrice": null,
+            "tablewarePrice": null
+          }
+        },
+        {
+          "signature": "7de9c20b27e33d873f7788767728434f03d74d23b9220f2d83c2c143f4ef801f",
+          "assignments": [
+            {
+              "person_id": "A",
+              "offer_id": "9900015850-53a6fdc5",
+              "name": "咸蛋黄鸡腿蛋月堡三件套（无糖饮料选项）",
+              "items": [
+                {
+                  "code": "521900",
+                  "name": "咸蛋黄鸡腿蛋月堡",
+                  "quantity": 1,
+                  "role": "main"
+                },
+                {
+                  "code": "4810",
+                  "name": "中薯条",
+                  "quantity": 1,
+                  "role": "side"
+                },
+                {
+                  "code": "3071",
+                  "name": "无糖可口可乐中杯",
+                  "quantity": 1,
+                  "role": "drink"
+                }
+              ],
+              "checks": [
+                {
+                  "attribute": "sugar_free_drink",
+                  "expected": true,
+                  "status": "verified",
+                  "source": "官方query-meal-detail／饮品官方名称明确标注无糖"
+                }
+              ]
+            }
+          ],
+          "preference_matches": 0,
+          "total_cents": null,
+          "price_status": "unknown",
+          "pricing_source": null,
+          "new_card_cents": 0,
+          "steps": {
+            "order_count": 1,
+            "new_card_count": 0
+          },
+          "within_budget": null
+        },
+        {
+          "signature": "b6fb7a170f14cf543dcbbaacfc7460b87e4290a3fb14295787d82a0cf99c481c",
+          "assignments": [
+            {
+              "person_id": "A",
+              "offer_id": "9900016073-ba2eb4c9",
+              "name": "龙焰鸡腿堡三件套（无糖饮料选项）",
+              "items": [
+                {
+                  "code": "521952",
+                  "name": "龙焰鸡腿堡",
+                  "quantity": 1,
+                  "role": "main"
+                },
+                {
+                  "code": "4810",
+                  "name": "中薯条",
+                  "quantity": 1,
+                  "role": "side"
+                },
+                {
+                  "code": "3071",
+                  "name": "无糖可口可乐中杯",
+                  "quantity": 1,
+                  "role": "drink"
+                }
+              ],
+              "checks": [
+                {
+                  "attribute": "sugar_free_drink",
+                  "expected": true,
+                  "status": "verified",
+                  "source": "官方query-meal-detail／饮品官方名称明确标注无糖"
+                }
+              ]
+            }
+          ],
+          "preference_matches": 0,
+          "total_cents": null,
+          "price_status": "unknown",
+          "pricing_source": null,
+          "new_card_cents": 0,
+          "steps": {
+            "order_count": 1,
+            "new_card_count": 0
+          },
+          "within_budget": null
+        },
+        {
+          "signature": "ed42380d450af86b7c122d49a062987ad8e70bc3dafafe7f98c208150bf410fa",
+          "assignments": [
+            {
+              "person_id": "A",
+              "offer_id": "9900011128-f1d33dbc",
+              "name": "“堡”你欢乐套餐（默认选项）",
+              "items": [
+                {
+                  "code": "1000",
+                  "name": "汉堡包",
+                  "quantity": 1,
+                  "role": "main"
+                },
+                {
+                  "code": "515106",
+                  "name": "麦乐鸡4块",
+                  "quantity": 1,
+                  "role": "side"
+                },
+                {
+                  "code": "6102",
+                  "name": "苹果片一袋(60g)",
+                  "quantity": 1,
+                  "role": "side"
+                },
+                {
+                  "code": "3071",
+                  "name": "无糖可口可乐中杯",
+                  "quantity": 1,
+                  "role": "drink"
+                }
+              ],
+              "checks": [
+                {
+                  "attribute": "sugar_free_drink",
+                  "expected": true,
+                  "status": "verified",
+                  "source": "官方query-meal-detail／饮品官方名称明确标注无糖"
+                }
+              ]
+            }
+          ],
+          "preference_matches": 0,
+          "total_cents": null,
+          "price_status": "unknown",
+          "pricing_source": null,
+          "new_card_cents": 0,
+          "steps": {
+            "order_count": 1,
+            "new_card_count": 0
+          },
+          "within_budget": null
+        }
+      ],
+      "diagnostics": [],
+      "search": {
+        "catalog_offers": 11,
+        "max_offers_per_person": 30,
+        "max_combinations": 900,
+        "checked_combinations": 6
+      },
+      "recommendations": [
+        {
+          "signature": "5615c228929ba118fe61734e5c14d7b8a2155fceaf28c433e6ee62ae04f09272",
+          "assignments": [
+            {
+              "person_id": "A",
+              "offer_id": "9900015602-edf93d28",
+              "name": "大堡口福三件套（无糖饮料选项）",
+              "items": [
+                {
+                  "code": "521147",
+                  "name": "Hold不住鸡排堡（椒盐风味）",
+                  "quantity": 1,
+                  "role": "main"
+                },
+                {
+                  "code": "4810",
+                  "name": "中薯条",
+                  "quantity": 1,
+                  "role": "side"
+                },
+                {
+                  "code": "3071",
+                  "name": "无糖可口可乐中杯",
+                  "quantity": 1,
+                  "role": "drink"
+                }
+              ],
+              "checks": [
+                {
+                  "attribute": "sugar_free_drink",
+                  "expected": true,
+                  "status": "verified",
+                  "source": "官方query-meal-detail／饮品官方名称明确标注无糖"
+                }
+              ]
+            }
+          ],
+          "preference_matches": 0,
+          "total_cents": 2290,
+          "price_status": "official_verified",
+          "pricing_source": "官方calculate-price",
+          "new_card_cents": 0,
+          "steps": {
+            "order_count": 1,
+            "new_card_count": 0
+          },
+          "within_budget": true,
+          "quoted_at": "2026-10-19T02:30:35.928473+00:00",
+          "fee_breakdown": {
+            "productPrice": 2290,
+            "deliveryPrice": null,
+            "packingPrice": null,
+            "tablewarePrice": null
+          }
+        }
+      ],
+      "coverage": {
+        "menu_entries": 115,
+        "detail_queries": 8,
+        "skipped_errors": 0,
+        "coupon_count": 2,
+        "note": "有界单人套餐搜索，未穷尽全菜单；辣度等缺失仍未知"
+      },
+      "quote_attempts": 3,
+      "verified_quotes": 3,
+      "quote_errors": [],
+      "read_only_audit": [
+        {
+          "tool": "now-time-info",
+          "success": true,
+          "elapsed_ms": 410
+        },
+        {
+          "tool": "campaign-calendar",
+          "success": true,
+          "elapsed_ms": 790
+        },
+        {
+          "tool": "query-nearby-stores",
+          "success": true,
+          "elapsed_ms": 1698
+        },
+        {
+          "tool": "query-meals",
+          "success": true,
+          "elapsed_ms": 1787
+        },
+        {
+          "tool": "query-store-coupons",
+          "success": true,
+          "elapsed_ms": 784
+        },
+        {
+          "tool": "query-meal-detail",
+          "success": true,
+          "elapsed_ms": 678
+        },
+        {
+          "tool": "query-meal-detail",
+          "success": true,
+          "elapsed_ms": 620
+        },
+        {
+          "tool": "query-meal-detail",
+          "success": true,
+          "elapsed_ms": 623
+        },
+        {
+          "tool": "query-meal-detail",
+          "success": true,
+          "elapsed_ms": 673
+        },
+        {
+          "tool": "query-meal-detail",
+          "success": true,
+          "elapsed_ms": 746
+        },
+        {
+          "tool": "query-meal-detail",
+          "success": true,
+          "elapsed_ms": 748
+        },
+        {
+          "tool": "query-meal-detail",
+          "success": true,
+          "elapsed_ms": 575
+        },
+        {
+          "tool": "query-meal-detail",
+          "success": true,
+          "elapsed_ms": 529
+        },
+        {
+          "tool": "calculate-price",
+          "success": true,
+          "elapsed_ms": 643
+        },
+        {
+          "tool": "calculate-price",
+          "success": true,
+          "elapsed_ms": 559
+        },
+        {
+          "tool": "calculate-price",
+          "success": true,
+          "elapsed_ms": 754
+        },
+        {
+          "tool": "query-meals",
+          "success": true,
+          "elapsed_ms": 1023
+        },
+        {
+          "tool": "query-store-coupons",
+          "success": true,
+          "elapsed_ms": 488
+        },
+        {
+          "tool": "query-meal-detail",
+          "success": true,
+          "elapsed_ms": 841
+        },
+        {
+          "tool": "query-meal-detail",
+          "success": true,
+          "elapsed_ms": 599
+        },
+        {
+          "tool": "query-meal-detail",
+          "success": true,
+          "elapsed_ms": 830
+        },
+        {
+          "tool": "query-meal-detail",
+          "success": true,
+          "elapsed_ms": 1776
+        },
+        {
+          "tool": "query-meal-detail",
+          "success": true,
+          "elapsed_ms": 529
+        },
+        {
+          "tool": "query-meal-detail",
+          "success": true,
+          "elapsed_ms": 691
+        },
+        {
+          "tool": "query-meal-detail",
+          "success": true,
+          "elapsed_ms": 589
+        },
+        {
+          "tool": "query-meal-detail",
+          "success": true,
+          "elapsed_ms": 698
+        },
+        {
+          "tool": "calculate-price",
+          "success": true,
+          "elapsed_ms": 612
+        },
+        {
+          "tool": "calculate-price",
+          "success": true,
+          "elapsed_ms": 669
+        },
+        {
+          "tool": "calculate-price",
+          "success": true,
+          "elapsed_ms": 982
+        }
+      ],
+      "difference": {
+        "before_request_id": "08a592576c7582d7",
+        "after_request_id": "8eadebca8e26e761",
+        "changes": [
+          {
+            "person_id": "A",
+            "before": "大堡口福三件套（默认选项）",
+            "after": "大堡口福三件套（无糖饮料选项）"
+          }
+        ],
+        "delta_cents": 0,
+        "new_status": "ready",
+        "old_quote_reused": false
+      }
+    },
+    "case_audit": [
+      {
+        "tool": "query-meals",
+        "success": true,
+        "elapsed_ms": 1023
+      },
+      {
+        "tool": "query-store-coupons",
+        "success": true,
+        "elapsed_ms": 488
+      },
+      {
+        "tool": "query-meal-detail",
+        "success": true,
+        "elapsed_ms": 841
+      },
+      {
+        "tool": "query-meal-detail",
+        "success": true,
+        "elapsed_ms": 599
+      },
+      {
+        "tool": "query-meal-detail",
+        "success": true,
+        "elapsed_ms": 830
+      },
+      {
+        "tool": "query-meal-detail",
+        "success": true,
+        "elapsed_ms": 1776
+      },
+      {
+        "tool": "query-meal-detail",
+        "success": true,
+        "elapsed_ms": 529
+      },
+      {
+        "tool": "query-meal-detail",
+        "success": true,
+        "elapsed_ms": 691
+      },
+      {
+        "tool": "query-meal-detail",
+        "success": true,
+        "elapsed_ms": 589
+      },
+      {
+        "tool": "query-meal-detail",
+        "success": true,
+        "elapsed_ms": 698
+      },
+      {
+        "tool": "calculate-price",
+        "success": true,
+        "elapsed_ms": 612
+      },
+      {
+        "tool": "calculate-price",
+        "success": true,
+        "elapsed_ms": 669
+      },
+      {
+        "tool": "calculate-price",
+        "success": true,
+        "elapsed_ms": 982
+      }
+    ]
+  }
+}

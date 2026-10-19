@@ -1,0 +1,14 @@
+.......F
+======================================================================
+FAIL: test_P08_whitelist_and_audit_exclude_payloads_and_credentials (test_protocol_full.ProtocolFullTests)
+Every allowed tool uses readonly transport; every mutation remains unreachable.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private<隔离副本>/tests/test_protocol_full.py", line 298, in test_P08_whitelist_and_audit_exclude_payloads_and_credentials
+    self.assertEqual(c._post.call_count, count)
+AssertionError: 2 != 1
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.022s
+
+FAILED (failures=1)

@@ -1,0 +1,23 @@
+...E....
+======================================================================
+ERROR: test_P04_post_rpc_errors_ids_types_size_and_notification (test_protocol_full.ProtocolFullTests)
+Invalid envelopes, oversized responses and mismatched IDs are not accepted.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private<隔离副本>/tests/test_protocol_full.py", line 146, in test_P04_post_rpc_errors_ids_types_size_and_notification
+    self.assertNotIn("PRIVATE-SENTINEL", str(error.exception))
+AttributeError: '_AssertRaisesContext' object has no attribute 'exception'
+
+======================================================================
+FAIL: test_P04_post_rpc_errors_ids_types_size_and_notification (test_protocol_full.ProtocolFullTests) (kind="<class 'dict'>")
+Invalid envelopes, oversized responses and mismatched IDs are not accepted.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private<隔离副本>/tests/test_protocol_full.py", line 145, in test_P04_post_rpc_errors_ids_types_size_and_notification
+    c._post("tools/list", {})
+AssertionError: McpError not raised
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.019s
+
+FAILED (failures=1, errors=1)
