@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import copy
 import json
 import os
 import tempfile
@@ -17,8 +18,13 @@ from .core import (
     compose,
     validate_request,
 )
+from .config import PRIORITIES
 from .live import LivePlanner, timestamp
 from .mcp import McpClient, McpError
+from .privacy import assert_public
+from .ranking import compose_v2
+from .report import render_ranking
+from .request_v2 import amend_request_v2, validate_request_v2
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -121,11 +127,52 @@ def render(result: Dict[str, Any]) -> str:
     return "\n".join(lines)
 
 
+def apply_rank_options(request: Dict[str, Any], args: argparse.Namespace) -> Dict[str, Any]:
+    """把 --top/--priority 写入 v2 请求的 ranking（命令行优先）。"""
+    top = getattr(args, "top", None)
+    priority = getattr(args, "priority", None)
+    if top is None and priority is None:
+        return request
+    result = copy.deepcopy(request)
+    ranking = result.setdefault("ranking", {})
+    if not isinstance(ranking, dict):
+        raise InputError("ranking 必须为对象")
+    if top is not None:
+        ranking["top_n"] = top
+    if priority is not None:
+        ranking["priority"] = priority
+    return result
+
+
+def reject_rank_options(args: argparse.Namespace) -> None:
+    """--top/--priority 仅适用于 schema_version=2。"""
+    if getattr(args, "top", None) is not None or getattr(args, "priority", None):
+        raise InputError("--top/--priority 仅适用于 schema_version=2 请求")
+
+
+def emit(result: Dict[str, Any], args: argparse.Namespace, v2: bool) -> None:
+    """保存并输出结果；v2 在保存/输出前自检敏感字段。"""
+    if v2:
+        assert_public(result)
+    if getattr(args, "save", None):
+        save_json(args.save, result)
+    if args.json:
+        print(json.dumps(result, ensure_ascii=False, indent=2))
+    else:
+        print(render_ranking(result) if v2 else render(result))
+
+
 def client_from_args(args: argparse.Namespace) -> McpClient:
     """初始化安全只读客户端。"""
     client = McpClient(token_file=args.token_file)
     client.initialize()
     return client
+
+
+def add_rank_options(parser: argparse.ArgumentParser) -> None:
+    """v2 排名选项。"""
+    parser.add_argument("--top", type=int, help="展示名次数（仅 v2）")
+    parser.add_argument("--priority", choices=PRIORITIES, help="排序优先（仅 v2）")
 
 
 def main(argv: Optional[list] = None) -> int:
@@ -139,6 +186,7 @@ def main(argv: Optional[list] = None) -> int:
     plan.add_argument("--catalog", required=True)
     plan.add_argument("--save")
     plan.add_argument("--json", action="store_true")
+    add_rank_options(plan)
     update = sub.add_parser("update", help="修改已保存请求并重新计算")
     update.add_argument("--state", required=True)
     update.add_argument("--patch", required=True)
@@ -146,6 +194,7 @@ def main(argv: Optional[list] = None) -> int:
     update.add_argument("--token-file")
     update.add_argument("--save")
     update.add_argument("--json", action="store_true")
+    add_rank_options(update)
     stores = sub.add_parser("stores", help="只读查询门店，不自动替用户选店")
     stores.add_argument("--city", required=True)
     stores.add_argument("--keyword", required=True)
@@ -155,6 +204,9 @@ def main(argv: Optional[list] = None) -> int:
     live.add_argument("--token-file")
     live.add_argument("--save")
     live.add_argument("--json", action="store_true")
+    add_rank_options(live)
+    multi = sub.add_parser("demo-multi", help="离线3人多方案排名演示")
+    multi.add_argument("--json", action="store_true")
     inspect = sub.add_parser("inspect-tools", help="检查当前只读工具可用性")
     inspect.add_argument("--token-file")
     card = sub.add_parser("break-even", help="固定单次节省额的回本计算（整数分）")
@@ -193,6 +245,12 @@ def main(argv: Optional[list] = None) -> int:
                     + render(after)
                 )
                 print("\n变化说明：" + json.dumps(diff, ensure_ascii=False))
+            return 0
+        if args.command == "demo-multi":
+            catalog = read_json(str(ROOT / "examples/demo-catalog-multi.json"))
+            request = read_json(str(ROOT / "examples/request-multi3.json"))
+            result = compose_v2(request, catalog)
+            emit(result, args, True)
             return 0
         if args.command == "inspect-tools":
             current = client_from_args(args).list_tools()["tools"]
@@ -242,10 +300,21 @@ def main(argv: Optional[list] = None) -> int:
             )
             return 0
         difference = None
+        v2 = False
         if args.command == "update":
             state = read_json(args.state)
-            request = amend_request(state["request"], read_json(args.patch))
-            if request == validate_request(state["request"]):
+            v2 = state.get("schema_version") == 2
+            if v2:
+                patch = read_json(args.patch)
+                request = amend_request_v2(
+                    apply_rank_options(state["request"], args), patch
+                )
+                unchanged = request == validate_request_v2(state["request"])
+            else:
+                reject_rank_options(args)
+                request = amend_request(state["request"], read_json(args.patch))
+                unchanged = request == validate_request(state["request"])
+            if unchanged:
                 # 修改包未改变任何值：不重新计算、不保存、不联网。
                 print(
                     json.dumps(
@@ -258,24 +327,33 @@ def main(argv: Optional[list] = None) -> int:
                 )
                 return 0
             if state["mode"] == "live":
+                if v2:
+                    raise InputError("schema_version=2 的实时多方案将在后续特性提供")
                 result = LivePlanner(client_from_args(args)).plan(request)
             else:
                 if not args.catalog:
                     raise InputError("离线修改需要显式提供--catalog，不静默复用旧价格")
-                result = compose(request, read_json(args.catalog))
+                catalog = read_json(args.catalog)
+                result = compose_v2(request, catalog) if v2 else compose(request, catalog)
             difference = compare_results(state, result)
             result["difference"] = difference
         elif args.command == "live-plan":
-            result = LivePlanner(client_from_args(args)).plan(read_json(args.request))
+            raw = read_json(args.request)
+            v2 = raw.get("schema_version") == 2
+            if v2:
+                raise InputError("schema_version=2 的实时多方案将在后续特性提供")
+            reject_rank_options(args)
+            result = LivePlanner(client_from_args(args)).plan(raw)
         else:
-            result = compose(read_json(args.request), read_json(args.catalog))
-        if args.save:
-            save_json(args.save, result)
-        print(
-            json.dumps(result, ensure_ascii=False, indent=2)
-            if args.json
-            else render(result)
-        )
+            raw = read_json(args.request)
+            catalog = read_json(args.catalog)
+            v2 = raw.get("schema_version") == 2
+            if v2:
+                result = compose_v2(apply_rank_options(raw, args), catalog)
+            else:
+                reject_rank_options(args)
+                result = compose(raw, catalog)
+        emit(result, args, v2)
         if difference and not args.json:
             print("\n变化说明：" + json.dumps(difference, ensure_ascii=False))
         return 0 if result.get("recommendations") else 2
