@@ -1,6 +1,6 @@
 ---
 name: meal-clear
-description: 按人数、预算和个人口味规划一顿麦当劳到店自取餐，使用配套程序检查约束、核对官方报价与优惠条件，并在用户修改要求后重新比较。
+description: 按人数（1–6人）、预算和个人口味规划一顿麦当劳餐，支持到店自取、得来速、外送，逐人检查约束，输出带理由的多方案排名与只读券预览，核对官方报价，并在用户修改要求后重新比较。只读，不下单、不领券。
 ---
 
 # 麦麦明白点
@@ -11,13 +11,16 @@ description: 按人数、预算和个人口味规划一顿麦当劳到店自取�
 
 先执行本Skill目录下 `python3 scripts/meal_clear.py --help`，按需读 [输入与接口约定](references/data-contract.md)。命令路径相对本Skill根目录；若从其他目录调用，使用绝对脚本/数据路径。
 
-首版：麦当劳、1–2人、同店同时间、到店自取。实际无糖替换、门店菜单与报价已做只读测试；不保证所有门店、券和条件都覆盖。非辣等证据缺失时应说明未知。
+当前范围：麦当劳、1–6人、同店同时间，取餐方式为到店自取（pickup）、得来速（drive_thru）或外送（delivery）。旧版 v1 请求（1–2人，到店自取）继续可用；多人与多方案使用 `schema_version=2` 请求。团餐、领券、下单为后续阶段，**当前未实现**。验证状态：v1 真实只读已有作者记录；v2 新能力（多人、得来速、外送、排名、券预览）仅经本地模拟服务器验证，真实账户只读验证未做，不得说成已在真实环境验证。非辣等证据缺失时应说明未知。
 
-不因用户要求选餐或比较价格而领券、买卡、下单、支付、兑换、取消或联系店员。配套MCP客户端只允许白名单只读工具。
+不因用户要求选餐或比较价格而领券、买卡、下单、支付、兑换、取消或联系店员；用户要求这些动作时说明当前不支持。配套MCP客户端只允许11个白名单只读工具。
 
 ## 根据任务选择运行方式
 
 - **体验流程：** `python3 scripts/meal_clear.py demo`，所有示例价格是模拟，不能转述为今天能买到的真实套餐。
+- **多人多方案演示：** `python3 scripts/meal_clear.py demo-multi`（3人，模拟数据）。
+- **多人/多方案请求：** 用 v2 请求（见 `examples/request-multi3.json`、`request-multi6.json`、`request-drive-thru.json`、`request-delivery.json`），离线 `plan --request 请求.json --catalog 菜单.json`，真实 `live-plan --request 请求.json`；`--top N` 控制名次数，`--priority price|preference` 控制优先价格或偏好。
+- **得来速/外送准备：** `stores --city 城市 --keyword 关键词 --be-type 5` 查得来速门店及 beCode；`addresses` 只显示地址序号与标签（不含地址内容）；`delivery-stores --address-index N` 查该地址可配送门店与 beCode；`coupons --request 请求.json` 只读券预览。
 - **真实门店查询：** `python3 scripts/meal_clear.py stores --city 城市 --keyword 关键词`。用户明确选择后才写入请求，不把技术测试门店当作默认门店。
 - **真实推荐：** 将用户要求整理为请求JSON，执行 `python3 scripts/meal_clear.py live-plan --request 请求.json --save local-state/本次.json --json`。当前默认从`MCD_MCP_TOKEN`读取凭证；若用户已指定本地凭证文件，可用`--token-file`，禁止把Token本身放在命令参数、输出或代码中。
 - **用户改条件：** 写修改JSON，执行 `python3 scripts/meal_clear.py update --state local-state/本次.json --patch 修改.json --save local-state/修改后.json --json`。实时状态会重新取数和核价，不复用旧报价。
@@ -32,6 +35,9 @@ description: 按人数、预算和个人口味规划一顿麦当劳到店自取�
 
 “不喝含糖饮料”不等于整餐无糖。过敏/医疗饮食要求不由现有口味标签证明安全。
 
+## 多方案排名怎么读
+v2 结果看 `ranking`：每项含名次、总价、`gap_vs_first_cents`、偏好满足数、券依赖、`reasons`（理由，须转述给用户）。排序：门槛（每人硬要求全部已核实且预算内）→总价→偏好数→新购卡→券依赖→方案编号。`checked.statement`/检查范围说明必须转述：只是已检查候选中的排名，不是全局最优。`coupon_preview` 分可领、已领、本店可用三类，未领取的券不计入报价，只能告知用户自行领取，不代为领取。
+需要的信息：人数、每人硬要求与偏好、总预算、取餐方式；到店要门店，得来速要门店与 beCode，外送要地址序号并从可配送门店中选。地址、手机号、联系人、券码不得出现在回复或文件里。
 ## 解释结果
 
 只将`recommendations`中的结果作为满足已声明硬要求、且预算内的方案。`plans`还可能包含超预算或价格未知候选，不能混作推荐。`ready`表示该次官方核价成功，未创建订单；simulation/historical/user_supplied必须显著说明模式与日期。
@@ -46,4 +52,4 @@ description: 按人数、预算和个人口味规划一顿麦当劳到店自取�
 
 ## 开发与回归
 
-运行 `python3 -m unittest discover -s tests -v`。测试说明见 [验收场景](references/evaluation-cases.md)。不要将历史验证记录等同于此刻所有账户/门店都可用。长期偏好记忆、外送和交易能力尚未实现，不声称已经完成。
+运行 `python3 -m unittest discover -s tests -v`。测试说明见 [验收场景](references/evaluation-cases.md)。不要将历史验证记录等同于此刻所有账户/门店都可用。长期偏好记忆、团餐、领券和交易能力尚未实现，不声称已经完成。
