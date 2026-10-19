@@ -1,0 +1,74 @@
+{
+  "schema_version": 2,
+  "context": {
+    "store_code": "DEMO",
+    "meal_time": "demo-time"
+  },
+  "fulfillment": {
+    "type": "pickup"
+  },
+  "budget_cents": 15000,
+  "people": [
+    {
+      "id": "P1",
+      "hard": {
+        "non_spicy": true,
+        "sugar_free_drink": true
+      },
+      "prefer": {
+        "main_meat": "chicken"
+      }
+    },
+    {
+      "id": "P2",
+      "hard": {
+        "non_spicy": true
+      },
+      "prefer": {
+        "main_meat": "beef"
+      }
+    },
+    {
+      "id": "P3",
+      "hard": {
+        "non_spicy": true,
+        "sugar_free_drink": true
+      },
+      "prefer": {
+        "main_meat": "pork"
+      }
+    },
+    {
+      "id": "P4",
+      "hard": {
+        "non_spicy": true
+      },
+      "prefer": {
+        "main_meat": "fish"
+      }
+    },
+    {
+      "id": "P5",
+      "hard": {
+        "non_spicy": true,
+        "sugar_free_drink": true
+      },
+      "prefer": {
+        "main_meat": "chicken"
+      }
+    },
+    {
+      "id": "P6",
+      "hard": {
+        "non_spicy": true
+      },
+      "prefer": {
+        "main_meat": "beef"
+      }
+    }
+  ],
+  "ranking": {
+    "top_n": 3,
+    "priority": "price"
+  }
+}

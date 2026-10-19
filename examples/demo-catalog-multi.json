@@ -1,0 +1,388 @@
+{
+  "mode": "simulation",
+  "as_of": "2026-10-19（模拟数据，非真实采集）",
+  "context": {
+    "store_code": "DEMO",
+    "meal_time": "demo-time",
+    "fulfillment": "pickup",
+    "be_code": null
+  },
+  "order_fee_cents": 0,
+  "price_source": "完全虚构的测试价格，不是麦当劳现价",
+  "offers": [
+    {
+      "id": "m-chicken",
+      "name": "模拟鸡肉组合",
+      "price_cents": 1900,
+      "card_fee_cents": 0,
+      "facts": {
+        "main_meat": {
+          "value": "chicken",
+          "source": "模拟数据：主食肉类"
+        },
+        "non_spicy": {
+          "value": true,
+          "source": "模拟数据：辣度声明"
+        },
+        "sugar_free_drink": {
+          "value": true,
+          "source": "模拟数据：饮料无糖"
+        }
+      },
+      "items": [
+        {
+          "code": "m-chicken-main",
+          "name": "模拟非辣鸡肉堡",
+          "quantity": 1,
+          "role": "main"
+        },
+        {
+          "code": "m-chicken-drink",
+          "name": "模拟无糖饮料",
+          "quantity": 1,
+          "role": "drink"
+        }
+      ]
+    },
+    {
+      "id": "m-chicken-sugar",
+      "name": "模拟鸡肉含糖组合",
+      "price_cents": 1700,
+      "card_fee_cents": 0,
+      "facts": {
+        "main_meat": {
+          "value": "chicken",
+          "source": "模拟数据：主食肉类"
+        },
+        "non_spicy": {
+          "value": true,
+          "source": "模拟数据：辣度声明"
+        },
+        "sugar_free_drink": {
+          "value": false,
+          "source": "模拟数据：饮料无糖"
+        }
+      },
+      "items": [
+        {
+          "code": "m-chicken-sugar-main",
+          "name": "模拟非辣鸡肉堡",
+          "quantity": 1,
+          "role": "main"
+        },
+        {
+          "code": "m-chicken-sugar-drink",
+          "name": "模拟含糖饮料",
+          "quantity": 1,
+          "role": "drink"
+        }
+      ]
+    },
+    {
+      "id": "m-chicken-spicy",
+      "name": "模拟辣鸡组合",
+      "price_cents": 1500,
+      "card_fee_cents": 0,
+      "facts": {
+        "main_meat": {
+          "value": "chicken",
+          "source": "模拟数据：主食肉类"
+        },
+        "non_spicy": {
+          "value": false,
+          "source": "模拟数据：辣度声明"
+        },
+        "sugar_free_drink": {
+          "value": true,
+          "source": "模拟数据：饮料无糖"
+        }
+      },
+      "items": [
+        {
+          "code": "m-chicken-spicy-main",
+          "name": "模拟辣鸡堡",
+          "quantity": 1,
+          "role": "main"
+        },
+        {
+          "code": "m-chicken-spicy-drink",
+          "name": "模拟无糖饮料",
+          "quantity": 1,
+          "role": "drink"
+        }
+      ]
+    },
+    {
+      "id": "m-chicken-coupon",
+      "name": "模拟鸡肉券组合",
+      "price_cents": 1750,
+      "card_fee_cents": 0,
+      "facts": {
+        "main_meat": {
+          "value": "chicken",
+          "source": "模拟数据：主食肉类"
+        },
+        "non_spicy": {
+          "value": true,
+          "source": "模拟数据：辣度声明"
+        },
+        "sugar_free_drink": {
+          "value": true,
+          "source": "模拟数据：饮料无糖"
+        }
+      },
+      "items": [
+        {
+          "code": "m-chicken-coupon-main",
+          "name": "模拟非辣鸡肉堡",
+          "quantity": 1,
+          "role": "main"
+        },
+        {
+          "code": "m-chicken-coupon-drink",
+          "name": "模拟无糖饮料",
+          "quantity": 1,
+          "role": "drink"
+        }
+      ],
+      "coupon_key": "sim-coupon-1",
+      "coupon_title": "模拟立减券"
+    },
+    {
+      "id": "m-chicken-card",
+      "name": "模拟需新卡鸡肉组合",
+      "price_cents": 1600,
+      "card_fee_cents": 900,
+      "facts": {
+        "main_meat": {
+          "value": "chicken",
+          "source": "模拟数据：主食肉类"
+        },
+        "non_spicy": {
+          "value": true,
+          "source": "模拟数据：辣度声明"
+        },
+        "sugar_free_drink": {
+          "value": true,
+          "source": "模拟数据：饮料无糖"
+        }
+      },
+      "items": [
+        {
+          "code": "m-chicken-card-main",
+          "name": "模拟非辣鸡肉堡",
+          "quantity": 1,
+          "role": "main"
+        },
+        {
+          "code": "m-chicken-card-drink",
+          "name": "模拟无糖饮料",
+          "quantity": 1,
+          "role": "drink"
+        }
+      ]
+    },
+    {
+      "id": "m-beef",
+      "name": "模拟牛肉组合",
+      "price_cents": 2400,
+      "card_fee_cents": 0,
+      "facts": {
+        "main_meat": {
+          "value": "beef",
+          "source": "模拟数据：主食肉类"
+        },
+        "non_spicy": {
+          "value": true,
+          "source": "模拟数据：辣度声明"
+        },
+        "sugar_free_drink": {
+          "value": true,
+          "source": "模拟数据：饮料无糖"
+        }
+      },
+      "items": [
+        {
+          "code": "m-beef-main",
+          "name": "模拟非辣牛肉堡",
+          "quantity": 1,
+          "role": "main"
+        },
+        {
+          "code": "m-beef-drink",
+          "name": "模拟无糖饮料",
+          "quantity": 1,
+          "role": "drink"
+        }
+      ]
+    },
+    {
+      "id": "m-beef-sugar",
+      "name": "模拟牛肉含糖组合",
+      "price_cents": 2100,
+      "card_fee_cents": 0,
+      "facts": {
+        "main_meat": {
+          "value": "beef",
+          "source": "模拟数据：主食肉类"
+        },
+        "non_spicy": {
+          "value": true,
+          "source": "模拟数据：辣度声明"
+        },
+        "sugar_free_drink": {
+          "value": false,
+          "source": "模拟数据：饮料无糖"
+        }
+      },
+      "items": [
+        {
+          "code": "m-beef-sugar-main",
+          "name": "模拟非辣牛肉堡",
+          "quantity": 1,
+          "role": "main"
+        },
+        {
+          "code": "m-beef-sugar-drink",
+          "name": "模拟含糖饮料",
+          "quantity": 1,
+          "role": "drink"
+        }
+      ]
+    },
+    {
+      "id": "m-beef-coupon",
+      "name": "模拟牛肉券组合",
+      "price_cents": 2300,
+      "card_fee_cents": 0,
+      "facts": {
+        "main_meat": {
+          "value": "beef",
+          "source": "模拟数据：主食肉类"
+        },
+        "non_spicy": {
+          "value": true,
+          "source": "模拟数据：辣度声明"
+        },
+        "sugar_free_drink": {
+          "value": true,
+          "source": "模拟数据：饮料无糖"
+        }
+      },
+      "items": [
+        {
+          "code": "m-beef-coupon-main",
+          "name": "模拟非辣牛肉堡",
+          "quantity": 1,
+          "role": "main"
+        },
+        {
+          "code": "m-beef-coupon-drink",
+          "name": "模拟无糖饮料",
+          "quantity": 1,
+          "role": "drink"
+        }
+      ],
+      "coupon_key": "sim-coupon-1",
+      "coupon_title": "模拟立减券"
+    },
+    {
+      "id": "m-pork",
+      "name": "模拟猪肉组合",
+      "price_cents": 1800,
+      "card_fee_cents": 0,
+      "facts": {
+        "main_meat": {
+          "value": "pork",
+          "source": "模拟数据：主食肉类"
+        },
+        "non_spicy": {
+          "value": true,
+          "source": "模拟数据：辣度声明"
+        },
+        "sugar_free_drink": {
+          "value": true,
+          "source": "模拟数据：饮料无糖"
+        }
+      },
+      "items": [
+        {
+          "code": "m-pork-main",
+          "name": "模拟非辣猪排堡",
+          "quantity": 1,
+          "role": "main"
+        },
+        {
+          "code": "m-pork-drink",
+          "name": "模拟无糖饮料",
+          "quantity": 1,
+          "role": "drink"
+        }
+      ]
+    },
+    {
+      "id": "m-fish",
+      "name": "模拟鱼排组合",
+      "price_cents": 2200,
+      "card_fee_cents": 0,
+      "facts": {
+        "main_meat": {
+          "value": "fish",
+          "source": "模拟数据：主食肉类"
+        },
+        "non_spicy": {
+          "value": true,
+          "source": "模拟数据：辣度声明"
+        },
+        "sugar_free_drink": {
+          "value": true,
+          "source": "模拟数据：饮料无糖"
+        }
+      },
+      "items": [
+        {
+          "code": "m-fish-main",
+          "name": "模拟非辣鱼排堡",
+          "quantity": 1,
+          "role": "main"
+        },
+        {
+          "code": "m-fish-drink",
+          "name": "模拟无糖饮料",
+          "quantity": 1,
+          "role": "drink"
+        }
+      ]
+    },
+    {
+      "id": "m-unknown",
+      "name": "模拟辣度未知组合",
+      "price_cents": 1000,
+      "card_fee_cents": 0,
+      "facts": {
+        "main_meat": {
+          "value": "pork",
+          "source": "模拟数据：主食肉类"
+        },
+        "sugar_free_drink": {
+          "value": true,
+          "source": "模拟数据：饮料无糖"
+        }
+      },
+      "items": [
+        {
+          "code": "m-unknown-main",
+          "name": "模拟未知口味汉堡",
+          "quantity": 1,
+          "role": "main"
+        },
+        {
+          "code": "m-unknown-drink",
+          "name": "模拟无糖饮料",
+          "quantity": 1,
+          "role": "drink"
+        }
+      ]
+    }
+  ]
+}
