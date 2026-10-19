@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import tempfile
 from pathlib import Path
 from typing import Any, Dict, Optional
 
@@ -27,8 +28,10 @@ def save_json(path: str, value: Dict[str, Any]) -> None:
     """以仅当前用户可读写的原子文件保存状态；不保存原始账户回包。"""
     target = Path(path)
     target.parent.mkdir(parents=True, exist_ok=True)
-    temporary = target.with_name(target.name + ".tmp")
-    fd = os.open(str(temporary), os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+    fd, temporary_name = tempfile.mkstemp(
+        prefix=target.name + ".", suffix=".tmp", dir=str(target.parent)
+    )
+    temporary = Path(temporary_name)
     try:
         with os.fdopen(fd, "w", encoding="utf-8") as file:
             json.dump(value, file, ensure_ascii=False, indent=2)
@@ -257,7 +260,14 @@ def main(argv: Optional[list] = None) -> int:
         if difference and not args.json:
             print("\n变化说明：" + json.dumps(difference, ensure_ascii=False))
         return 0 if result.get("recommendations") else 2
-    except (InputError, McpError, OSError, json.JSONDecodeError, KeyError) as exc:
+    except (
+        InputError,
+        McpError,
+        OSError,
+        UnicodeError,
+        json.JSONDecodeError,
+        KeyError,
+    ) as exc:
         # 不输出网络异常、文件内容或原始响应以避免账户信息泄漏。
         safe = (
             str(exc)

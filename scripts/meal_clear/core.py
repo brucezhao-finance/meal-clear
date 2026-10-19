@@ -39,6 +39,8 @@ def integer(value: Any, label: str, minimum: int = 0) -> int:
 
 def validate_request(request: Dict[str, Any]) -> Dict[str, Any]:
     """校验单/双人、明确上下文和可解释的原子属性约束。"""
+    if not isinstance(request, dict):
+        raise InputError("请求必须为对象")
     req = copy.deepcopy(request)
     if set(req) - {"context", "budget_cents", "people"}:
         raise InputError("请求包含不支持的字段")
@@ -123,7 +125,9 @@ def amend_request(request: Dict[str, Any], patch: Dict[str, Any]) -> Dict[str, A
 
 def validate_catalog(catalog: Dict[str, Any]) -> None:
     """校验受信结构；约束属性均必须附有可追溯来源。"""
-    if catalog.get("mode") not in {"simulation", "live", "historical", "user_supplied"}:
+    if not isinstance(catalog, dict):
+        raise InputError("菜单必须为对象")
+    if catalog.get("mode") not in ("simulation", "live", "historical", "user_supplied"):
         raise InputError("菜单必须标注数据模式")
     if not catalog.get("as_of") or not isinstance(catalog.get("offers"), list):
         raise InputError("菜单需要获取时间和offers列表")
@@ -381,6 +385,28 @@ def compose(
 
 def compare_results(before: Dict[str, Any], after: Dict[str, Any]) -> Dict[str, Any]:
     """比较两个重新生成的结果，只有两边有价时才计算价差。"""
+    for result in (before, after):
+        if not isinstance(result, dict) or not isinstance(
+            result.get("request_id"), str
+        ):
+            raise InputError("会话结果缺少有效请求身份")
+        recommendations = result.get("recommendations", [])
+        if not isinstance(recommendations, list):
+            raise InputError("会话推荐清单必须为列表")
+        for plan in recommendations[:1]:
+            if not isinstance(plan, dict):
+                raise InputError("会话推荐必须为对象")
+            if plan.get("total_cents") is not None:
+                integer(plan["total_cents"], "会话报价")
+            if not isinstance(plan.get("assignments"), list) or any(
+                not isinstance(assignment, dict)
+                or any(
+                    not isinstance(assignment.get(key), str)
+                    for key in ("person_id", "offer_id", "name")
+                )
+                for assignment in plan["assignments"]
+            ):
+                raise InputError("会话餐品分配结构异常")
     old = (before.get("recommendations") or [])[:1]
     new = (after.get("recommendations") or [])[:1]
     differences = []

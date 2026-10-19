@@ -41,7 +41,10 @@ class NoRedirect(urllib.request.HTTPRedirectHandler):
 
 def decode_response(raw: bytes, request_id: Optional[int]) -> Dict[str, Any]:
     """解析JSON或SSE；从通知流中选取对应请求结果。"""
-    text = raw.decode("utf-8-sig").strip()
+    try:
+        text = raw.decode("utf-8-sig").strip()
+    except UnicodeError:
+        raise McpError("服务响应不是有效UTF-8，未记录原始内容") from None
     try:
         value = json.loads(text)
         if isinstance(value, dict):
@@ -68,12 +71,19 @@ def decode_response(raw: bytes, request_id: Optional[int]) -> Dict[str, Any]:
 
 def unwrap_tool(result: Dict[str, Any]) -> Dict[str, Any]:
     """提取结构化工具结果，业务失败只暴露状态码。"""
+    if not isinstance(result, dict):
+        raise McpError("工具结果必须为对象")
     if result.get("isError"):
         raise McpError("MCP工具返回isError，原始账户响应未写入日志")
     payload = result.get("structuredContent")
     if not isinstance(payload, dict):
         payload = None
-        for part in result.get("content", []):
+        content = result.get("content", [])
+        if not isinstance(content, list):
+            raise McpError("工具内容结构异常")
+        for part in content:
+            if not isinstance(part, dict):
+                raise McpError("工具内容项必须为对象")
             if part.get("type") == "text":
                 try:
                     candidate = json.loads(part.get("text", ""))
@@ -153,7 +163,7 @@ class McpClient:
                 result = decode_response(raw, rid)
                 if "error" in result:
                     raise McpError("JSON-RPC请求失败；未记录原始账户响应")
-                if result.get("id") != rid:
+                if type(result.get("id")) is not type(rid) or result.get("id") != rid:
                     raise McpError("JSON-RPC响应id不匹配")
                 data = result.get("result", {})
                 if not isinstance(data, dict):
@@ -189,6 +199,20 @@ class McpClient:
     def list_tools(self) -> Dict[str, Any]:
         """读取当前Schema并处理分页，不保存凭证。"""
         result = self._post("tools/list", {})
+
+        def validate_page(page: Dict[str, Any]) -> None:
+            """在合并工具或使用游标之前检查服务分页结构。"""
+            if not isinstance(page.get("tools", []), list) or any(
+                not isinstance(tool, dict) or not isinstance(tool.get("name"), str)
+                for tool in page.get("tools", [])
+            ):
+                raise McpError("工具清单结构异常")
+            if page.get("nextCursor") is not None and not isinstance(
+                page["nextCursor"], str
+            ):
+                raise McpError("工具分页游标结构异常")
+
+        validate_page(result)
         tools = list(result.get("tools", []))
         cursor = result.get("nextCursor")
         seen = set()
@@ -197,6 +221,7 @@ class McpClient:
                 raise McpError("工具分页异常")
             seen.add(cursor)
             page = self._post("tools/list", {"cursor": cursor})
+            validate_page(page)
             tools.extend(page.get("tools", []))
             cursor = page.get("nextCursor")
         return {"tools": tools}

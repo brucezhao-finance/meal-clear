@@ -48,7 +48,20 @@ def classify_role(name: str, round_name: str = "") -> str:
 def default_modification(choice: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     """只传服务声明的默认选项；未推导去冰或去配料。"""
     values = []
-    for group in (choice.get("modification") or {}).get("items", []):
+    modification = choice.get("modification")
+    if modification is None:
+        modification = {}
+    if not isinstance(modification, dict) or not isinstance(
+        modification.get("items", []), list
+    ):
+        raise InputError("特制结构异常")
+    for group in modification.get("items", []):
+        if (
+            not isinstance(group, dict)
+            or not isinstance(group.get("values", []), list)
+            or any(not isinstance(value, dict) for value in group.get("values", []))
+        ):
+            raise InputError("特制选项结构异常")
         selected = [
             x for x in group.get("values", []) if x.get("selectedQuantity", 0) > 0
         ]
@@ -118,7 +131,11 @@ def detail_offers(
     coupon: Optional[Dict[str, Any]] = None,
 ) -> List[Dict[str, Any]]:
     """构造默认套餐及菜单明确支持的无糖替换，拒绝不完整轮次。"""
+    if not isinstance(detail, dict):
+        return []
     rounds = detail.get("rounds") or []
+    if not isinstance(rounds, list):
+        return []
     if not rounds:
         return []  # 首版不把单个薯条/饮料冒充完整一餐。
     variants = []
@@ -127,6 +144,8 @@ def detail_offers(
         wire_rounds = []
         try:
             for rnd in rounds:
+                if not isinstance(rnd, dict):
+                    raise InputError("套餐轮次必须为对象")
                 # 有些轮次quantity为0但minQuantity为1，按必选要求处理。
                 count = max(rnd.get("minQuantity", 0), rnd.get("quantity", 0))
                 if count == 0:
@@ -134,6 +153,12 @@ def detail_offers(
                 if count != 1 or rnd.get("maxQuantity", 1) < 1:
                     raise InputError("当前仅支持每轮选1件的完整单人套餐")
                 choices = rnd.get("choices", [])
+                if not isinstance(choices, list) or any(
+                    not isinstance(choice, dict)
+                    or not isinstance(choice.get("name"), str)
+                    for choice in choices
+                ):
+                    raise InputError("套餐选项结构异常")
                 selected = [x for x in choices if x.get("isDefault") == 1]
                 if swap_sugar_free and (
                     "饮料" in rnd.get("name", "") or "饮品" in rnd.get("name", "")
@@ -224,7 +249,12 @@ def check_pricing(payload: Dict[str, Any], wire_items: List[Dict[str, Any]]) -> 
             expected.get(item["productCode"], 0) + item["quantity"]
         )
     actual: Dict[str, int] = {}
-    for item in data.get("productList", []):
+    products = data.get("productList", [])
+    if not isinstance(products, list) or any(
+        not isinstance(item, dict) for item in products
+    ):
+        raise InputError("官方报价商品清单结构不匹配")
+    for item in products:
         quantity = integer(item.get("quantity"), "报价商品数量", 1)
         code = item.get("productCode")
         actual[code] = actual.get(code, 0) + quantity
@@ -267,15 +297,33 @@ class LivePlanner:
                 "items",
                 "needTableware",
             }
-            if set(schemas[tool].get("inputSchema", {}).get("required", [])) - allowed:
+            schema = schemas[tool].get("inputSchema", {})
+            if (
+                not isinstance(schema, dict)
+                or not isinstance(schema.get("required", []), list)
+                or any(
+                    not isinstance(field, str) for field in schema.get("required", [])
+                )
+            ):
+                raise McpError("当前Schema结构异常")
+            if set(schema.get("required", [])) - allowed:
                 raise McpError("当前Schema必填字段已变化，需要更新适配")
         context = {"storeCode": store, "orderType": 1, "beType": 1}
         menu = self.client.call("query-meals", context).get("data", {})
+        if not isinstance(menu, dict):
+            raise McpError("当前菜单结构不匹配")
         meals = menu.get("meals", {})
         if not isinstance(meals, dict):
             raise McpError("当前菜单结构不匹配")
         coupons = self.client.call("query-store-coupons", context).get("data", [])
-        if not isinstance(coupons, list):
+        if not isinstance(coupons, list) or any(
+            not isinstance(coupon, dict)
+            or not isinstance(coupon.get("products", []), list)
+            or any(
+                not isinstance(product, dict) for product in coupon.get("products", [])
+            )
+            for coupon in coupons
+        ):
             raise McpError("门店券结构不匹配")
         wanted = {
             v
