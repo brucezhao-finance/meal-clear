@@ -1,6 +1,8 @@
 """行为验收：金额、逐人约束、报价上下文和有限只读边界。"""
 
+import contextlib
 import copy
+import io
 import json
 from pathlib import Path
 import sys
@@ -10,7 +12,7 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
-from meal_clear.cli import save_json
+from meal_clear.cli import main, save_json
 from meal_clear.core import (
     InputError,
     amend_request,
@@ -381,6 +383,122 @@ class BehaviorTests(unittest.TestCase):
             path = Path(directory) / "state.json"
             save_json(str(path), {"request": self.request})
             self.assertEqual(path.stat().st_mode & 0o777, 0o600)
+
+
+class CliFixTests(unittest.TestCase):
+    """重复用餐者与空修改包的用户可见提示（离线、临时目录）。"""
+
+    def run_cli(self, *argv):
+        """调用 CLI 入口，返回退出码与标准输出。"""
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out):
+            code = main(list(argv))
+        return code, out.getvalue()
+
+    def test_duplicate_person_id_message(self) -> None:
+        """重复id提示“用餐者 id 重复”，人数错误与空id文案不变。"""
+        request = json.loads((ROOT / "examples/request.json").read_text())
+        duplicate = copy.deepcopy(request)
+        duplicate["people"][1]["id"] = "A"
+        with self.assertRaises(InputError) as raised:
+            validate_request(duplicate)
+        self.assertIn("用餐者 id 重复", str(raised.exception))
+        self.assertNotIn("1或2位", str(raised.exception))
+        for people, text in (
+            ([], "1或2位"),
+            ([{"id": "A"}, {"id": "B"}, {"id": "C"}], "1或2位"),
+            ([{"id": ""}], "非空id"),
+            ([{"id": 1}], "非空id"),
+        ):
+            with self.subTest(people=people):
+                bad = copy.deepcopy(request)
+                bad["people"] = people
+                with self.assertRaises(InputError) as raised:
+                    validate_request(bad)
+                self.assertIn(text, str(raised.exception))
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "dup.json"
+            path.write_text(json.dumps(duplicate), encoding="utf-8")
+            code, output = self.run_cli(
+                "plan",
+                "--request",
+                str(path),
+                "--catalog",
+                str(ROOT / "examples/demo-catalog.json"),
+            )
+        self.assertEqual(code, 1)
+        payload = json.loads(output)
+        self.assertEqual(payload["status"], "error")
+        self.assertIn("id 重复", payload["message"])
+
+    def test_update_reports_no_change(self) -> None:
+        """空修改包或值相同的修改包提示“无变化”，不重算也不保存。"""
+        catalog = str(ROOT / "examples/demo-catalog.json")
+        with tempfile.TemporaryDirectory() as directory:
+            tmp = Path(directory)
+            state = tmp / "state.json"
+            code, _ = self.run_cli(
+                "plan",
+                "--request",
+                str(ROOT / "examples/request.json"),
+                "--catalog",
+                catalog,
+                "--save",
+                str(state),
+                "--json",
+            )
+            self.assertEqual(code, 0)
+            for name, patch in (
+                ("empty", {}),
+                ("same-budget", {"budget_cents": 5000}),
+                ("same-people", {"people": {"A": {"hard": {"non_spicy": True}}}}),
+            ):
+                with self.subTest(name):
+                    patch_file = tmp / (name + ".json")
+                    patch_file.write_text(json.dumps(patch), encoding="utf-8")
+                    saved = tmp / (name + "-saved.json")
+                    code, output = self.run_cli(
+                        "update",
+                        "--state",
+                        str(state),
+                        "--patch",
+                        str(patch_file),
+                        "--catalog",
+                        catalog,
+                        "--save",
+                        str(saved),
+                    )
+                    payload = json.loads(output)
+                    self.assertEqual(code, 0)
+                    self.assertEqual(payload["status"], "no_change")
+                    self.assertIn("无变化", payload["message"])
+                    self.assertFalse(saved.exists())
+            code, output = self.run_cli(
+                "update",
+                "--state",
+                str(state),
+                "--patch",
+                str(ROOT / "examples/patch-beef.json"),
+                "--catalog",
+                catalog,
+                "--json",
+            )
+            result = json.loads(output)
+            self.assertEqual(code, 0)
+            self.assertEqual(result["difference"]["delta_cents"], 500)
+            bad = tmp / "bad.json"
+            bad.write_text(json.dumps({"people": {"Z": {"hard": {}}}}))
+            code, output = self.run_cli(
+                "update",
+                "--state",
+                str(state),
+                "--patch",
+                str(bad),
+                "--catalog",
+                catalog,
+            )
+            self.assertEqual(code, 1)
+            self.assertIn("未知用餐者", json.loads(output)["message"])
 
 
 class ProtocolTests(unittest.TestCase):

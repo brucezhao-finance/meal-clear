@@ -61,8 +61,10 @@ def validate_request(request: Dict[str, Any]) -> Dict[str, Any]:
         if not isinstance(person, dict) or set(person) - {"id", "hard", "prefer"}:
             raise InputError("用餐者仅支持 id、hard、prefer")
         pid = person.get("id")
-        if not isinstance(pid, str) or not pid.strip() or pid in seen:
+        if not isinstance(pid, str) or not pid.strip():
             raise InputError("每位用餐者需要不同的非空id")
+        if pid in seen:
+            raise InputError("用餐者 id 重复")
         seen.add(pid)
         for key in ("hard", "prefer"):
             person.setdefault(key, {})
