@@ -62,7 +62,7 @@ python3 scripts/meal_clear.py demo
 
 > 读取这个项目的 SKILL.md，使用“麦麦明白点”。先用内置模拟数据演示两人选餐，再把 B 的主食要求改成牛肉，其他要求不变，解释差价。
 
-也可以把**整个 `meal-clear` 目录**安装到目标 Agent 支持的 Skill 位置，保留 `scripts`、`references`、`examples` 的相对路径。可分发包见 [meal-clear.skill](dist/meal-clear.skill)（不含 `verification/` 验证记录，由 `python3 scripts/build_skill.py` 生成）。
+也可以把**整个 `meal-clear` 目录**安装到目标 Agent 支持的 Skill 位置，保留 `scripts`、`references`、`examples` 的相对路径。可分发包见 [meal-clear.skill](https://github.com/brucezhao-finance/meal-clear/blob/main/dist/meal-clear.skill)（不含 `verification/` 验证记录，由 `python3 scripts/build_skill.py` 生成）。
 
 Agent 负责理解自然语言，Python 程序负责约束、组合与金额计算。本项目提供 Skill 和配套命令行程序。
 
@@ -80,9 +80,9 @@ Agent 负责理解自然语言，Python 程序负责约束、组合与金额计�
 
 当次成功发现 35 个官方工具、读取 126 个菜单条目。门店券查询返回 **0 张**，**当次未验证有券参与的真实算价**。
 
-**2026-10-19 补充验收：** 早餐单人无糖组合官方核价 **12.40 元**，两人合计 **24.80 元**；从原会话增加无糖要求后重新核价，差价 **+2.50 元**。本次还验证了一张当前券参与官方算价，未领券、核销或下单。发现并修复了早餐“组合”漏选和损坏菜单输入报错两类问题。[查看实际测试报告与完整过程](verification/2026-10-19-acceptance/测试报告.md)。以上均为对应日期、门店和账户的历史报价。
+**2026-10-19 补充验收：** 早餐单人无糖组合官方核价 **12.40 元**，两人合计 **24.80 元**；从原会话增加无糖要求后重新核价，差价 **+2.50 元**。本次还验证了一张当前券参与官方算价，未领券、核销或下单。发现并修复了早餐“组合”漏选和损坏菜单输入报错两类问题。[查看实际测试报告与完整过程](https://github.com/brucezhao-finance/meal-clear/blob/main/verification/2026-10-19-acceptance/测试报告.md)。以上均为对应日期、门店和账户的历史报价。
 
-[真实联调记录](verification/真实联调记录.md) · [结构化验证摘要](verification/live-validation.json)
+[真实联调记录](https://github.com/brucezhao-finance/meal-clear/blob/main/verification/真实联调记录.md) · [结构化验证摘要](https://github.com/brucezhao-finance/meal-clear/blob/main/verification/live-validation.json)
 
 ## 能力与边界
 
@@ -102,7 +102,7 @@ Agent 负责理解自然语言，Python 程序负责约束、组合与金额计�
 python3 -m unittest discover -s tests -v
 ```
 
-**34 项离线行为回归**覆盖金额精度、卡费、未知约束、双人修改、换店报价失效、官方费用矛盾、协议解析与写工具拒绝。测试不需要网络和真实账户。另有本次验收的 [27 项命令行场景与 5 项故障测试](verification/2026-10-19-acceptance/完整测试过程.md)。
+**34 项离线行为回归**覆盖金额精度、卡费、未知约束、双人修改、换店报价失效、官方费用矛盾、协议解析与写工具拒绝。测试不需要网络和真实账户。另有本次验收的 [27 项命令行场景与 5 项故障测试](https://github.com/brucezhao-finance/meal-clear/blob/main/verification/2026-10-19-acceptance/完整测试过程.md)。
 
 [开发与接入指南](docs/使用与接入.md) · [验收场景](references/evaluation-cases.md) · [项目规则](AGENTS.md)
 

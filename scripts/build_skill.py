@@ -27,9 +27,14 @@ EXCLUDED_DIRS = {
     "live-private",
     "__pycache__",
     ".pytest_cache",
+    ".ruff_cache",
+    ".mypy_cache",
     ".venv",
+    ".idea",
+    ".vscode",
 }
-EXCLUDED_NAMES = {".env", ".contest-plan.md"}
+EXCLUDED_NAMES = {".env", ".contest-plan.md", ".DS_Store", "Thumbs.db"}
+EXCLUDED_SUFFIXES = (".pyc", ".pyo", ".swp", ".log")
 SECRET_PATTERNS = [
     re.compile(r"Bearer\s+[A-Za-z0-9._~+/-]{20,}"),
     re.compile(r"eyJ[A-Za-z0-9_-]{10,}"),
@@ -45,7 +50,7 @@ def excluded(path: Path) -> bool:
         any(part in EXCLUDED_DIRS for part in parts)
         or name in EXCLUDED_NAMES
         or "token" in name.lower()
-        or name.endswith(".pyc")
+        or name.endswith(EXCLUDED_SUFFIXES)
     )
 
 

@@ -38,6 +38,15 @@ class PackagingTests(unittest.TestCase):
                 self.assertNotIn("token", name.lower())
                 self.assertNotIn("local-state", name)
 
+    def test_no_cache_files(self) -> None:
+        """包内没有缓存目录与编译产物。"""
+        for name in self.names:
+            with self.subTest(name=name):
+                self.assertNotIn(".ruff_cache", name)
+                self.assertNotIn("__pycache__", name)
+                self.assertFalse(name.endswith((".pyc", ".pyo")))
+                self.assertNotEqual(Path(name).name, ".DS_Store")
+
     def test_required_files_and_utf8_names(self) -> None:
         """必备文件齐全；中文文件名带UTF-8标志且可还原。"""
         for item in REQUIRED:

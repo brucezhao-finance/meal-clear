@@ -70,4 +70,4 @@
 ## 7. 验证状态
 
 - 离线行为回归可复现：`python3 -m unittest discover -s tests`，不需要网络或账户。
-- 真实联调为作者自述记录，未经第三方复现：见 [verification/真实联调记录.md](verification/真实联调记录.md) 与 [verification/2026-10-19-acceptance/测试报告.md](verification/2026-10-19-acceptance/测试报告.md)。报价仅对应当时的时间、门店与账户，不代表当前价格。
+- 真实联调为作者自述记录，未经第三方复现：见 [verification/真实联调记录.md](https://github.com/brucezhao-finance/meal-clear/blob/main/verification/真实联调记录.md) 与 [verification/2026-10-19-acceptance/测试报告.md](https://github.com/brucezhao-finance/meal-clear/blob/main/verification/2026-10-19-acceptance/测试报告.md)。报价仅对应当时的时间、门店与账户，不代表当前价格。
