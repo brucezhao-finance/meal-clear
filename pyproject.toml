@@ -2,6 +2,7 @@
 name = "meal-clear"
 version = "0.1.0"
 description = "麦麦明白点：约束选餐、报价核对与增量调整"
+license = { text = "MIT" }
 requires-python = ">=3.9"
 dependencies = []
 

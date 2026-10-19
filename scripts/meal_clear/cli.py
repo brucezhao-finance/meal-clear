@@ -9,7 +9,14 @@ import tempfile
 from pathlib import Path
 from typing import Any, Dict, Optional
 
-from .core import InputError, amend_request, break_even, compare_results, compose
+from .core import (
+    InputError,
+    amend_request,
+    break_even,
+    compare_results,
+    compose,
+    validate_request,
+)
 from .live import LivePlanner, timestamp
 from .mcp import McpClient, McpError
 
@@ -238,6 +245,18 @@ def main(argv: Optional[list] = None) -> int:
         if args.command == "update":
             state = read_json(args.state)
             request = amend_request(state["request"], read_json(args.patch))
+            if request == validate_request(state["request"]):
+                # 修改包未改变任何值：不重新计算、不保存、不联网。
+                print(
+                    json.dumps(
+                        {
+                            "status": "no_change",
+                            "message": "无变化：修改包未改变任何请求内容",
+                        },
+                        ensure_ascii=False,
+                    )
+                )
+                return 0
             if state["mode"] == "live":
                 result = LivePlanner(client_from_args(args)).plan(request)
             else:

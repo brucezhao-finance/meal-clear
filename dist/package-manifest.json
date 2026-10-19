@@ -1,41 +1,17 @@
 {
   "package": "meal-clear.skill",
-  "file_count": 160,
-  "bytes": 307894,
-  "sha256": "134bb47e5b92cc35fc2e1da331edb84296fa6cb2cc16cb1461ee9b3952fdf8cb",
+  "file_count": 31,
+  "bytes": 143728,
+  "sha256": "25d6132019723ca7063655d3030040a660e35f07745cc1322adc3694cd35f5a6",
   "secret_scan": "passed",
   "excluded": [
+    "verification",
+    "dist",
     "local-state",
     "Token/凭证",
-    "缓存"
+    "缓存",
+    "工作区私有目录(.agents)"
   ],
-  "offline_behavior_tests": 29,
-  "skill_structure": "passed",
-  "ruff": "passed",
-  "black": "passed",
-  "live": {
-    "read_only": true,
-    "order_created": false,
-    "before_cents": 2290,
-    "after_cents": 3800,
-    "coupon_pricing_live_verified": true,
-    "previous_validation_date": "2026-10-17",
-    "latest_validation": {
-      "date": "2026-10-19",
-      "acceptance_steps": 8,
-      "single_sugar_free_cents": 1240,
-      "two_people_sugar_free_cents": 2480,
-      "update_before_cents": 990,
-      "update_after_cents": 1240,
-      "delta_cents": 250,
-      "read_only": true
-    }
-  },
-  "readme_local_links_checked": 89,
-  "acceptance": {
-    "cli_scenarios": 27,
-    "protocol_scenarios": 5,
-    "report": "verification/2026-10-19-acceptance/测试报告.md",
-    "package_replay": "passed"
-  }
+  "offline_behavior_tests": 35,
+  "note": "bytes 与 sha256 针对 .skill 文件本身；验证记录见源码仓库 verification/，不随包发布。"
 }

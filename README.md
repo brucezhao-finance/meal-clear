@@ -1,8 +1,14 @@
 # 麦麦明白点 · meal-clear
 
-**两个人点餐，改一个人的要求，不必从头再来。**
+**两个人点餐，改一个人的要求，不必从头再来。** 一个到店自取选餐 Skill：逐人检查要求、比较预算内方案，改一句后重新选餐并说明价差。
 
-一个到店自取选餐 Skill：逐人检查要求、比较预算内方案；你说“B 换牛肉，其他不变”，它保留 A 的要求和预算，重新选餐、重新核价，并说明价格为什么变了。
+体验（零依赖、免 Token、不联网）：`python3 scripts/meal_clear.py demo`
+
+> 示例中的商品与价格均为**模拟数据**，非麦当劳官方产品；真实价格以官方当次核价为准。
+
+[参赛声明](CONTEST_DECLARATION.md) · [MCP 接入说明](MCP_INTEGRATION.md) · [MCP 配置示例](mcp-config.example.json) · [LICENSE](LICENSE) · [使用指南](docs/使用与接入.md)
+
+目标用户：两个人一起到店自取、口味或要求不同、想在预算内确认方案的人，以及需要这类“逐人约束 + 改单重算”能力的 Agent 开发者。
 
 Python 3.9+ · 零运行依赖 · 支持离线演示 · 真实接口只读
 
@@ -48,7 +54,7 @@ cd meal-clear
 python3 scripts/meal_clear.py demo
 ```
 
-仓库当前为私有，克隆需要仓库访问权限。你会看到 **38 元 → 43 元** 的两次模拟方案，以及只修改 B 的差异记录。这是本地程序可复现的结果。
+你会看到 **38 元 → 43 元** 的两次模拟方案，以及只修改 B 的差异记录。这是本地程序可复现的结果。
 
 ## 在 Agent 中使用
 
@@ -56,7 +62,7 @@ python3 scripts/meal_clear.py demo
 
 > 读取这个项目的 SKILL.md，使用“麦麦明白点”。先用内置模拟数据演示两人选餐，再把 B 的主食要求改成牛肉，其他要求不变，解释差价。
 
-也可以把**整个 `meal-clear` 目录**安装到目标 Agent 支持的 Skill 位置，保留 `scripts`、`references`、`examples` 的相对路径。可分发包见 [meal-clear.skill](dist/meal-clear.skill)。
+也可以把**整个 `meal-clear` 目录**安装到目标 Agent 支持的 Skill 位置，保留 `scripts`、`references`、`examples` 的相对路径。可分发包见 [meal-clear.skill](https://github.com/brucezhao-finance/meal-clear/blob/main/dist/meal-clear.skill)（不含 `verification/` 验证记录，由 `python3 scripts/build_skill.py` 生成）。
 
 Agent 负责理解自然语言，Python 程序负责约束、组合与金额计算。本项目提供 Skill 和配套命令行程序。
 
@@ -74,11 +80,11 @@ Agent 负责理解自然语言，Python 程序负责约束、组合与金额计�
 
 当次成功发现 35 个官方工具、读取 126 个菜单条目。门店券查询返回 **0 张**，**当次未验证有券参与的真实算价**。
 
-**2026-10-19 补充验收：** 早餐单人无糖组合官方核价 **12.40 元**，两人合计 **24.80 元**；从原会话增加无糖要求后重新核价，差价 **+2.50 元**。本次还验证了一张当前券参与官方算价，未领券、核销或下单。发现并修复了早餐“组合”漏选和损坏菜单输入报错两类问题。[查看实际测试报告与完整过程](verification/2026-10-19-acceptance/测试报告.md)。以上均为对应日期、门店和账户的历史报价。
+**2026-10-19 补充验收：** 早餐单人无糖组合官方核价 **12.40 元**，两人合计 **24.80 元**；从原会话增加无糖要求后重新核价，差价 **+2.50 元**。本次还验证了一张当前券参与官方算价，未领券、核销或下单。发现并修复了早餐“组合”漏选和损坏菜单输入报错两类问题。[查看实际测试报告与完整过程](https://github.com/brucezhao-finance/meal-clear/blob/main/verification/2026-10-19-acceptance/测试报告.md)。以上均为对应日期、门店和账户的历史报价。
 
-**同日全量验收：** 81 个自动测试方法、429 个数据子用例通过；65 个程序测试点和 35 个函数均有执行证据。核心、CLI、实时适配器行与分支覆盖均为 100%，协议模块保留一处不可达的防御兜底。另完成上海/北京两店真实只读验证、跨早餐至正餐重算、真实 401 停止和当前 28 个非白名单工具阻断检查。[全量报告与逐点覆盖矩阵](verification/2026-10-19-full/全量测试报告.md)。
+**同日全量验收（作者本地报告记录，未经第三方复核）：** 自动测试方法与数据子用例、测试点和函数覆盖、两店真实只读验证、跨早餐至正餐重算、真实 401 停止和非白名单工具阻断检查的具体数字与口径见[全量报告与逐点覆盖矩阵](https://github.com/brucezhao-finance/meal-clear/blob/main/verification/2026-10-19-full/全量测试报告.md)。
 
-[真实联调记录](verification/真实联调记录.md) · [结构化验证摘要](verification/live-validation.json)
+[真实联调记录](https://github.com/brucezhao-finance/meal-clear/blob/main/verification/真实联调记录.md) · [结构化验证摘要](https://github.com/brucezhao-finance/meal-clear/blob/main/verification/live-validation.json)
 
 ## 能力与边界
 
@@ -98,9 +104,9 @@ Agent 负责理解自然语言，Python 程序负责约束、组合与金额计�
 python3 -m unittest discover -s tests -v
 ```
 
-**81 项离线测试**覆盖金额精度、卡费、未知约束、双人修改、换店报价失效、官方费用矛盾、协议解析、文件安全与写工具拒绝。测试不需要网络和真实账户，已在 Python 3.9.6 和 3.13.9 执行。另保留早期验收的 [27 项命令行场景与 5 项故障测试](verification/2026-10-19-acceptance/完整测试过程.md)。
+**87 项离线测试**覆盖金额精度、卡费、未知约束、双人修改、换店报价失效、官方费用矛盾、协议解析、文件安全与写工具拒绝。测试不需要网络和真实账户。另有本次验收的 [27 项命令行场景与 5 项故障测试](https://github.com/brucezhao-finance/meal-clear/blob/main/verification/2026-10-19-acceptance/完整测试过程.md)。
 
-全量复现入口是 `python3 verification/2026-10-19-full/run_full.py`；可选分支覆盖及 8 个关键缺陷变异验证见[报告中的复现说明](verification/2026-10-19-full/全量测试报告.md#6-复现)。全量清单不等于所有账户、门店、模型或未来输入永不失败，外部验证边界逐项列在报告中。
+全量复现入口是 `python3 verification/2026-10-19-full/run_full.py`，其中可能包含联网真实只读步骤，运行前请先阅读脚本；全量清单不等于所有账户、门店、模型或未来输入永不失败，外部验证边界逐项列在[报告](https://github.com/brucezhao-finance/meal-clear/blob/main/verification/2026-10-19-full/全量测试报告.md)中。
 
 [开发与接入指南](docs/使用与接入.md) · [验收场景](references/evaluation-cases.md) · [项目规则](AGENTS.md)
 
