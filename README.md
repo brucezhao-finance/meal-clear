@@ -1,8 +1,14 @@
 # 麦麦明白点 · meal-clear
 
-**两个人点餐，改一个人的要求，不必从头再来。**
+**两个人点餐，改一个人的要求，不必从头再来。** 一个到店自取选餐 Skill：逐人检查要求、比较预算内方案，改一句后重新选餐并说明价差。
 
-一个到店自取选餐 Skill：逐人检查要求、比较预算内方案；你说“B 换牛肉，其他不变”，它保留 A 的要求和预算，重新选餐、重新核价，并说明价格为什么变了。
+体验（零依赖、免 Token、不联网）：`python3 scripts/meal_clear.py demo`
+
+> 示例中的商品与价格均为**模拟数据**，非麦当劳官方产品；真实价格以官方当次核价为准。
+
+[参赛声明](CONTEST_DECLARATION.md) · [MCP 接入说明](MCP_INTEGRATION.md) · [MCP 配置示例](mcp-config.example.json) · [LICENSE](LICENSE) · [使用指南](docs/使用与接入.md)
+
+目标用户：两个人一起到店自取、口味或要求不同、想在预算内确认方案的人，以及需要这类“逐人约束 + 改单重算”能力的 Agent 开发者。
 
 Python 3.9+ · 零运行依赖 · 支持离线演示 · 真实接口只读
 
@@ -48,7 +54,7 @@ cd meal-clear
 python3 scripts/meal_clear.py demo
 ```
 
-仓库当前为私有，克隆需要仓库访问权限。你会看到 **38 元 → 43 元** 的两次模拟方案，以及只修改 B 的差异记录。这是本地程序可复现的结果。
+你会看到 **38 元 → 43 元** 的两次模拟方案，以及只修改 B 的差异记录。这是本地程序可复现的结果。
 
 ## 在 Agent 中使用
 
@@ -56,7 +62,7 @@ python3 scripts/meal_clear.py demo
 
 > 读取这个项目的 SKILL.md，使用“麦麦明白点”。先用内置模拟数据演示两人选餐，再把 B 的主食要求改成牛肉，其他要求不变，解释差价。
 
-也可以把**整个 `meal-clear` 目录**安装到目标 Agent 支持的 Skill 位置，保留 `scripts`、`references`、`examples` 的相对路径。可分发包见 [meal-clear.skill](dist/meal-clear.skill)。
+也可以把**整个 `meal-clear` 目录**安装到目标 Agent 支持的 Skill 位置，保留 `scripts`、`references`、`examples` 的相对路径。可分发包见 [meal-clear.skill](dist/meal-clear.skill)（不含 `verification/` 验证记录，由 `python3 scripts/build_skill.py` 生成）。
 
 Agent 负责理解自然语言，Python 程序负责约束、组合与金额计算。本项目提供 Skill 和配套命令行程序。
 
@@ -96,7 +102,7 @@ Agent 负责理解自然语言，Python 程序负责约束、组合与金额计�
 python3 -m unittest discover -s tests -v
 ```
 
-**29 项离线行为回归**覆盖金额精度、卡费、未知约束、双人修改、换店报价失效、官方费用矛盾、协议解析与写工具拒绝。测试不需要网络和真实账户。另有本次验收的 [27 项命令行场景与 5 项故障测试](verification/2026-10-19-acceptance/完整测试过程.md)。
+**34 项离线行为回归**覆盖金额精度、卡费、未知约束、双人修改、换店报价失效、官方费用矛盾、协议解析与写工具拒绝。测试不需要网络和真实账户。另有本次验收的 [27 项命令行场景与 5 项故障测试](verification/2026-10-19-acceptance/完整测试过程.md)。
 
 [开发与接入指南](docs/使用与接入.md) · [验收场景](references/evaluation-cases.md) · [项目规则](AGENTS.md)
 
