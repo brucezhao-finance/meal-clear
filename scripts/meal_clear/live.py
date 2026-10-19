@@ -8,8 +8,19 @@ from datetime import datetime, timezone
 from decimal import Decimal, InvalidOperation
 from typing import Any, Dict, List, Optional
 
+from .config import COUPON_DETAIL_CAP, FULFILLMENTS, RUN_CALL_CAP
 from .core import InputError, compose, integer, validate_request
-from .mcp import McpClient, McpError
+from .fulfillment import context_key, wire_context
+from .mcp import McpClient, McpError, RateLimitedError
+from .privacy import (
+    ResolvedAddress,
+    mask_addresses,
+    sanitize_claimable,
+    sanitize_held,
+    sanitize_store_coupons,
+)
+from .ranking import compose_v2, generate_candidates, select_for_quote
+from .request_v2 import validate_request_v2
 
 
 def timestamp() -> str:
@@ -219,6 +230,11 @@ def detail_offers(
                     "card_fee_cents": 0,
                     "wire_items": [wire_item],
                     "coupon_key": coupon_key,
+                    **(
+                        {"coupon_title": coupon["title"]}
+                        if coupon and isinstance(coupon.get("title"), str)
+                        else {}
+                    ),
                 }
             )
         except (InputError, KeyError, TypeError):
@@ -263,6 +279,139 @@ def check_pricing(payload: Dict[str, Any], wire_items: List[Dict[str, Any]]) -> 
     return data["price"]
 
 
+MENU_TOOLS = (
+    "query-meals",
+    "query-meal-detail",
+    "query-store-coupons",
+    "calculate-price",
+)
+MENU_ALLOWED = frozenset(
+    {"storeCode", "orderType", "beType", "code", "items", "needTableware"}
+)
+# 个别工具的必填字段允许集不同于菜单类工具
+TOOL_ALLOWED = {
+    "query-nearby-stores": frozenset({"beType", "searchType"}),
+    "delivery-query-stores": frozenset({"beType", "addressId"}),
+}
+
+
+class CallCapError(McpError):
+    """达到单次运行调用上限。"""
+
+
+def check_schemas(
+    schemas: Dict[str, Any], tools: Any, default_allowed: Any
+) -> None:
+    """工具齐全且必填字段未变化；否则拒绝带着旧假设继续调用。"""
+    if not set(tools).issubset(schemas):
+        raise McpError("当前服务缺少首版所需的只读工具")
+    for tool in tools:
+        allowed = TOOL_ALLOWED.get(tool, default_allowed)
+        schema = schemas[tool].get("inputSchema", {})
+        if (
+            not isinstance(schema, dict)
+            or not isinstance(schema.get("required", []), list)
+            or any(not isinstance(field, str) for field in schema.get("required", []))
+        ):
+            raise McpError("当前Schema结构异常")
+        if set(schema.get("required", [])) - set(allowed):
+            raise McpError("当前Schema必填字段已变化，需要更新适配")
+
+
+def fetch_menu_offers(
+    client: Any,
+    context: Dict[str, Any],
+    req: Dict[str, Any],
+    detail_cap: int,
+    coupon_detail_cap: int,
+    stop_on_rate_limit: bool = False,
+) -> Dict[str, Any]:
+    """读取菜单、门店券与有限详情并归一化为 offers（v1/v2 共用）。"""
+    menu = client.call("query-meals", context).get("data", {})
+    if not isinstance(menu, dict):
+        raise McpError("当前菜单结构不匹配")
+    meals = menu.get("meals", {})
+    if not isinstance(meals, dict):
+        raise McpError("当前菜单结构不匹配")
+    coupons = client.call("query-store-coupons", context).get("data", [])
+    if not isinstance(coupons, list) or any(
+        not isinstance(coupon, dict)
+        or not isinstance(coupon.get("products", []), list)
+        or any(not isinstance(product, dict) for product in coupon.get("products", []))
+        for coupon in coupons
+    ):
+        raise McpError("门店券结构不匹配")
+    wanted = {
+        v
+        for p in req["people"]
+        for v in list(p["hard"].values()) + list(p["prefer"].values())
+        if isinstance(v, str)
+    }
+
+    def rank(entry: Any) -> Any:
+        """菜单价格仅用于搜索启发，不转换成实付金额。"""
+        code, meal = entry
+        name = meal.get("name", "")
+        matches = int("beef" in wanted and "牛" in name) + int(
+            "chicken" in wanted and "鸡" in name
+        )
+        try:
+            price_hint = Decimal(str(meal.get("currentPrice", "Infinity")))
+            if not price_hint.is_finite() or price_hint < 0:
+                price_hint = Decimal("Infinity")
+        except InvalidOperation:
+            price_hint = Decimal("Infinity")
+        return (-matches, price_hint, code)
+
+    entries = [
+        (str(k), v)
+        for k, v in meals.items()
+        if isinstance(v, dict)
+        and not v.get("canWithOrder")
+        and not v.get("withOrder")
+        and not any(x in v.get("name", "") for x in ("双人", "多人", "会员", "月卡"))
+        and classify_role(v.get("name", "")) == "main"
+        and any(x in v.get("name", "") for x in ("件套", "套餐", "单人餐", "组合"))
+    ]
+    entries.sort(key=rank)
+    to_fetch = [(code, None) for code, _ in entries[:detail_cap]]
+    for coupon in coupons[:coupon_detail_cap]:
+        for product in coupon.get("products", [])[:1]:
+            if product.get("productCode"):
+                to_fetch.append((str(product["productCode"]), coupon))
+    offers = []
+    skipped = 0
+    rate_limited = False
+    for code, coupon in to_fetch:
+        try:
+            detail = client.call("query-meal-detail", {**context, "code": code}).get(
+                "data", {}
+            )
+            offers.extend(detail_offers(code, detail, "官方query-meal-detail", coupon))
+        except CallCapError:
+            raise
+        except RateLimitedError:
+            skipped += 1
+            if stop_on_rate_limit:
+                rate_limited = True
+                break
+        except McpError:
+            skipped += 1
+    unique = {o["id"]: o for o in offers}
+    return {
+        "offers": list(unique.values()),
+        "coupons": coupons,
+        "rate_limited": rate_limited,
+        "coverage": {
+            "menu_entries": len(meals),
+            "detail_queries": len(to_fetch),
+            "skipped_errors": skipped,
+            "coupon_count": len(coupons),
+            "note": "有界单人套餐搜索，未穷尽全菜单；辣度等缺失仍未知",
+        },
+    }
+
+
 class LivePlanner:
     """每次只读获取有限套餐、券与至多3次成功/失败报价，不创建订单。"""
 
@@ -279,117 +428,15 @@ class LivePlanner:
         if not store.isdigit():
             raise InputError("实时门店code必须来自门店查询且全为数字")
         schemas = {t["name"]: t for t in self.client.list_tools()["tools"]}
-        required = {
-            "query-meals",
-            "query-meal-detail",
-            "query-store-coupons",
-            "calculate-price",
-        }
-        if not required.issubset(schemas):
-            raise McpError("当前服务缺少首版所需的只读工具")
-        # 拒绝已改变必填字段的Schema，而非带着旧假设继续调用。
-        for tool in required:
-            allowed = {
-                "storeCode",
-                "orderType",
-                "beType",
-                "code",
-                "items",
-                "needTableware",
-            }
-            schema = schemas[tool].get("inputSchema", {})
-            if (
-                not isinstance(schema, dict)
-                or not isinstance(schema.get("required", []), list)
-                or any(
-                    not isinstance(field, str) for field in schema.get("required", [])
-                )
-            ):
-                raise McpError("当前Schema结构异常")
-            if set(schema.get("required", [])) - allowed:
-                raise McpError("当前Schema必填字段已变化，需要更新适配")
+        check_schemas(schemas, MENU_TOOLS, MENU_ALLOWED)
         context = {"storeCode": store, "orderType": 1, "beType": 1}
-        menu = self.client.call("query-meals", context).get("data", {})
-        if not isinstance(menu, dict):
-            raise McpError("当前菜单结构不匹配")
-        meals = menu.get("meals", {})
-        if not isinstance(meals, dict):
-            raise McpError("当前菜单结构不匹配")
-        coupons = self.client.call("query-store-coupons", context).get("data", [])
-        if not isinstance(coupons, list) or any(
-            not isinstance(coupon, dict)
-            or not isinstance(coupon.get("products", []), list)
-            or any(
-                not isinstance(product, dict) for product in coupon.get("products", [])
-            )
-            for coupon in coupons
-        ):
-            raise McpError("门店券结构不匹配")
-        wanted = {
-            v
-            for p in req["people"]
-            for v in list(p["hard"].values()) + list(p["prefer"].values())
-            if isinstance(v, str)
-        }
-
-        def rank(entry: Any) -> Any:
-            """菜单价格仅用于搜索启发，不转换成实付金额。"""
-            code, meal = entry
-            name = meal.get("name", "")
-            matches = int("beef" in wanted and "牛" in name) + int(
-                "chicken" in wanted and "鸡" in name
-            )
-            try:
-                price_hint = Decimal(str(meal.get("currentPrice", "Infinity")))
-                if not price_hint.is_finite() or price_hint < 0:
-                    price_hint = Decimal("Infinity")
-            except InvalidOperation:
-                price_hint = Decimal("Infinity")
-            return (-matches, price_hint, code)
-
-        entries = [
-            (str(k), v)
-            for k, v in meals.items()
-            if isinstance(v, dict)
-            and not v.get("canWithOrder")
-            and not v.get("withOrder")
-            and not any(
-                x in v.get("name", "") for x in ("双人", "多人", "会员", "月卡")
-            )
-            and classify_role(v.get("name", "")) == "main"
-            and any(x in v.get("name", "") for x in ("件套", "套餐", "单人餐", "组合"))
-        ]
-        entries.sort(key=rank)
-        to_fetch = [(code, None) for code, _ in entries[:6]]
-        for coupon in coupons[:2]:
-            for product in coupon.get("products", [])[:1]:
-                if product.get("productCode"):
-                    to_fetch.append((str(product["productCode"]), coupon))
-        offers = []
-        skipped = 0
-        for code, coupon in to_fetch:
-            try:
-                detail = self.client.call(
-                    "query-meal-detail", {**context, "code": code}
-                ).get("data", {})
-                offers.extend(
-                    detail_offers(code, detail, "官方query-meal-detail", coupon)
-                )
-            except McpError:
-                skipped += 1
-        unique = {o["id"]: o for o in offers}
+        fetched = fetch_menu_offers(self.client, context, req, 6, 2)
         return {
             "mode": "live",
             "as_of": timestamp(),
             "context": req["context"],
-            "offers": list(unique.values()),
-            "coverage": {
-                "menu_entries": len(meals),
-                "detail_queries": len(to_fetch),
-                "skipped_errors": skipped,
-                "coupon_count": len(coupons),
-                "note": "有界单人套餐搜索，未穷尽全菜单；辣度等缺失仍未知",
-            },
+            "offers": fetched["offers"],
+            "coverage": fetched["coverage"],
         }
 
     def plan(self, request: Dict[str, Any]) -> Dict[str, Any]:
@@ -453,4 +500,253 @@ class LivePlanner:
         result["read_only_audit"] = list(self.client.audit)
         # 仅公开已验证/推荐或少量候选，完整计划亦不包含券码。
         result["plans"] = result["plans"][:6]
+        return result
+
+
+class BudgetedClient:
+    """包装只读客户端并限制单次运行的调用总数。"""
+
+    def __init__(self, client: Any, max_calls: int = RUN_CALL_CAP) -> None:
+        """max_calls 为本次运行允许的最大工具/协议调用数。"""
+        self._client = client
+        self.max_calls = max_calls
+        self.calls = 0
+
+    def _spend(self) -> None:
+        """占用一次调用名额，超限则在发请求前拒绝。"""
+        if self.calls >= self.max_calls:
+            raise CallCapError("已达到本次运行调用上限")
+        self.calls += 1
+
+    def call(self, name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
+        """计数后转发只读调用。"""
+        self._spend()
+        return self._client.call(name, arguments)
+
+    def list_tools(self) -> Dict[str, Any]:
+        """计数后转发工具清单读取。"""
+        self._spend()
+        return self._client.list_tools()
+
+    @property
+    def audit(self) -> List[Dict[str, Any]]:
+        """底层客户端的只读调用审计（仅工具名与成败）。"""
+        return list(getattr(self._client, "audit", []))
+
+
+class MultiLivePlanner:
+    """v2 实时多方案：取餐方式映射、外送选址校验、券预览与有界核价。"""
+
+    def __init__(self, client: Any, max_calls: int = RUN_CALL_CAP) -> None:
+        """注入只读客户端；地址原始回包不保留。"""
+        self.client = BudgetedClient(client, max_calls)
+        self._schemas: Optional[Dict[str, Any]] = None
+        self._addresses: Optional[List[ResolvedAddress]] = None
+
+    def _tools(self) -> Dict[str, Any]:
+        """读取并缓存当前工具 Schema。"""
+        if self._schemas is None:
+            self._schemas = {t["name"]: t for t in self.client.list_tools()["tools"]}
+        return self._schemas
+
+    def list_addresses(self) -> List[ResolvedAddress]:
+        """读取配送地址并立即脱敏，只保留序号、标签和内存 addressId。"""
+        if self._addresses is None:
+            check_schemas(self._tools(), ("delivery-query-addresses",), MENU_ALLOWED)
+            payload = self.client.call("delivery-query-addresses", {})
+            self._addresses = mask_addresses(payload)
+            del payload
+        return self._addresses
+
+    def _address(self, address_index: int) -> ResolvedAddress:
+        """按从1开始的序号取地址。"""
+        addresses = self.list_addresses()
+        if not addresses:
+            raise InputError("账户没有可用配送地址")
+        if not 1 <= address_index <= len(addresses):
+            raise InputError(f"address_index 超出地址列表范围（共{len(addresses)}个）")
+        return addresses[address_index - 1]
+
+    def list_delivery_stores(self, address_index: int) -> List[Dict[str, Any]]:
+        """某地址可配送的门店（仅门店名/编码）。"""
+        address = self._address(address_index)
+        check_schemas(self._tools(), ("delivery-query-stores",), MENU_ALLOWED)
+        value = self.client.call(
+            "delivery-query-stores", {"beType": 2, "addressId": address.address_id}
+        )
+        rows = value.get("data", [])
+        if not isinstance(rows, list):
+            raise McpError("可配送门店结构不匹配")
+        return [
+            {k: r.get(k) for k in ("storeCode", "storeName", "beCode", "businessStatus") if k in r}
+            for r in rows
+            if isinstance(r, dict)
+        ]
+
+    def resolve_context(self, req: Dict[str, Any]) -> Dict[str, Any]:
+        """生成公共入参；外送时校验所选门店在该地址可配送列表内。"""
+        wire = wire_context(req)
+        if not wire["storeCode"].isdigit():
+            raise InputError("实时门店code必须来自门店查询且全为数字")
+        spec = FULFILLMENTS[req["fulfillment"]["type"]]
+        address = None
+        if spec.needs_address:
+            index = req["fulfillment"]["address_index"]
+            stores = self.list_delivery_stores(index)
+            address = self._address(index)
+            if not any(
+                str(s.get("storeCode")) == wire["storeCode"]
+                and str(s.get("beCode")) == wire["beCode"]
+                for s in stores
+            ):
+                raise InputError("所选门店与 be_code 不在该地址的可配送列表内，请重新选店")
+        return {"wire": wire, "address": address}
+
+    def coupon_preview(
+        self, wire: Dict[str, Any], store_payload: Any = None
+    ) -> Dict[str, Any]:
+        """三类券预览；仅保留白名单字段，任一类查询失败只记说明。"""
+        notes = [
+            "领券属后续阶段（P1），且 auto-bind-coupons 只能一键领取全部；"
+            "未领取的券不计入本次报价"
+        ]
+
+        def attempt(label: str, fn: Any) -> List[Dict[str, Any]]:
+            """单类查询失败不影响其它两类。"""
+            try:
+                return fn()
+            except McpError:
+                notes.append(f"{label}查询失败，未展示")
+                return []
+
+        def held() -> List[Dict[str, Any]]:
+            """我的券：最多2页，每页200条。"""
+            rows: List[Dict[str, Any]] = []
+            for page in (1, 2):
+                payload = self.client.call(
+                    "query-my-coupons", {"page": str(page), "pageSize": "200"}
+                )
+                batch = sanitize_held(payload)
+                rows.extend(batch)
+                if len(batch) < 200:
+                    break
+            return rows
+
+        if store_payload is None:
+            store_usable = attempt(
+                "本店可用券",
+                lambda: sanitize_store_coupons(
+                    self.client.call("query-store-coupons", wire)
+                ),
+            )
+        else:
+            store_usable = sanitize_store_coupons(store_payload)
+        return {
+            "claimable": attempt(
+                "可领取券",
+                lambda: sanitize_claimable(self.client.call("available-coupons", {})),
+            ),
+            "held": attempt("已领取券", held),
+            "store_usable": store_usable,
+            "notes": notes,
+        }
+
+    def catalog_v2(self, req: Dict[str, Any], wire: Dict[str, Any]) -> Dict[str, Any]:
+        """抓取当前取餐方式下的菜单；返回目录与内存中的门店券原始列表。"""
+        schemas = self._tools()
+        check_schemas(schemas, MENU_TOOLS, MENU_ALLOWED | {"beCode"})
+        fetched = fetch_menu_offers(
+            self.client,
+            wire,
+            req,
+            req["limits"]["max_detail_queries"],
+            COUPON_DETAIL_CAP,
+            stop_on_rate_limit=True,
+        )
+        catalog = {
+            "mode": "live",
+            "as_of": timestamp(),
+            "context": context_key(req),
+            "offers": fetched["offers"],
+            "coverage": fetched["coverage"],
+        }
+        return {
+            "catalog": catalog,
+            "coupons": fetched["coupons"],
+            "rate_limited": fetched["rate_limited"],
+        }
+
+    def plan_v2(self, request: Dict[str, Any]) -> Dict[str, Any]:
+        """重新取数、有界核价并排名；不创建订单、不领券。"""
+        req = validate_request_v2(request)
+        if req["context"]["meal_time"] != "now":
+            raise InputError("实时首版只支持 meal_time=now；不伪造预约参数")
+        resolved = self.resolve_context(req)
+        wire = resolved["wire"]
+        fetched = self.catalog_v2(req, wire)
+        catalog = fetched["catalog"]
+        limits = req["limits"]
+        priority = req["ranking"]["priority"]
+        generated = generate_candidates(req, catalog)
+        selected = select_for_quote(generated["whole"], limits["max_quotes"], priority)
+        ctx = context_key(req)
+        quotes: Dict[str, Any] = {}
+        attempts = 0
+        errors = 0
+        stop_reason = ""
+        if fetched["rate_limited"]:
+            stop_reason = "读取菜单时触发限流（429），已停止后续请求"
+        for cand in ([] if stop_reason else selected):
+            wire_items = [copy.deepcopy(i) for o in cand["offers"] for i in o["wire_items"]]
+            try:
+                attempts += 1
+                payload = self.client.call(
+                    "calculate-price",
+                    {**wire, "items": wire_items, "needTableware": False},
+                )
+                total = check_pricing(payload, wire_items)
+            except RateLimitedError:
+                stop_reason = "核价触发限流（429），已停止核价"
+                break
+            except CallCapError:
+                attempts -= 1
+                stop_reason = "已达到本次运行调用上限，已停止核价"
+                break
+            except (McpError, InputError):
+                errors += 1
+                continue
+            quotes[cand["signature"]] = {
+                "signature": cand["signature"],
+                "context": ctx,
+                "total_cents": total,
+                "verified": True,
+                "source": "官方calculate-price",
+                "quoted_at": timestamp(),
+                "fee_breakdown": {
+                    k: payload["data"].get(k)
+                    for k in (
+                        "productPrice",
+                        "deliveryPrice",
+                        "packingPrice",
+                        "tablewarePrice",
+                    )
+                },
+            }
+        preview = self.coupon_preview(wire, {"data": fetched["coupons"]})
+        result = compose_v2(req, catalog, quotes, self.client.calls)
+        checked = result["ranking_meta"]["checked"]
+        checked["quotes_attempted"] = attempts
+        checked["run_calls"] = self.client.calls
+        if stop_reason:
+            checked["statement"] += (
+                f"{stop_reason}；完成官方核价 {len(quotes)} 次，其余候选未核价、不进入排名。"
+            )
+        if errors:
+            result["diagnostics"].append(f"{errors} 个候选核价失败，已排除，不当作 0 元")
+        fulfillment = result["fulfillment"]
+        if resolved["address"] is not None:
+            fulfillment["address_label"] = resolved["address"].label
+            fulfillment["address_ref"] = resolved["address"].ref
+        result["coupon_preview"] = preview
+        result["coverage"] = catalog["coverage"]
         return result

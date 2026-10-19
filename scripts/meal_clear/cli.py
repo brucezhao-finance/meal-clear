@@ -19,11 +19,11 @@ from .core import (
     validate_request,
 )
 from .config import PRIORITIES
-from .live import LivePlanner, timestamp
+from .live import LivePlanner, MultiLivePlanner, timestamp
 from .mcp import McpClient, McpError
 from .privacy import assert_public
 from .ranking import compose_v2
-from .report import render_ranking
+from .report import render_coupon_preview, render_ranking
 from .request_v2 import amend_request_v2, validate_request_v2
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -198,7 +198,17 @@ def main(argv: Optional[list] = None) -> int:
     stores = sub.add_parser("stores", help="只读查询门店，不自动替用户选店")
     stores.add_argument("--city", required=True)
     stores.add_argument("--keyword", required=True)
+    stores.add_argument("--be-type", type=int, choices=(1, 5), default=1)
     stores.add_argument("--token-file")
+    addresses = sub.add_parser("addresses", help="只读列出配送地址序号（不含地址内容）")
+    addresses.add_argument("--token-file")
+    dstores = sub.add_parser("delivery-stores", help="只读查询某地址可配送门店")
+    dstores.add_argument("--address-index", type=int, required=True)
+    dstores.add_argument("--token-file")
+    coupons = sub.add_parser("coupons", help="只读券预览（可领/已领/本店可用）")
+    coupons.add_argument("--request", required=True)
+    coupons.add_argument("--token-file")
+    coupons.add_argument("--json", action="store_true")
     live = sub.add_parser("live-plan", help="只读真实菜单与官方核价")
     live.add_argument("--request", required=True)
     live.add_argument("--token-file")
@@ -274,7 +284,7 @@ def main(argv: Optional[list] = None) -> int:
             value = client_from_args(args).call(
                 "query-nearby-stores",
                 {
-                    "beType": 1,
+                    "beType": args.be_type,
                     "searchType": 2,
                     "city": args.city,
                     "keyword": args.keyword,
@@ -282,8 +292,11 @@ def main(argv: Optional[list] = None) -> int:
             )
             public = [
                 {
-                    k: r.get(k)
-                    for k in ("storeCode", "storeName", "address", "businessStatus")
+                    **{
+                        k: r.get(k)
+                        for k in ("storeCode", "storeName", "address", "businessStatus")
+                    },
+                    **({"beCode": r["beCode"]} if "beCode" in r else {}),
                 }
                 for r in value.get("data", [])
             ]
@@ -298,6 +311,37 @@ def main(argv: Optional[list] = None) -> int:
                     indent=2,
                 )
             )
+            return 0
+        if args.command == "addresses":
+            planner = MultiLivePlanner(client_from_args(args))
+            labels = [a.public() for a in planner.list_addresses()]
+            output = {
+                "as_of": timestamp(),
+                "addresses": labels,
+                "note": "仅显示序号与标签；请对照 App 地址列表顺序，用 address_index 选择",
+            }
+            assert_public(output)
+            print(json.dumps(output, ensure_ascii=False, indent=2))
+            return 0
+        if args.command == "delivery-stores":
+            planner = MultiLivePlanner(client_from_args(args))
+            output = {
+                "as_of": timestamp(),
+                "stores": planner.list_delivery_stores(args.address_index),
+                "note": "请用户明确选定门店与 beCode，未自动选店或下单",
+            }
+            assert_public(output)
+            print(json.dumps(output, ensure_ascii=False, indent=2))
+            return 0
+        if args.command == "coupons":
+            req = validate_request_v2(read_json(args.request))
+            planner = MultiLivePlanner(client_from_args(args))
+            preview = planner.coupon_preview(planner.resolve_context(req)["wire"])
+            assert_public(preview)
+            if args.json:
+                print(json.dumps(preview, ensure_ascii=False, indent=2))
+            else:
+                print(render_coupon_preview(preview))
             return 0
         difference = None
         v2 = False
@@ -328,8 +372,15 @@ def main(argv: Optional[list] = None) -> int:
                 return 0
             if state["mode"] == "live":
                 if v2:
-                    raise InputError("schema_version=2 的实时多方案将在后续特性提供")
-                result = LivePlanner(client_from_args(args)).plan(request)
+                    result = MultiLivePlanner(client_from_args(args)).plan_v2(request)
+                    old_ref = (state.get("fulfillment") or {}).get("address_ref")
+                    new_ref = result["fulfillment"].get("address_ref")
+                    if old_ref and new_ref and old_ref != new_ref:
+                        result["diagnostics"].append(
+                            "地址列表顺序可能已变化（address_ref 不同），请核对 address_index"
+                        )
+                else:
+                    result = LivePlanner(client_from_args(args)).plan(request)
             else:
                 if not args.catalog:
                     raise InputError("离线修改需要显式提供--catalog，不静默复用旧价格")
@@ -341,9 +392,12 @@ def main(argv: Optional[list] = None) -> int:
             raw = read_json(args.request)
             v2 = raw.get("schema_version") == 2
             if v2:
-                raise InputError("schema_version=2 的实时多方案将在后续特性提供")
-            reject_rank_options(args)
-            result = LivePlanner(client_from_args(args)).plan(raw)
+                result = MultiLivePlanner(client_from_args(args)).plan_v2(
+                    apply_rank_options(raw, args)
+                )
+            else:
+                reject_rank_options(args)
+                result = LivePlanner(client_from_args(args)).plan(raw)
         else:
             raw = read_json(args.request)
             catalog = read_json(args.catalog)

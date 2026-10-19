@@ -24,6 +24,21 @@ def _yuan(cents: int) -> str:
     return f"¥{cents / 100:.2f}"
 
 
+def render_coupon_preview(preview: Dict[str, Any]) -> str:
+    """三类券预览文本：仅名称/标签，不含券码。"""
+    lines: List[str] = ["## 券预览（只读）"]
+    for coupon in preview.get("store_usable", []):
+        lines.append(f"- 本店可用：{coupon.get('title', '未命名券')}")
+    for coupon in preview.get("claimable", []):
+        lines.append(f"- 可领取：{coupon.get('couponName', '未命名券')}")
+    for coupon in preview.get("held", []):
+        lines.append(f"- 已领取：{coupon.get('title', '未命名券')}")
+    if len(lines) == 1:
+        lines.append("- 三类券均为空")
+    lines.extend(f"- 说明：{note}" for note in preview.get("notes", []))
+    return "\n".join(lines)
+
+
 def render_ranking(result: Dict[str, Any]) -> str:
     """渲染名次表、每名分配与理由、检查范围、券预览和边界提示。"""
     req = result["request"]
@@ -34,7 +49,8 @@ def render_ranking(result: Dict[str, Any]) -> str:
         MODE_LABELS.get(result["mode"], result["mode"]),
         f"数据时间：{result['as_of']}",
         f"结果：{result['status']}",
-        f"门店：{req['context']['store_code']}；取餐方式：{result['fulfillment']['label']}；"
+        f"门店：{req['context']['store_code']}；取餐方式：{result['fulfillment']['label']}"
+        f"{'（' + result['fulfillment']['address_label'] + '）' if result['fulfillment'].get('address_label') else ''}；"
         f"{len(req['people'])} 位用餐者；预算 {_yuan(req['budget_cents'])}",
         f"排序规则：{meta['rule']}",
         "",
@@ -91,11 +107,9 @@ def render_ranking(result: Dict[str, Any]) -> str:
     lines.append("## 检查范围")
     lines.append(meta["checked"]["statement"])
     preview = result.get("coupon_preview") or {}
-    if preview.get("store_usable"):
+    if any(preview.get(k) for k in ("claimable", "held", "store_usable")):
         lines.append("")
-        lines.append("## 券预览")
-        for coupon in preview["store_usable"]:
-            lines.append(f"- 本店可用：{coupon['title']}")
+        lines.append(render_coupon_preview(preview))
     lines.extend(
         [
             "",
