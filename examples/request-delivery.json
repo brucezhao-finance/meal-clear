@@ -1,0 +1,13 @@
+{
+  "_comment": "外送示例（占位值，不含任何真实地址）：先用 `addresses` 命令查看地址序号（只显示序号，不显示地址内容），再用 `delivery-stores --address-index N` 查询该地址可配送门店，把其中的 storeCode 与 beCode 填入下面；实时核价请把 meal_time 保持为 now。",
+  "schema_version": 2,
+  "context": {"store_code": "REPLACE_WITH_STORE_CODE", "meal_time": "now"},
+  "fulfillment": {"type": "delivery", "be_code": "REPLACE_WITH_BE_CODE", "address_index": 1},
+  "budget_cents": 20000,
+  "people": [
+    {"id": "A", "hard": {"sugar_free_drink": true}, "prefer": {}},
+    {"id": "B", "hard": {}, "prefer": {"main_meat": "beef"}},
+    {"id": "C", "hard": {}, "prefer": {}}
+  ],
+  "ranking": {"top_n": 3, "priority": "price"}
+}

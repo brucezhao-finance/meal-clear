@@ -1,0 +1,12 @@
+{
+  "_comment": "得来速示例（占位值，非真实门店）：store_code 与 be_code 请先用 `stores --be-type 5` 命令查询并由用户自己确认；实时核价请把 meal_time 保持为 now。",
+  "schema_version": 2,
+  "context": {"store_code": "REPLACE_WITH_STORE_CODE", "meal_time": "now"},
+  "fulfillment": {"type": "drive_thru", "be_code": "REPLACE_WITH_BE_CODE"},
+  "budget_cents": 12000,
+  "people": [
+    {"id": "A", "hard": {"sugar_free_drink": true}, "prefer": {"main_meat": "beef"}},
+    {"id": "B", "hard": {}, "prefer": {"main_meat": "chicken"}}
+  ],
+  "ranking": {"top_n": 3, "priority": "price"}
+}

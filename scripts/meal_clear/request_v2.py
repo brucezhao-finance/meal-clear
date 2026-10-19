@@ -35,6 +35,8 @@ def validate_request_v2(request: Dict[str, Any]) -> Dict[str, Any]:
     if not isinstance(request, dict):
         raise InputError("请求必须为对象")
     req = copy.deepcopy(request)
+    if isinstance(req.get("_comment"), str):
+        req.pop("_comment")  # 示例文件中的说明文字，不参与计算
     if "channel" in req or "channel" in (req.get("context") or {}):
         raise InputError("v2 请求不支持 channel，请使用 fulfillment")
     if req.get("schema_version") != 2 or type(req.get("schema_version")) is not int:
