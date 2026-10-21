@@ -13,9 +13,9 @@ from pathlib import Path
 from typing import Any, Callable, Deque, Dict, Optional
 
 from . import net_guard
-from .config import CONTROLLED_WRITE_TOOLS, RATE_LIMIT, TOOL_CREATE_ORDER
+from .config import CONTROLLED_WRITE_TOOLS, OFFICIAL_ENDPOINT, RATE_LIMIT, TOOL_CREATE_ORDER
 
-ENDPOINT = "https://mcp.mcd.cn"
+ENDPOINT = OFFICIAL_ENDPOINT
 READ_ONLY = frozenset(
     {
         "query-nearby-stores",

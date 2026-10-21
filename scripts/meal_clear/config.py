@@ -85,7 +85,9 @@ ORDER_STATUS_LABELS: Dict[str, str] = {
     EXIT_REFUSED,
     EXIT_DUPLICATE,
     EXIT_UNKNOWN,
-) = range(7)
+    EXIT_LIMIT,
+    EXIT_LOCKED,
+) = range(9)
 
 
 def default_limits() -> Dict[str, int]:
@@ -96,3 +98,54 @@ def default_limits() -> Dict[str, int]:
 def get_fulfillment(key: Optional[str]) -> Fulfillment:
     """按键取取餐方式，未知键返回 KeyError。"""
     return FULFILLMENTS[key or DEFAULT_FULFILLMENT]
+
+
+# --- P2 真实写第四道门（唯一定义处） ---
+OFFICIAL_ENDPOINT = "https://mcp.mcd.cn"
+REAL_WRITE_ENV = "MEAL_CLEAR_ENABLE_REAL_WRITE"  # 仅当值恰为 "1" 时开启
+REAL_WRITE_CONFIG_NAME = "real-write.json"
+WRITE_LOCK_NAME = "WRITE_LOCK"
+WRITE_TOKEN_REL: Tuple[str, ...] = ("credentials", "mcd_mcp_token")
+REAL_CONFIG_MAX_BYTES = 64 * 1024
+# 配置键 -> (默认值, 硬上限)；越界拒绝而非截断
+REAL_LIMITS: Dict[str, Tuple[int, int]] = {
+    "max_order_cents": (10000, 50000),
+    "max_orders_24h": (3, 10),
+    "max_claims_24h": (1, 3),
+}
+REAL_CONFIG_KEYS: Tuple[str, ...] = ("enabled",) + tuple(REAL_LIMITS)
+REAL_WINDOW_SECONDS = 24 * 3600
+UNKNOWN_LOCK_SECONDS = 24 * 3600
+CONFIRM_WORDS: Dict[str, str] = {"claim": "确认领券", "order": "确认下单"}
+PHRASE_TAIL_LEN = 6
+CHANNEL_LOOPBACK = "loopback"
+CHANNEL_OFFICIAL = "official"
+CHANNELS: Tuple[str, ...] = (CHANNEL_LOOPBACK, CHANNEL_OFFICIAL)
+# 受控写工具 -> 账本步骤；以及各步骤计入上限的状态（failed=明确未执行，不计）
+TOOL_STEP: Dict[str, str] = {TOOL_AUTO_BIND_COUPONS: "claim", TOOL_CREATE_ORDER: "order"}
+REAL_COUNTED_STATES: Dict[str, Tuple[str, ...]] = {
+    "claim": ("pending", "succeeded", "unknown"),
+    "order": ("pending", "created", "unknown"),
+}
+REAL_COUNT_LIMIT_KEY: Dict[str, str] = {"claim": "max_claims_24h", "order": "max_orders_24h"}
+# 人工标注：(步骤, 声明) -> 账本终态
+RESOLVE_CHOICES: Dict[Tuple[str, str], str] = {
+    ("claim", "claimed"): "succeeded",
+    ("claim", "not-claimed"): "failed",
+    ("order", "created"): "created",
+    ("order", "not-created"): "failed",
+}
+REAL_REFUSAL_REASONS: Tuple[str, ...] = (
+    "switch_off",
+    "config_invalid",
+    "locked",
+    "not_tty",
+    "phrase_mismatch",
+    "amount_cap",
+    "orders_cap",
+    "claims_cap",
+    "unknown_lock",
+    "bad_endpoint",
+    "token_source",
+    "bad_tool",
+)

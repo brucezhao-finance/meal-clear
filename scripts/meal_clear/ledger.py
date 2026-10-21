@@ -18,7 +18,15 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Callable, Dict, Iterable, Iterator, List, Optional, Tuple
 
-from .config import LEDGER_MAX_BYTES, LEDGER_SCHEMA, LEDGER_STEP_STATES, LEDGER_WRITE_STEPS
+from .config import (
+    CHANNEL_LOOPBACK,
+    CHANNELS,
+    LEDGER_MAX_BYTES,
+    LEDGER_SCHEMA,
+    LEDGER_STEP_STATES,
+    LEDGER_WRITE_STEPS,
+    RESOLVE_CHOICES,
+)
 from .mcp import McpError
 
 try:  # 无 fcntl 的平台（如 Windows）不能提供互斥与崩溃恢复
@@ -281,7 +289,10 @@ class Ledger:
 
     @staticmethod
     def _blank_write_step(state: str) -> Dict[str, Any]:
-        return {"state": state, "attempt_id": None, "started_at": None, "finished_at": None, "detail": {}}
+        return {
+            "state": state, "attempt_id": None, "started_at": None, "finished_at": None,
+            "detail": {}, "channel": None,
+        }
 
     def read(self, digest: str) -> Dict[str, Any]:
         """读取并（必要时）恢复 pending；损坏则拒绝。"""
@@ -353,11 +364,14 @@ class Ledger:
         step: str,
         expect: Iterable[str],
         preconditions: Optional[Dict[str, Iterable[str]]] = None,
+        channel: str = CHANNEL_LOOPBACK,
     ) -> AttemptId:
         """当前状态须在 expect 内且前置条件满足；写 pending 并 fsync，返回执行句柄。"""
         check_digest(digest)
         if step not in WRITE_STEPS:
             raise LedgerError("未知的账本步骤")
+        if channel not in CHANNELS:
+            raise LedgerError("未知的账本通道")
         expect = tuple(expect)
         with self.locked(digest):
             record = self._recover(digest, self._read_raw(digest))
@@ -378,7 +392,8 @@ class Ledger:
             try:
                 entry = record["steps"][step]
                 entry.update(
-                    state="pending", attempt_id=str(attempt), started_at=_iso(_now()), finished_at=None
+                    state="pending", attempt_id=str(attempt), started_at=_iso(_now()),
+                    finished_at=None, channel=channel,
                 )
                 record["events"].append({"at": _iso(_now()), "event": step + "_pending"})
                 self._write(digest, record)
@@ -463,3 +478,106 @@ class Ledger:
             if created >= oldest:
                 hits.append(record)
         return sorted(hits, key=lambda rec: rec["created_at"])
+
+    # --- P2：通道、全局锁、真实写计数与人工标注 ---
+    @staticmethod
+    def step_channel(entry: Dict[str, Any]) -> str:
+        """步骤通道；P1 旧记录缺键（或为空）一律视为 loopback。"""
+        value = entry.get("channel")
+        return value if value in CHANNELS else CHANNEL_LOOPBACK
+
+    @contextlib.contextmanager
+    def global_locked(self) -> Iterator[None]:
+        """账本级独占 flock（<root>/.global.lock）。加锁顺序固定：全局锁 → digest 锁。"""
+        fd = self._open_nofollow(self.root / ".global.lock", os.O_CREAT | os.O_RDWR)
+        try:
+            os.fchmod(fd, 0o600)
+            fcntl.flock(fd, fcntl.LOCK_EX)
+            yield
+        finally:
+            try:
+                fcntl.flock(fd, fcntl.LOCK_UN)
+            finally:
+                os.close(fd)
+
+    def _all_records(self) -> Iterator[Dict[str, Any]]:
+        for path in sorted(self.root.glob("*.json")):
+            digest = path.name[:-5]
+            if _DIGEST_FULL.match(digest):
+                yield self.read(digest)
+
+    @staticmethod
+    def _started_within(entry: Dict[str, Any], oldest: datetime) -> bool:
+        raw = entry.get("started_at")
+        if not raw:
+            return False
+        try:
+            started = datetime.fromisoformat(raw)
+        except (ValueError, TypeError):
+            raise LedgerCorrupt("账本损坏：开始时间无效，已拒绝执行") from None
+        if started.tzinfo is None:
+            started = started.replace(tzinfo=timezone.utc)
+        return started >= oldest
+
+    def count_channel_writes(
+        self,
+        channel: str,
+        step: str,
+        states: Iterable[str],
+        window: float,
+        now: Optional[datetime] = None,
+    ) -> int:
+        """窗口（秒）内某通道、某写步骤处于 states 的次数；基于账本文件，跨进程有效。"""
+        if step not in WRITE_STEPS or channel not in CHANNELS:
+            raise LedgerError("未知的账本步骤或通道")
+        oldest = (now or _now()) - timedelta(seconds=window)
+        states = tuple(states)
+        total = 0
+        for record in self._all_records():
+            entry = record["steps"][step]
+            if (
+                self.step_channel(entry) == channel
+                and entry["state"] in states
+                and self._started_within(entry, oldest)
+            ):
+                total += 1
+        return total
+
+    def find_official_unresolved(
+        self, basket_key: str, window: float, now: Optional[datetime] = None
+    ) -> List[Dict[str, Any]]:
+        """窗口内同篮子、official 通道且结果未知（unknown/pending）的记录。"""
+        oldest = (now or _now()) - timedelta(seconds=window)
+        hits = []
+        for record in self._all_records():
+            if record.get("basket_key") != basket_key:
+                continue
+            for name in WRITE_STEPS:
+                entry = record["steps"][name]
+                if (
+                    self.step_channel(entry) == "official"
+                    and entry["state"] in ("unknown", "pending")
+                    and self._started_within(entry, oldest)
+                ):
+                    hits.append(record)
+                    break
+        return sorted(hits, key=lambda rec: rec["created_at"])
+
+    def resolve_unknown(self, digest: str, step: str, outcome: str) -> Dict[str, Any]:
+        """人工声明 unknown 的真实结果；仅 official+unknown，写 manual_resolved 事件，不写订单号。"""
+        check_digest(digest)
+        target = RESOLVE_CHOICES.get((step, outcome))
+        if target is None:
+            raise LedgerError("人工标注的步骤或结果无效")
+        with self.locked(digest):
+            record = self._recover(digest, self._read_raw(digest))
+            entry = record["steps"][step]
+            if self.step_channel(entry) != "official" or entry["state"] != "unknown":
+                raise LedgerStateError("只能标注真实通道中结果未知的步骤", entry["state"])
+            entry.update(state=target, finished_at=_iso(_now()))
+            entry["detail"] = dict(entry.get("detail") or {}, manual_resolved=True)
+            record["events"].append(
+                {"at": _iso(_now()), "event": "manual_resolved", "step": step, "outcome": outcome}
+            )
+            self._write(digest, record)
+            return copy.deepcopy(record)

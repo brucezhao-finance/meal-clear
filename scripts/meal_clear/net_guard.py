@@ -12,6 +12,8 @@ import socket
 from typing import Optional, Tuple, Union
 from urllib.parse import urlsplit
 
+from .config import OFFICIAL_ENDPOINT
+
 _OCTET = r"(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)"
 _DOTTED_QUAD = re.compile(r"\A" + _OCTET + r"(?:\." + _OCTET + r"){3}\Z")
 _NETLOC = re.compile(r"\A(\[[0-9A-Fa-f:.]+\]|[A-Za-z0-9.\-]+):(\d{1,5})\Z")
@@ -114,3 +116,15 @@ def is_loopback_url(url: object, *, write: bool = False) -> bool:
     except NetGuardError:
         return False
     return True
+
+
+def is_official_url(url: object) -> bool:
+    """官方端点只认与常量严格相等的 str；不做规范化、大小写折叠或解析。"""
+    return type(url) is str and url == OFFICIAL_ENDPOINT
+
+
+def assert_official_target(url: object) -> str:
+    """官方写目标校验：通过则返回常量，否则抛 NetGuardError（文案不含端点原文）。"""
+    if not is_official_url(url):
+        raise NetGuardError("端点不是固定的官方地址")
+    return OFFICIAL_ENDPOINT
