@@ -1,12 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 690" width="1200" height="690" role="img" aria-labelledby="cf-t cf-d">
 <title id="cf-t">确认式下单流程</title>
-<desc id="cf-d">模拟数据的确认式下单流程:先预览比价排名,生成订单摘要(核价 20.00 元,摘要编号,600 秒内有效);你确认后一键领全部券(不可撤销);领券后重新查券并重新核价,价格变化(例如 20.00 元变为 23.00 元)则回到摘要;你再次确认后创建待支付订单;付款由你自己完成。真实环境领券下单未开放。图形为自制抽象图案,非官方标识。</desc>
+<desc id="cf-d">模拟数据的确认式下单流程:先预览比价排名,生成订单摘要(核价 20.00 元,摘要编号,600 秒内有效);你确认后一键领全部券(不可撤销);领券后重新查券并重新核价,价格变化(例如 20.00 元变为 23.00 元)则回到摘要;你再次确认后创建待支付订单;付款由你自己完成。官方端点的真实领券下单默认关闭、未经真实验证,开启后还要你在自己的终端亲手输入确认短语。图形为自制抽象图案,非官方标识。</desc>
 <style>text{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif} text:not([fill]){fill:#3A2A1A} .m{font-family:Menlo,Consolas,'PingFang SC','Microsoft YaHei',monospace}</style>
 <rect width="1200" height="690" fill="#FFF8E1"/>
 <rect x="0" y="0" width="1200" height="70" fill="#DA291C"/>
 <g transform="translate(24,10) scale(0.6)"><rect width="96" height="80" rx="16" fill="#DA291C"/><path d="M14 62 C14 14 48 14 48 62 C48 14 82 14 82 62" fill="none" stroke="#FFC72C" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/></g>
 <text x="90" y="46" font-size="30" text-anchor="start" font-weight="bold" fill="#FFFFFF">确认式下单:每一步都等你同意</text>
-<text x="1170" y="44" font-size="20" text-anchor="end" fill="#FFC72C" font-weight="bold">模拟数据 · 真实环境未开放(P2)</text>
+<text x="1170" y="44" font-size="20" text-anchor="end" fill="#FFC72C" font-weight="bold">模拟数据 · 官方真实写默认关闭</text>
 <rect x="30" y="95" width="264" height="190" rx="14" fill="#FFFFFF" stroke="#FFC72C" stroke-width="4"/>
 <rect x="30" y="95" width="264" height="56" rx="14" fill="#FFC72C"/>
 <rect x="30" y="135" width="264" height="16" fill="#FFC72C"/>
@@ -25,16 +25,16 @@
 <rect x="614" y="95" width="264" height="56" rx="14" fill="#DA291C"/>
 <rect x="614" y="135" width="264" height="16" fill="#DA291C"/>
 <text x="746" y="133" font-size="23" text-anchor="middle" font-weight="bold" fill="#FFFFFF">③ 你确认领券</text>
-<text x="746" y="190" font-size="19" text-anchor="middle" font-weight="normal">一键领全部</text>
-<text x="746" y="226" font-size="19" text-anchor="middle" font-weight="normal">无法逐张选择</text>
-<text x="746" y="262" font-size="19" text-anchor="middle" font-weight="normal">不可撤销</text>
+<text x="746" y="190" font-size="19" text-anchor="middle" font-weight="normal">一键领全部 · 不可撤销</text>
+<text x="746" y="226" font-size="19" text-anchor="middle" font-weight="normal">官方真实写:要在你自己的</text>
+<text x="746" y="262" font-size="19" text-anchor="middle" font-weight="normal">终端亲手输入确认短语</text>
 <rect x="906" y="95" width="264" height="190" rx="14" fill="#FFFFFF" stroke="#FFC72C" stroke-width="4"/>
 <rect x="906" y="95" width="264" height="56" rx="14" fill="#FFC72C"/>
 <rect x="906" y="135" width="264" height="16" fill="#FFC72C"/>
 <text x="1038" y="133" font-size="23" text-anchor="middle" font-weight="bold" fill="#3A2A1A">④ 领券</text>
 <text x="1038" y="190" font-size="19" text-anchor="middle" font-weight="normal">--execute</text>
 <text x="1038" y="226" font-size="19" text-anchor="middle" font-weight="normal">+ 完整摘要编号</text>
-<text x="1038" y="262" font-size="19" text-anchor="middle" font-weight="normal">仅回环模拟服务</text>
+<text x="1038" y="262" font-size="19" text-anchor="middle" font-weight="normal">官方端点默认关闭</text>
 <rect x="30" y="345" width="264" height="190" rx="14" fill="#FFFFFF" stroke="#FFC72C" stroke-width="4"/>
 <rect x="30" y="345" width="264" height="56" rx="14" fill="#FFC72C"/>
 <rect x="30" y="385" width="264" height="16" fill="#FFC72C"/>
@@ -47,8 +47,8 @@
 <rect x="322" y="385" width="264" height="16" fill="#DA291C"/>
 <text x="454" y="383" font-size="23" text-anchor="middle" font-weight="bold" fill="#FFFFFF">⑥ 你再确认下单</text>
 <text x="454" y="440" font-size="19" text-anchor="middle" font-weight="normal">对新摘要再确认</text>
-<text x="454" y="476" font-size="19" text-anchor="middle" font-weight="normal">旧确认作废</text>
-<text x="454" y="512" font-size="19" text-anchor="middle" font-weight="normal">过期须重新核价</text>
+<text x="454" y="476" font-size="19" text-anchor="middle" font-weight="normal">官方真实写:终端亲手输入</text>
+<text x="454" y="512" font-size="19" text-anchor="middle" font-weight="normal">确认短语;旧确认作废</text>
 <rect x="614" y="345" width="264" height="190" rx="14" fill="#FFFFFF" stroke="#FFC72C" stroke-width="4"/>
 <rect x="614" y="345" width="264" height="56" rx="14" fill="#FFC72C"/>
 <rect x="614" y="385" width="264" height="16" fill="#FFC72C"/>
@@ -73,5 +73,5 @@
 <path d="M150 333 L162 345 L174 333 Z" fill="#DA291C"/>
 <rect x="30" y="560" width="1140" height="100" rx="14" fill="#FFC72C"/>
 <text x="600" y="598" font-size="24" text-anchor="middle" font-weight="bold">红色格 = 必须你明确同意 · 每一步只问一个问题 · 不代你确认</text>
-<text x="600" y="634" font-size="19" text-anchor="middle" font-weight="normal">数字来自模拟服务端到端运行 · 真实环境领券/下单未开放 · 非麦当劳官方产品</text>
+<text x="600" y="634" font-size="19" text-anchor="middle" font-weight="normal">数字来自模拟服务端到端运行 · 官方真实写默认关闭、未经真实验证 · 非麦当劳官方产品</text>
 </svg>

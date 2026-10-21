@@ -15,13 +15,18 @@ DOCS = [
     "references/evaluation-cases.md",
     "docs/使用与接入.md",
     "docs/真实验证与能力边界.md",
+    "docs/真实写操作启用指南.md",
 ]
 NEW_SVGS = ["06-confirm-flow.svg", "07-safety-gates.svg"]
 SKIP_DIRS = {".git", "dist", "verification", "local-state", "__pycache__", ".ruff_cache"}
 # 这两个测试把本机路径前缀作为"不得出现"的断言字面量，属于允许的例外
 PATH_LITERAL_EXEMPT = {"tests/test_packaging.py", "tests/test_sim_write_tools.py"}
 TEXT_SUFFIXES = {".md", ".py", ".json", ".svg", ".toml", ".sh", ".yaml", ".yml", ".txt"}
-FORBIDDEN_CLAIMS = ("已支持真实下单", "真实下单已验证", "全网最低价已", "全网最低价格")
+FORBIDDEN_CLAIMS = (
+    "已支持真实下单", "真实下单已验证", "全网最低价已", "全网最低价格",
+    "已验证真实下单", "真实领券已验证", "真实下单已通过", "已支持真实领券", "真实下单已支持",
+)
+TIER3 = "模拟已验证 / 真实只读待用户验证 / 真实领券下单代码已具备但默认关闭、未经真实验证"
 
 
 def read(rel: str) -> str:
@@ -74,6 +79,8 @@ class DocsConsistencyTests(unittest.TestCase):
                 self.assertEqual(root.get("role"), "img")
         for name in NEW_SVGS:
             self.assertIn("模拟数据", read("docs/images/" + name))
+            self.assertIn("默认关闭", read("docs/images/" + name))
+        self.assertIn("四道门", read("docs/images/07-safety-gates.svg"))
 
     def test_old_svg_wording_updated(self) -> None:
         """01/04 不再写“不下单·不领券”这类与新能力冲突的措辞。"""
@@ -87,6 +94,34 @@ class DocsConsistencyTests(unittest.TestCase):
             for name in NEW_SVGS:
                 with self.subTest(doc=rel, svg=name):
                     self.assertIn("docs/images/" + name, read(rel))
+
+    def test_real_write_default_off_wording(self) -> None:
+        """真实写通道文档如实写明默认关闭、未经真实验证与终端检查局限；README 含三档原文。"""
+        self.assertIn(TIER3, read("README.md"))
+        for rel in ("README.md", "SKILL.md", "MCP_INTEGRATION.md", "CONTEST_DECLARATION.md", "docs/真实写操作启用指南.md"):
+            text = read(rel)
+            with self.subTest(doc=rel):
+                self.assertIn("默认关闭", text)
+                self.assertIn("未经真实验证", text)
+        for rel in ("README.md", "MCP_INTEGRATION.md", "CONTEST_DECLARATION.md", "docs/真实写操作启用指南.md", "docs/真实验证与能力边界.md"):
+            with self.subTest(doc=rel, topic="tty"):
+                self.assertIn("无法区分", read(rel))
+
+    def test_four_gates_documented(self) -> None:
+        """README、接入说明、指南、SKILL 写四道门。"""
+        for rel in ("README.md", "SKILL.md", "MCP_INTEGRATION.md", "docs/真实写操作启用指南.md"):
+            with self.subTest(doc=rel):
+                self.assertIn("四道门", read(rel))
+        self.assertIn("真实写操作启用指南.md", read("README.md"))
+
+    def test_skill_forbids_agent_tty_bypass(self) -> None:
+        """SKILL.md 写明 Agent 禁令与用户亲手确认提示。"""
+        skill = read("SKILL.md")
+        for phrase in ("不得代用户在终端确认", "pty", "不得向用户索要 Token", "MEAL_CLEAR_ENABLE_REAL_WRITE",
+                       "real-write.json", "WRITE_LOCK", "order-resolve", "write-lock --off", "请在你自己的终端运行并亲手确认"):
+            with self.subTest(phrase=phrase):
+                self.assertIn(phrase, skill)
+        self.assertIn("| 7 |", read("references/data-contract.md"))
 
     def test_relative_links_valid(self) -> None:
         """文档里的相对链接目标存在。"""

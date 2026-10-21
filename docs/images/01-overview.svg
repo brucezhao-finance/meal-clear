@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600" width="1200" height="600" role="img" aria-labelledby="ov-t ov-d">
 <title id="ov-t">麦麦明白点总流程图</title>
-<desc id="ov-d">从一句话需求到逐人检查、比较方案、给出报价,再到改一句只重算受影响部分。默认只读,领券和下单需你逐步确认,不自动付款。麦麦是中国用户对麦当劳的昵称。图形为自制抽象图案,非官方标识;数据为模拟数据。</desc>
+<desc id="ov-d">从一句话需求到逐人检查、比较方案、给出报价,再到改一句只重算受影响部分。默认只读,领券和下单需你逐步确认(官方真实写默认关闭、未经真实验证),不自动付款。麦麦是中国用户对麦当劳的昵称。图形为自制抽象图案,非官方标识;数据为模拟数据。</desc>
 <style>text{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif} text:not([fill]){fill:#3A2A1A} .m{font-family:Menlo,Consolas,'PingFang SC','Microsoft YaHei',monospace}</style>
 <rect width="1200" height="600" fill="#FFF8E1"/>
 <rect x="0" y="0" width="1200" height="130" rx="0" fill="#DA291C"/>

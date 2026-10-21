@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 640" width="1200" height="640" role="img" aria-labelledby="sf-t sf-d">
 <title id="sf-t">安全边界:会做与不会做</title>
-<desc id="sf-d">会做:逐人核对要求、比较预算内方案、算差价、不知道就明确说不知道。不会做:未经确认的领券或下单、自动付款、买卡或积分兑换、取消订单。领券和下单只在你逐步确认后才可能执行,真实环境未开放。Token 不出现在对话或仓库。</desc>
+<desc id="sf-d">会做:逐人核对要求、比较预算内方案、算差价、不知道就明确说不知道。不会做:未经确认的领券或下单、自动付款、买卡或积分兑换、取消订单。领券和下单只在你逐步确认后才可能执行,官方真实写默认关闭、未经真实验证。Token 不出现在对话或仓库。</desc>
 <style>text{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif} text:not([fill]){fill:#3A2A1A} .m{font-family:Menlo,Consolas,'PingFang SC','Microsoft YaHei',monospace}</style>
 <rect width="1200" height="640" fill="#FFF8E1"/>
 <rect x="0" y="0" width="1200" height="70" rx="0" fill="#DA291C"/>
