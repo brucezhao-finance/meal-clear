@@ -1,0 +1,494 @@
+{
+  "_comment": "50 人 4 个同质组的离线示例（合成数据）；配 examples/demo-catalog-multi.json 运行，不含任何地址或券码。",
+  "schema_version": 2,
+  "context": {
+    "store_code": "DEMO",
+    "meal_time": "demo-time"
+  },
+  "fulfillment": {
+    "type": "pickup"
+  },
+  "budget_cents": 150000,
+  "people": [
+    {
+      "id": "P01",
+      "hard": {
+        "non_spicy": true,
+        "sugar_free_drink": true
+      },
+      "prefer": {
+        "main_meat": "chicken"
+      }
+    },
+    {
+      "id": "P02",
+      "hard": {
+        "non_spicy": true,
+        "sugar_free_drink": true
+      },
+      "prefer": {
+        "main_meat": "chicken"
+      }
+    },
+    {
+      "id": "P03",
+      "hard": {
+        "non_spicy": true,
+        "sugar_free_drink": true
+      },
+      "prefer": {
+        "main_meat": "chicken"
+      }
+    },
+    {
+      "id": "P04",
+      "hard": {
+        "non_spicy": true,
+        "sugar_free_drink": true
+      },
+      "prefer": {
+        "main_meat": "chicken"
+      }
+    },
+    {
+      "id": "P05",
+      "hard": {
+        "non_spicy": true,
+        "sugar_free_drink": true
+      },
+      "prefer": {
+        "main_meat": "chicken"
+      }
+    },
+    {
+      "id": "P06",
+      "hard": {
+        "non_spicy": true,
+        "sugar_free_drink": true
+      },
+      "prefer": {
+        "main_meat": "chicken"
+      }
+    },
+    {
+      "id": "P07",
+      "hard": {
+        "non_spicy": true,
+        "sugar_free_drink": true
+      },
+      "prefer": {
+        "main_meat": "chicken"
+      }
+    },
+    {
+      "id": "P08",
+      "hard": {
+        "non_spicy": true,
+        "sugar_free_drink": true
+      },
+      "prefer": {
+        "main_meat": "chicken"
+      }
+    },
+    {
+      "id": "P09",
+      "hard": {
+        "non_spicy": true,
+        "sugar_free_drink": true
+      },
+      "prefer": {
+        "main_meat": "chicken"
+      }
+    },
+    {
+      "id": "P10",
+      "hard": {
+        "non_spicy": true,
+        "sugar_free_drink": true
+      },
+      "prefer": {
+        "main_meat": "chicken"
+      }
+    },
+    {
+      "id": "P11",
+      "hard": {
+        "non_spicy": true,
+        "sugar_free_drink": true
+      },
+      "prefer": {
+        "main_meat": "chicken"
+      }
+    },
+    {
+      "id": "P12",
+      "hard": {
+        "non_spicy": true,
+        "sugar_free_drink": true
+      },
+      "prefer": {
+        "main_meat": "chicken"
+      }
+    },
+    {
+      "id": "P13",
+      "hard": {
+        "non_spicy": true,
+        "sugar_free_drink": true
+      },
+      "prefer": {
+        "main_meat": "chicken"
+      }
+    },
+    {
+      "id": "P14",
+      "hard": {
+        "non_spicy": true,
+        "sugar_free_drink": true
+      },
+      "prefer": {
+        "main_meat": "chicken"
+      }
+    },
+    {
+      "id": "P15",
+      "hard": {
+        "non_spicy": true
+      },
+      "prefer": {
+        "main_meat": "beef"
+      }
+    },
+    {
+      "id": "P16",
+      "hard": {
+        "non_spicy": true
+      },
+      "prefer": {
+        "main_meat": "beef"
+      }
+    },
+    {
+      "id": "P17",
+      "hard": {
+        "non_spicy": true
+      },
+      "prefer": {
+        "main_meat": "beef"
+      }
+    },
+    {
+      "id": "P18",
+      "hard": {
+        "non_spicy": true
+      },
+      "prefer": {
+        "main_meat": "beef"
+      }
+    },
+    {
+      "id": "P19",
+      "hard": {
+        "non_spicy": true
+      },
+      "prefer": {
+        "main_meat": "beef"
+      }
+    },
+    {
+      "id": "P20",
+      "hard": {
+        "non_spicy": true
+      },
+      "prefer": {
+        "main_meat": "beef"
+      }
+    },
+    {
+      "id": "P21",
+      "hard": {
+        "non_spicy": true
+      },
+      "prefer": {
+        "main_meat": "beef"
+      }
+    },
+    {
+      "id": "P22",
+      "hard": {
+        "non_spicy": true
+      },
+      "prefer": {
+        "main_meat": "beef"
+      }
+    },
+    {
+      "id": "P23",
+      "hard": {
+        "non_spicy": true
+      },
+      "prefer": {
+        "main_meat": "beef"
+      }
+    },
+    {
+      "id": "P24",
+      "hard": {
+        "non_spicy": true
+      },
+      "prefer": {
+        "main_meat": "beef"
+      }
+    },
+    {
+      "id": "P25",
+      "hard": {
+        "non_spicy": true
+      },
+      "prefer": {
+        "main_meat": "beef"
+      }
+    },
+    {
+      "id": "P26",
+      "hard": {
+        "non_spicy": true
+      },
+      "prefer": {
+        "main_meat": "beef"
+      }
+    },
+    {
+      "id": "P27",
+      "hard": {
+        "non_spicy": true
+      },
+      "prefer": {
+        "main_meat": "beef"
+      }
+    },
+    {
+      "id": "P28",
+      "hard": {
+        "non_spicy": true,
+        "sugar_free_drink": true
+      },
+      "prefer": {
+        "main_meat": "pork"
+      }
+    },
+    {
+      "id": "P29",
+      "hard": {
+        "non_spicy": true,
+        "sugar_free_drink": true
+      },
+      "prefer": {
+        "main_meat": "pork"
+      }
+    },
+    {
+      "id": "P30",
+      "hard": {
+        "non_spicy": true,
+        "sugar_free_drink": true
+      },
+      "prefer": {
+        "main_meat": "pork"
+      }
+    },
+    {
+      "id": "P31",
+      "hard": {
+        "non_spicy": true,
+        "sugar_free_drink": true
+      },
+      "prefer": {
+        "main_meat": "pork"
+      }
+    },
+    {
+      "id": "P32",
+      "hard": {
+        "non_spicy": true,
+        "sugar_free_drink": true
+      },
+      "prefer": {
+        "main_meat": "pork"
+      }
+    },
+    {
+      "id": "P33",
+      "hard": {
+        "non_spicy": true,
+        "sugar_free_drink": true
+      },
+      "prefer": {
+        "main_meat": "pork"
+      }
+    },
+    {
+      "id": "P34",
+      "hard": {
+        "non_spicy": true,
+        "sugar_free_drink": true
+      },
+      "prefer": {
+        "main_meat": "pork"
+      }
+    },
+    {
+      "id": "P35",
+      "hard": {
+        "non_spicy": true,
+        "sugar_free_drink": true
+      },
+      "prefer": {
+        "main_meat": "pork"
+      }
+    },
+    {
+      "id": "P36",
+      "hard": {
+        "non_spicy": true,
+        "sugar_free_drink": true
+      },
+      "prefer": {
+        "main_meat": "pork"
+      }
+    },
+    {
+      "id": "P37",
+      "hard": {
+        "non_spicy": true,
+        "sugar_free_drink": true
+      },
+      "prefer": {
+        "main_meat": "pork"
+      }
+    },
+    {
+      "id": "P38",
+      "hard": {
+        "non_spicy": true,
+        "sugar_free_drink": true
+      },
+      "prefer": {
+        "main_meat": "pork"
+      }
+    },
+    {
+      "id": "P39",
+      "hard": {
+        "non_spicy": true,
+        "sugar_free_drink": true
+      },
+      "prefer": {
+        "main_meat": "pork"
+      }
+    },
+    {
+      "id": "P40",
+      "hard": {
+        "non_spicy": true
+      },
+      "prefer": {
+        "main_meat": "fish"
+      }
+    },
+    {
+      "id": "P41",
+      "hard": {
+        "non_spicy": true
+      },
+      "prefer": {
+        "main_meat": "fish"
+      }
+    },
+    {
+      "id": "P42",
+      "hard": {
+        "non_spicy": true
+      },
+      "prefer": {
+        "main_meat": "fish"
+      }
+    },
+    {
+      "id": "P43",
+      "hard": {
+        "non_spicy": true
+      },
+      "prefer": {
+        "main_meat": "fish"
+      }
+    },
+    {
+      "id": "P44",
+      "hard": {
+        "non_spicy": true
+      },
+      "prefer": {
+        "main_meat": "fish"
+      }
+    },
+    {
+      "id": "P45",
+      "hard": {
+        "non_spicy": true
+      },
+      "prefer": {
+        "main_meat": "fish"
+      }
+    },
+    {
+      "id": "P46",
+      "hard": {
+        "non_spicy": true
+      },
+      "prefer": {
+        "main_meat": "fish"
+      }
+    },
+    {
+      "id": "P47",
+      "hard": {
+        "non_spicy": true
+      },
+      "prefer": {
+        "main_meat": "fish"
+      }
+    },
+    {
+      "id": "P48",
+      "hard": {
+        "non_spicy": true
+      },
+      "prefer": {
+        "main_meat": "fish"
+      }
+    },
+    {
+      "id": "P49",
+      "hard": {
+        "non_spicy": true
+      },
+      "prefer": {
+        "main_meat": "fish"
+      }
+    },
+    {
+      "id": "P50",
+      "hard": {
+        "non_spicy": true
+      },
+      "prefer": {
+        "main_meat": "fish"
+      }
+    }
+  ],
+  "ranking": {
+    "top_n": 3,
+    "priority": "price"
+  }
+}

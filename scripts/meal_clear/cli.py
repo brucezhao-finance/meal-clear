@@ -159,7 +159,7 @@ def emit(result: Dict[str, Any], args: argparse.Namespace, v2: bool) -> None:
     if args.json:
         print(json.dumps(result, ensure_ascii=False, indent=2))
     else:
-        print(render_ranking(result) if v2 else render(result))
+        print(render_ranking(result, getattr(args, "detail", False)) if v2 else render(result))
 
 
 def client_from_args(args: argparse.Namespace) -> McpClient:
@@ -173,6 +173,9 @@ def add_rank_options(parser: argparse.ArgumentParser) -> None:
     """v2 排名选项。"""
     parser.add_argument("--top", type=int, help="展示名次数（仅 v2）")
     parser.add_argument("--priority", choices=PRIORITIES, help="排序优先（仅 v2）")
+    parser.add_argument(
+        "--detail", action="store_true", help="≥13 人时文本报告展开逐人（默认按同质组汇总；仅影响文本）"
+    )
 
 
 def main(argv: Optional[list] = None) -> int:

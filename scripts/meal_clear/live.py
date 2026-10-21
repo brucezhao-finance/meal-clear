@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import copy
 import hashlib
+import json
 from datetime import datetime, timezone
 from decimal import Decimal, InvalidOperation
 from typing import Any, Dict, List, Optional
@@ -240,6 +241,33 @@ def detail_offers(
         except (InputError, KeyError, TypeError):
             continue
     return variants
+
+
+def merge_wire_items(offers: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    """把多人相同的商品行合并为“商品行 × 数量”（核价载荷）。
+
+    相同 (productCode, roundList, 券) 的行累加 quantity；券行数量恒为 1，且不与普通行合并。
+    """
+    merged: List[Dict[str, Any]] = []
+    index: Dict[str, Dict[str, Any]] = {}
+    for offer in offers:
+        for item in offer["wire_items"]:
+            row = copy.deepcopy(item)
+            if row.get("couponId") or row.get("couponCode"):
+                row["quantity"] = 1
+                merged.append(row)
+                continue
+            key = json.dumps(
+                {"p": row["productCode"], "r": row.get("roundList")},
+                sort_keys=True,
+                ensure_ascii=False,
+            )
+            if key in index:
+                index[key]["quantity"] += row["quantity"]
+            else:
+                index[key] = row
+                merged.append(row)
+    return merged
 
 
 def check_pricing(payload: Dict[str, Any], wire_items: List[Dict[str, Any]]) -> int:
@@ -697,7 +725,7 @@ class MultiLivePlanner:
         if fetched["rate_limited"]:
             stop_reason = "读取菜单时触发限流（429），已停止后续请求"
         for cand in ([] if stop_reason else selected):
-            wire_items = [copy.deepcopy(i) for o in cand["offers"] for i in o["wire_items"]]
+            wire_items = merge_wire_items(cand["offers"])
             try:
                 attempts += 1
                 payload = self.client.call(

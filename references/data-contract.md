@@ -83,7 +83,7 @@
 }
 ```
 - `context` 只有 `store_code`、`meal_time`；出现 `channel` 报错，取餐方式改用 `fulfillment`。
-- 人数 1–6（`MAX_PEOPLE`）。`ranking.top_n` 1–10，默认 3；`priority` 为 `price`（默认）或 `preference`。
+- 人数 1–50（`MAX_PEOPLE`；≤6 人逐人 beam，7–50 人同质组搜索）。`ranking.top_n` 1–10，默认 3；`priority` 为 `price`（默认）或 `preference`。
 - 示例文件中可含字符串字段 `_comment`，读取时忽略。
 ### 取餐方式映射
 | type | beType | orderType | be_code | address_index |

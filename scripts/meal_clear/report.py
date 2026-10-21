@@ -4,6 +4,9 @@ from __future__ import annotations
 import json
 from typing import Any, Dict, List
 
+from .config import COMPACT_MIN_PEOPLE
+from .grouping import group_people
+
 MODE_LABELS = {
     "simulation": "模拟演示，不是真实菜单/价格",
     "live": "只读实时查询",
@@ -39,8 +42,63 @@ def render_coupon_preview(preview: Dict[str, Any]) -> str:
     return "\n".join(lines)
 
 
-def render_ranking(result: Dict[str, Any]) -> str:
-    """渲染名次表、每名分配与理由、检查范围、券预览和边界提示。"""
+def _members_text(ids: List[str]) -> str:
+    """成员 id 缩略：最多列前 3 个。"""
+    shown = "、".join(ids[:3])
+    return shown if len(ids) <= 3 else f"{shown}…共{len(ids)}人"
+
+
+def _prefer_text(prefer: Dict[str, Any]) -> str:
+    """偏好摘要。"""
+    if not prefer:
+        return "无偏好"
+    return "；".join(
+        f"{ATTRIBUTE_NAMES.get(k, k)}={v}" for k, v in sorted(prefer.items())
+    )
+
+
+def _hard_text(hard: Dict[str, Any]) -> str:
+    """硬要求摘要。"""
+    if not hard:
+        return "无硬要求"
+    return "；".join(f"{ATTRIBUTE_NAMES.get(k, k)}={v}" for k, v in sorted(hard.items()))
+
+
+def _render_group_item(item: Dict[str, Any], groups: List[Dict[str, Any]]) -> List[str]:
+    """一个名次按同质组汇总：组标签、人数、餐品×数量、硬要求核实状态。"""
+    by_person = {a["person_id"]: a for a in item["assignments"]}
+    lines: List[str] = []
+    for group in groups:
+        ids = [p["id"] for p in group["people"]]
+        counts: Dict[str, int] = {}
+        for pid in ids:
+            a = by_person[pid]
+            foods = "＋".join(f"{i['name']}×{i.get('quantity', 1)}" for i in a["items"])
+            label = f"{a['name']}（{foods}）"
+            counts[label] = counts.get(label, 0) + 1
+        meal = "；".join(f"{label}×{n}" for label, n in sorted(counts.items()))
+        checks = [c for pid in ids for c in by_person[pid]["checks"]]
+        if not checks:
+            state = "无硬要求"
+        elif all(c["status"] == "verified" for c in checks):
+            state = "硬要求全部已核实"
+        else:
+            state = "硬要求存在未核实项"
+        matched = sum(by_person[pid]["preferences"]["matched"] for pid in ids)
+        total = sum(by_person[pid]["preferences"]["total"] for pid in ids)
+        lines.append(f"- {group['label']}（{len(ids)}人：{_members_text(ids)}）：{meal}")
+        lines.append(
+            f"  - {_hard_text(group['hard'])}：{state}；"
+            f"{_prefer_text(group['prefer'])}，偏好满足 {matched}/{total}"
+        )
+    return lines
+
+
+def render_ranking(result: Dict[str, Any], detail: bool = False) -> str:
+    """渲染名次表、每名分配与理由、检查范围、券预览和边界提示。
+
+    人数 ≥ COMPACT_MIN_PEOPLE 且未传 detail 时按同质组汇总；JSON 输出不受影响。
+    """
     req = result["request"]
     meta = result["ranking_meta"]
     lines: List[str] = [
@@ -56,6 +114,7 @@ def render_ranking(result: Dict[str, Any]) -> str:
         "",
     ]
     ranking = result.get("ranking", [])
+    compact = len(req["people"]) >= COMPACT_MIN_PEOPLE and not detail
     if ranking:
         lines.append("## 名次一览")
         lines.append("名次 | 总价 | 比第1名 | 偏好 | 券依赖")
@@ -67,13 +126,22 @@ def render_ranking(result: Dict[str, Any]) -> str:
                 f"{item['coupon_count']}"
             )
         lines.append("")
+        groups = group_people(req["people"]) if compact else []
+        if compact:
+            lines.append(
+                f"（共 {len(req['people'])} 位用餐者，已按 {len(groups)} 个同质组汇总；"
+                "加 --detail 展开逐人，--json 含完整逐人分配）"
+            )
+            lines.append("")
         for item in ranking:
             lines.append(f"## 第{item['rank']}名")
             lines.append(
                 f"本次报价（未下单）：{_yuan(item['total_cents'])}；"
                 f"金额依据：{item['price_status']}／{item.get('pricing_source') or '来源未标记'}"
             )
-            for assignment in item["assignments"]:
+            if compact:
+                lines.extend(_render_group_item(item, groups))
+            for assignment in [] if compact else item["assignments"]:
                 foods = "＋".join(
                     f"{i['name']}×{i.get('quantity', 1)}" for i in assignment["items"]
                 )
