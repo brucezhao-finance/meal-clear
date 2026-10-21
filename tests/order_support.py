@@ -93,6 +93,31 @@ class OrderEnv:
             argv += ["--execute", "--confirm-digest", confirm or digest]
         return self.run(*argv, *extra)
 
+    def place(self, digest, execute=False, confirm=None, *extra, json_out=True):
+        """order-place；execute 时默认用完整 digest 确认。"""
+        argv = ["order-place", "--digest", digest[:12]] + (["--json"] if json_out else [])
+        if execute:
+            argv += ["--execute", "--confirm-digest", confirm or digest]
+        return self.run(*argv, *extra)
+
+    def status(self, *argv):
+        """order-status（--json）。"""
+        return self.run("order-status", *argv, "--json")
+
+    def ready(self, **req):
+        """生成摘要并（如需要）领券，返回可下单的完整 digest。"""
+        code, out, data = self.summary(**req)
+        assert code == 0, out
+        digest = data["digest"]
+        if data["claim"]["required"]:
+            code, out = self.claim(digest, execute=True)
+            assert code == 0, out
+        return digest
+
+    def create_calls(self):
+        """服务端收到的 create-order 调用（参数副本）。"""
+        return [c for c in self.sim.controlled_calls if c["tool"] == "create-order"]
+
     def all_text(self):
         """账本目录下全部文件内容（用于隐私扫描）。"""
         return "\n".join(p.read_text(encoding="utf-8") for p in sorted(self.root.glob("*.json")))
@@ -101,3 +126,8 @@ class OrderEnv:
 def delivery_request():
     """外送请求参数（地址1，门店 30001）。"""
     return {"store": "30001", "fulfillment": {"type": "delivery", "be_code": "BE30001", "address_index": 1}}
+
+
+def drive_thru_request():
+    """得来速请求参数（店 20001）。"""
+    return {"store": "20001", "fulfillment": {"type": "drive_thru", "be_code": "BE20001"}}

@@ -12,11 +12,13 @@ import json
 import re
 from collections import Counter
 from datetime import datetime, timedelta, timezone
+from decimal import Decimal, InvalidOperation
 from typing import Any, Dict, List, Optional, Tuple
 
 from . import gate, live, net_guard
 from .config import (
     DIGEST_VERSION,
+    DUPLICATE_BASKET_WINDOW_SECONDS,
     EXIT_DUPLICATE,
     EXIT_ERROR,
     EXIT_NO_PLAN,
@@ -25,15 +27,17 @@ from .config import (
     EXIT_REFUSED,
     EXIT_UNKNOWN,
     FULFILLMENTS,
+    ORDER_STATUS_LABELS,
     SUMMARY_TTL_RANGE,
     SUMMARY_TTL_SECONDS,
     TOOL_AUTO_BIND_COUPONS,
+    TOOL_CREATE_ORDER,
 )
 from .core import InputError
 from .grouping import group_people
 from .ledger import Ledger, LedgerCorrupt, LedgerError, LedgerStateError
-from .mcp import McpError, WriteFailed, WriteRefused, WriteUnknown
-from .privacy import assert_public, sanitize_claimable, sanitize_held  # noqa: F401
+from .mcp import BusinessError, McpError, WriteFailed, WriteRefused, WriteUnknown
+from .privacy import assert_public, mask_addresses, sanitize_claimable, sanitize_held  # noqa: F401
 
 FEE_KEYS = ("productPrice", "deliveryPrice", "packingPrice", "tablewarePrice")
 CLOCK_SKEW = timedelta(seconds=60)
@@ -871,3 +875,459 @@ def _reconfirm_result(ledger: Ledger, old: Dict[str, Any], check: Dict[str, Any]
     else:
         result["message"] += "；无法自动生成新摘要，请重新运行 order-summary"
     return result
+
+
+# --- 下单（仅回环模拟服务）与订单查询 ---
+ORDER_ID_RE = re.compile(r"\A[A-Za-z0-9_-]{1,64}\Z")
+CREATE_ORDER_REQUIRED_OK = frozenset({"storeCode", "orderType", "beType"})
+UNKNOWN_HINT = "请先用 order-status 或到麦当劳 App 订单列表核对，不要重试；本工具不会自动重试"
+MSG_ORDER_UNKNOWN = "下单请求结果未知（订单可能已创建）。" + UNKNOWN_HINT
+MSG_FINISH_FAILED = "订单可能已处理，但账本终态未能写入，结果未知。" + UNKNOWN_HINT
+_STATUS_CODE = re.compile(r"\A\d{1,3}\Z")
+_TEXT_LIMIT = 60
+
+
+def mask_order_id(order_id: Any) -> str:
+    """订单号只显示打码尾号。"""
+    text = str(order_id or "")
+    return "****" + text[-4:] if len(text) > 4 else "****"
+
+
+def money_to_cents(value: Any) -> Optional[int]:
+    """官方金额字符串（元）→ 分；无法精确换算返回 None（不当作 0）。"""
+    if isinstance(value, bool) or not isinstance(value, (str, int, float)):
+        return None
+    try:
+        amount = Decimal(str(value).strip())
+    except InvalidOperation:
+        return None
+    if not amount.is_finite() or amount < 0:
+        return None
+    cents = amount * 100
+    if cents != cents.to_integral_value():
+        return None
+    return int(cents)
+
+
+def _clean_text(value: Any) -> Optional[str]:
+    """展示用短文本：非字符串、含链接或手机号形态的值一律丢弃。"""
+    if not isinstance(value, str):
+        return None
+    text = value.strip()
+    if not text or "http" in text.lower() or _PHONE.search(text):
+        return None
+    return text[:_TEXT_LIMIT]
+
+
+def _status_of(detail: Dict[str, Any]) -> Tuple[Optional[str], Optional[str], Optional[str]]:
+    """(官方状态码, 中文标签, 非标准状态的原文) —— 缺失时全为 None。"""
+    raw = detail.get("orderStatus")
+    if raw in (None, ""):
+        raw = detail.get("status")
+    if raw in (None, "") or isinstance(raw, bool):
+        return None, None, None
+    text = str(raw).strip()
+    if _STATUS_CODE.match(text) and text in ORDER_STATUS_LABELS:
+        return text, ORDER_STATUS_LABELS[text], None
+    return None, None, _clean_text(text)
+
+
+def sanitize_order_detail(payload: Any) -> Dict[str, Any]:
+    """计划 D20：只留状态、金额、商品名与数量、时间、门店名；丢弃配送信息、取餐码、取餐柜与支付链接。"""
+    data = payload.get("data") if isinstance(payload, dict) else None
+    if not isinstance(data, dict):
+        raise McpError("订单详情结构不匹配")
+    code, label, other = _status_of(data)
+    amount = money_to_cents(data.get("realTotalAmount"))
+    if amount is None:
+        amount = money_to_cents(data.get("totalAmount"))
+    items = []
+    rows = data.get("orderProductList")
+    for row in rows if isinstance(rows, list) else []:
+        if not isinstance(row, dict):
+            continue
+        name = _clean_text(row.get("productName"))
+        qty = row.get("quantity")
+        if name and isinstance(qty, int) and not isinstance(qty, bool):
+            items.append({"name": name, "quantity": qty})
+    return {
+        "status_code": code,
+        "status_label": label,
+        "official_status_text": other,
+        "amount_cents": amount,
+        "items": items,
+        "created_at": _clean_text(data.get("createTime") or data.get("orderTime")),
+        "expire_pay_time": _clean_text(data.get("expirePayTime")),
+        "store_name": _clean_text(data.get("storeName")),
+    }
+
+
+def parse_created_order(payload: Any, payable_cents: int) -> Dict[str, Any]:
+    """create-order 成功回包：要求非空 data.orderId；金额与摘要应付对比；支付信息仅供本次输出。"""
+    data = payload.get("data") if isinstance(payload, dict) else None
+    order_id = data.get("orderId") if isinstance(data, dict) else None
+    if not isinstance(order_id, str) or not order_id.strip() or not ORDER_ID_RE.match(order_id.strip()):
+        raise McpError("成功码但缺少有效订单号")
+    detail = data.get("orderDetail")
+    detail = detail if isinstance(detail, dict) else {}
+    code, label, other = _status_of(detail)
+    amount = money_to_cents(detail.get("realTotalAmount"))
+    if amount is None:
+        amount = money_to_cents(detail.get("totalAmount"))
+    if amount is None:
+        check = "missing"
+    else:
+        check = "match" if amount == payable_cents else "mismatch"
+    pay_url = data.get("payH5Url")
+    pay_id = data.get("payId")
+    return {
+        "order_id": order_id.strip(),
+        "pay_url": pay_url if isinstance(pay_url, str) and pay_url else None,
+        "pay_id": str(pay_id) if isinstance(pay_id, (str, int)) and not isinstance(pay_id, bool) and str(pay_id) else None,
+        "status_code": code,
+        "status_label": label,
+        "official_status_text": other,
+        "amount_cents": amount,
+        "amount_check": check,
+        "expire_pay_time": _clean_text(detail.get("expirePayTime")),
+    }
+
+
+def build_create_order_args(
+    record: Dict[str, Any], wire_items: List[Dict[str, Any]], address_id: Optional[str]
+) -> Dict[str, Any]:
+    """计划 §5.3：严格按 tools-schema 映射；不发送 remark/reservationDate/withOrder/gmServiceCode。"""
+    material = record["material"]
+    ful = material["fulfillment"]
+    spec = FULFILLMENTS.get(ful.get("type"))
+    if spec is None or not spec.implemented or ful.get("order_type") != spec.order_type or ful.get("be_type") != spec.be_type:
+        raise InputError("该取餐方式暂不支持下单")
+    args: Dict[str, Any] = {
+        "storeCode": material["store_code"],
+        "orderType": spec.order_type,
+        "beType": spec.be_type,
+    }
+    if spec.be_code == "required":
+        if not ful.get("be_code"):
+            raise InputError("摘要缺少 beCode，不能下单")
+        args["beCode"] = ful["be_code"]
+    if spec.order_type == 1:
+        code = (material.get("take_way") or {}).get("code")
+        if not code:
+            raise InputError("摘要缺少取餐方式选项，不能下单")
+        args["takeWayCode"] = code
+    else:
+        if not address_id:
+            raise InputError("外送需要解析出配送地址，不能下单")
+        args["addressId"] = address_id
+    if not wire_items:
+        raise InputError("商品行为空，不能下单")
+    args["items"] = copy.deepcopy(wire_items)
+    args["needTableware"] = False
+    return args
+
+
+def _prior_order(record: Dict[str, Any]) -> Dict[str, Any]:
+    """先前下单结果摘要（永不含订单号）。"""
+    step = record["steps"]["order"]
+    return {
+        "digest": record["digest"],
+        "order_state": step["state"],
+        "status_label": step.get("status_label"),
+        "finished_at": step.get("finished_at"),
+        "claim_state": record["steps"]["claim"]["state"],
+    }
+
+
+def _basket_conflicts(ledger: Ledger, record: Dict[str, Any], now: datetime) -> List[Dict[str, Any]]:
+    """24 小时内同篮子且 pending/unknown/created 的其他摘要记录。"""
+    hits = ledger.find_by_basket(record["basket_key"], DUPLICATE_BASKET_WINDOW_SECONDS, now)
+    return [
+        h for h in hits
+        if h["digest"] != record["digest"] and h["steps"]["order"]["state"] in ("pending", "unknown", "created")
+    ]
+
+
+def _claim_blocker(record: Dict[str, Any]) -> Optional[OrderError]:
+    """领券前置：claim∈{succeeded,not_required} 且 requote≠changed。"""
+    steps = record["steps"]
+    if steps["claim"]["state"] not in ("succeeded", "not_required"):
+        return OrderError(
+            "请先完成领券（order-claim），或重新生成不含领券的摘要（order-summary --skip-claim）后再下单",
+            EXIT_REFUSED,
+            {"status": "claim_required", "claim_state": steps["claim"]["state"]},
+        )
+    if steps["requote"]["state"] == "changed":
+        return OrderError("领券后重新核价已发现变化，旧确认失效；请改用新摘要重新确认",
+                          EXIT_REFUSED, {"status": "requote_changed"})
+    return None
+
+
+def _basket_error(conflicts: List[Dict[str, Any]]) -> OrderError:
+    return OrderError(
+        "24 小时内已有同一篮子的订单记录（执行中、结果未知或已创建），为防重复下单已拒绝；"
+        "确认确需再下一单请加 --allow-duplicate-basket",
+        EXIT_DUPLICATE,
+        {
+            "status": "duplicate_basket",
+            "conflicts": [
+                {"digest": h["digest"][:12], "order_state": h["steps"]["order"]["state"], "created_at": h["created_at"]}
+                for h in conflicts
+            ],
+        },
+    )
+
+
+def precheck_place(
+    ledger: Ledger,
+    prefix: str,
+    confirm: Optional[str],
+    *,
+    allow_duplicate_basket: bool = False,
+    now: Optional[datetime] = None,
+) -> Dict[str, Any]:
+    """离线校验：digest 完整匹配 / 重复 / 未过期未被取代 / claim 前置 / 同篮子守卫；不联网。"""
+    record = _load(ledger, prefix)
+    if not isinstance(confirm, str) or confirm != record["digest"] or not re.match(r"\A[0-9a-f]{64}\Z", confirm):
+        raise gate.WriteDenied(gate.MSG_DIGEST)
+    if record["steps"]["order"]["state"] != "none":
+        raise OrderError("该摘要已有下单记录，拒绝重复下单；先前结果见下（不再显示订单号）", EXIT_DUPLICATE,
+                         {"status": "duplicate", "prior": _prior_order(record)})
+    moment = now or utcnow()
+    blocked = _reconfirm_reason(record, moment)
+    if blocked is not None:
+        raise blocked
+    claim_blocked = _claim_blocker(record)
+    if claim_blocked is not None:
+        raise claim_blocked
+    if not allow_duplicate_basket:
+        conflicts = _basket_conflicts(ledger, record, moment)
+        if conflicts:
+            raise _basket_error(conflicts)
+    return record
+
+
+def _check_create_tool(client: Any) -> None:
+    tools = {t.get("name"): t for t in client.list_tools()["tools"]}
+    tool = tools.get(TOOL_CREATE_ORDER)
+    schema = tool.get("inputSchema", {}) if isinstance(tool, dict) else None
+    required = schema.get("required", []) if isinstance(schema, dict) else None
+    if not isinstance(required, list) or any(not isinstance(k, str) for k in required) \
+            or not set(required) <= CREATE_ORDER_REQUIRED_OK:
+        raise OrderError("服务端下单工具缺失或必填参数与预期不符，已拒绝执行", EXIT_REFUSED)
+
+
+def _resolve_address(client: Any, record: Dict[str, Any]) -> Optional[str]:
+    """外送：执行期按 address_index 重新解析 addressId（仅内存），并校验 address_ref 与摘要一致。"""
+    ful = record["material"]["fulfillment"]
+    if ful.get("order_type") != 2:
+        return None
+    addresses = mask_addresses(client.call("delivery-query-addresses", {}))
+    index = ful.get("address_index")
+    if type(index) is not int or not 1 <= index <= len(addresses) or addresses[index - 1].ref != ful.get("address_ref"):
+        raise OrderError("配送地址列表顺序可能已变化（地址引用与摘要不一致），未下单；请重新生成摘要并重新确认",
+                         EXIT_RECONFIRM, {"status": "address_changed"})
+    return addresses[index - 1].address_id
+
+
+def _finish_order(ledger: Ledger, digest: str, attempt: Any, state: str, detail: Dict[str, Any],
+                  order_id: Optional[str] = None) -> None:
+    """落终态；账本写失败时按结果未知处理（不吞掉订单可能已创建的事实）。"""
+    try:
+        ledger.finish_step(digest, "order", attempt, state, detail, order_id=order_id)
+    except Exception:
+        raise OrderError(MSG_FINISH_FAILED, EXIT_UNKNOWN, {"status": "unknown"}) from None
+
+
+def place_preview(client: Any, ledger: Ledger, prefix: str, *, allow_duplicate_basket: bool = False,
+                  now: Optional[datetime] = None) -> Dict[str, Any]:
+    """只读预演：离线校验 + 只读新鲜度校验，展示将提交的内容；明确尚未调用下单工具。"""
+    record = _load(ledger, prefix)
+    moment = now or utcnow()
+    summary = public_summary(record)
+    out: Dict[str, Any] = {
+        "digest": record["digest"],
+        "summary": summary,
+        "executed": False,
+        "order_placed": False,
+        "note": f"本次未调用 {TOOL_CREATE_ORDER}，没有创建任何订单",
+        "will_submit": {
+            "store_code": summary["store"]["store_code"],
+            "store_name": summary["store"]["name"],
+            "fulfillment": summary["fulfillment"]["label"],
+            "lines": [{"name": l["name"], "quantity": l["quantity"]} for l in summary["lines"]],
+            "payable_cents": summary["payable_cents"],
+            "pay_by_you": True,
+        },
+    }
+    if record["steps"]["order"]["state"] != "none":
+        out.update(status="already_done", exit_code=EXIT_OK, message="该摘要已有下单记录，不能再次下单",
+                   prior=_prior_order(record))
+        return out
+    blocked = _reconfirm_reason(record, moment)
+    if blocked is not None:
+        out.update(status=blocked.payload["status"], exit_code=EXIT_RECONFIRM, message=str(blocked))
+        return out
+    blockers: List[str] = []
+    claim_blocked = _claim_blocker(record)
+    if claim_blocked is not None:
+        blockers.append(str(claim_blocked))
+    if not allow_duplicate_basket:
+        conflicts = _basket_conflicts(ledger, record, moment)
+        if conflicts:
+            blockers.append(str(_basket_error(conflicts)))
+    check = verify_fresh(client, record)
+    address_changed = None
+    if check["consistent"]:
+        try:
+            _resolve_address(client, record)
+        except OrderError as exc:
+            address_changed = exc
+    if not check["consistent"] or address_changed is not None:
+        changes = check["changes"] if not check["consistent"] else [
+            {"kind": "address", "field": "address_ref", "before": "摘要中的地址", "after": "地址列表顺序已变化"}]
+        out.update(status="reconfirm", exit_code=EXIT_RECONFIRM, changes=changes, notes=check["notes"],
+                   message="价格或内容已变化，旧确认失效；请重新运行 order-summary 生成新摘要并重新确认")
+        return out
+    out.update(status="preview", exit_code=EXIT_OK, requote="consistent", notes=check["notes"],
+               ready=not blockers, blockers=blockers,
+               message="预演完成：尚未下单" if not blockers else "预演完成：尚未下单；当前还不满足下单前置条件")
+    return out
+
+
+def place_execute(client: Any, ledger: Ledger, prefix: str, confirm: Optional[str], *,
+                  allow_duplicate_basket: bool = False) -> Dict[str, Any]:
+    """计划 D16/D18/D19：离线校验 → 回环 → 工具校验 → 新鲜度 → 写前账本 → 单次写 → 分类落账。"""
+    record = precheck_place(ledger, prefix, confirm, allow_duplicate_basket=allow_duplicate_basket)
+    digest = record["digest"]
+    gate.check_write_target(getattr(client, "endpoint", None))
+    budgeted = client if hasattr(client, "spend") else live.BudgetedClient(client)
+    _check_create_tool(budgeted)
+    try:
+        check = verify_fresh(budgeted, record)
+        address_id = _resolve_address(budgeted, record) if check["consistent"] else None
+    except OrderError:
+        raise
+    except (McpError, InputError):
+        raise OrderError("下单前重新核价失败，未下单；请稍后重新生成摘要", EXIT_ERROR, {"status": "requote_error"}) from None
+    latest = ledger.read(digest)
+    if not check["consistent"]:
+        new = supersede(ledger, latest, check["fresh"], claimable=[],
+                        claim_done=latest["steps"]["claim"]["state"] == "succeeded", now=utcnow())
+        result = _reconfirm_result(ledger, latest, check, new, "下单前重新核价发现变化，未下单，旧摘要作废")
+        result.update(executed=False, order_placed=False)
+        return result
+    ledger.mutate(digest, lambda rec: rec["steps"]["requote"].update(
+        state="consistent", checked_at=iso(utcnow()), changes=[]))
+    args = build_create_order_args(latest, check["fresh"]["rebuilt"]["wire_items"], address_id)
+    now = utcnow()
+    if not is_fresh(latest, now):
+        raise OrderError("摘要已过期，必须重新生成摘要并重新核价", EXIT_RECONFIRM, {"status": "expired"})
+    guard = gate.WriteGate.open(
+        budgeted, execute=True, confirm_digest=confirm, record_digest=digest,
+        expires_at=parse_time(latest["expires_at"]), now=now, ledger=ledger,
+    )
+    try:
+        attempt = ledger.begin_step(digest, "order", ("none",),
+                                    preconditions={"claim": ("succeeded", "not_required")})
+    except LedgerStateError:
+        again = ledger.read(digest)
+        if again["steps"]["order"]["state"] != "none":
+            raise OrderError("该摘要已有下单记录，拒绝重复下单", EXIT_DUPLICATE,
+                             {"status": "duplicate", "prior": _prior_order(again)}) from None
+        raise OrderError("前置步骤尚未满足，拒绝下单", EXIT_REFUSED, {"status": "claim_required"}) from None
+    try:
+        payload = guard.call(TOOL_CREATE_ORDER, args, attempt)
+    except WriteUnknown:
+        _finish_order(ledger, digest, attempt, "unknown", {"reason": "result_unknown"})
+        raise OrderError(MSG_ORDER_UNKNOWN, EXIT_UNKNOWN, {"status": "unknown"}) from None
+    except WriteFailed:
+        _finish_order(ledger, digest, attempt, "failed", {"reason": "rejected"})
+        raise OrderError("官方明确拒绝或未执行，订单未创建（以官方返回为准）；同一摘要不能重试，"
+                         "如要继续请重新生成摘要并重新确认", EXIT_ERROR, {"status": "failed"}) from None
+    except (gate.WriteDenied, WriteRefused, McpError) as exc:
+        _finish_order(ledger, digest, attempt, "failed", {"reason": "refused_before_send"})
+        if isinstance(exc, gate.WriteDenied):
+            raise
+        raise OrderError(str(exc), EXIT_ERROR, {"status": "failed"}) from None
+    except Exception:
+        _finish_order(ledger, digest, attempt, "unknown", {"reason": "unexpected"})
+        raise OrderError(MSG_ORDER_UNKNOWN, EXIT_UNKNOWN, {"status": "unknown"}) from None
+    try:
+        info = parse_created_order(payload, latest["material"]["total_cents"])
+    except Exception:
+        _finish_order(ledger, digest, attempt, "unknown", {"reason": "bad_structure"})
+        raise OrderError(MSG_ORDER_UNKNOWN, EXIT_UNKNOWN, {"status": "unknown"}) from None
+    _finish_order(ledger, digest, attempt, "created",
+                  {"official_status": info["status_code"] or "none", "amount_check": info["amount_check"]},
+                  order_id=info["order_id"])
+    try:
+        ledger.mutate(digest, lambda rec: rec["steps"]["order"].update(status_label=info["status_label"]))
+    except Exception:  # 标签只是展示；订单号与状态已落账
+        pass
+    lookup = None
+    try:  # 尽力核对一次，失败不影响状态
+        lookup = sanitize_order_detail(budgeted.call("query-order", {"orderId": info["order_id"]}))
+    except Exception:
+        lookup = None
+    created_order = {"orderId": info["order_id"]}
+    if info["pay_url"]:
+        created_order["payH5Url"] = info["pay_url"]
+    if info["pay_id"]:
+        created_order["payId"] = info["pay_id"]
+    return {
+        "status": "created",
+        "exit_code": EXIT_OK,
+        "digest": digest,
+        "executed": True,
+        "order_placed": True,
+        "message": "订单已创建，尚未付款",
+        "order": {
+            "state": "created",
+            "status_code": info["status_code"],
+            "status_label": info["status_label"],
+            "official_status_text": info["official_status_text"],
+            "payable_cents": latest["material"]["total_cents"],
+            "official_amount_cents": info["amount_cents"],
+            "amount_check": info["amount_check"],
+            "expire_pay_time": info["expire_pay_time"],
+            "paid": False,
+            "auto_pay": False,
+            "auto_cancel": False,
+        },
+        "lookup": lookup,
+        "created_order": created_order,
+    }
+
+
+def order_status(client_factory: Any, ledger: Ledger, *, order_id: Optional[str] = None,
+                 digest: Optional[str] = None) -> Dict[str, Any]:
+    """计划 D20：--order-id 直接查；--digest 先读账本（无网络），有订单号再查。只读，不改账本。"""
+    if (order_id is None) == (digest is None):
+        raise InputError("需要且只能提供 --order-id 或 --digest 之一")
+    local = None
+    if digest is not None:
+        record = _load(ledger, digest)
+        step = record["steps"]["order"]
+        local = {"digest": record["digest"], "order_state": step["state"],
+                 "status_label": step.get("status_label"), "finished_at": step.get("finished_at")}
+        order_id = step.get("order_id")
+        if not order_id:
+            hints = {
+                "none": "该摘要尚未下单",
+                "failed": "该摘要的下单被明确拒绝，订单未创建",
+                "pending": "该摘要的下单正在执行或进程曾中断，结果未知。" + UNKNOWN_HINT,
+                "unknown": "该摘要的下单结果未知。" + UNKNOWN_HINT,
+            }
+            return {"status": "local_only", "exit_code": EXIT_OK, "local": local,
+                    "message": hints.get(step["state"], "账本中没有订单号")}
+    elif not isinstance(order_id, str) or not ORDER_ID_RE.match(order_id):
+        raise InputError("订单号格式无效（字母、数字、下划线、连字符，最长 64 位）")
+    client = client_factory()
+    try:
+        payload = client.call("query-order", {"orderId": order_id})
+    except BusinessError:
+        return {"status": "not_found", "exit_code": EXIT_ERROR, "order_id_masked": mask_order_id(order_id),
+                "local": local, "message": "官方未找到该订单（或不属于当前账号）。请到麦当劳 App 订单列表核对"}
+    return {"status": "ok", "exit_code": EXIT_OK, "order_id_masked": mask_order_id(order_id),
+            "order": sanitize_order_detail(payload), "local": local}

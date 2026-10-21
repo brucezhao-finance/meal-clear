@@ -197,6 +197,89 @@ def render_result(result: Dict[str, Any]) -> str:
     return "\n".join(lines)
 
 
+def render_place_preview(preview: Dict[str, Any]) -> str:
+    """下单预演：展示将提交的内容；明确尚未调用、不自动付款。"""
+    lines = ["# 下单预演（只读）", "", f"摘要：{preview['digest'][:12]}…", f"结果：{preview['message']}"]
+    sub = preview.get("will_submit")
+    if sub and preview["status"] in ("preview", "reconfirm"):
+        name = sub["store_name"] or "名称未核实"
+        lines.extend(["", f"门店：{sub['store_code']}（{name}）", f"取餐方式：{sub['fulfillment']}", "将提交的商品："])
+        lines.extend(f"- {row['name']} × {row['quantity']}" for row in sub["lines"])
+        lines.append(f"应付总额：{yuan(sub['payable_cents'])}（订单创建后为待支付，需你自己付款）")
+    if preview.get("changes"):
+        lines.extend(["", render_changes(preview["changes"])])
+    for note in preview.get("notes", []):
+        lines.append(f"- 提示：{note}")
+    for blocker in preview.get("blockers", []):
+        lines.append(f"- 当前不能下单：{blocker}")
+    lines.extend(["", preview["note"] + "。"])
+    if preview["status"] == "preview" and preview.get("ready"):
+        lines.append(
+            f"需你明确同意后再执行：order-place --digest {preview['digest'][:12]} "
+            f"--execute --confirm-digest {preview['digest']}"
+        )
+    elif preview["status"] in ("expired", "superseded", "reconfirm"):
+        lines.append("请先重新运行 order-summary 生成新摘要并重新确认。")
+    return "\n".join(lines)
+
+
+def render_created(result: Dict[str, Any]) -> str:
+    """创建订单那一次的输出：唯一会打印订单号与支付信息的地方。"""
+    order = result["order"]
+    created = result["created_order"]
+    if order["status_code"] == "1":
+        state = "状态：待支付（官方 orderStatus=1）"
+    elif order["status_code"] is not None:
+        state = f"官方返回状态：{order['status_code']}（{order['status_label']}）"
+    else:
+        state = f"官方返回状态：{order['official_status_text'] or '未返回'}"
+    lines = [
+        "# 订单已创建，未付款",
+        "",
+        state,
+        "本工具不会自动付款，也不会自动取消订单；请在 App 订单列表或下方支付信息中自行完成支付。",
+        f"摘要应付：{yuan(order['payable_cents'])}；官方返回金额：{yuan(order['official_amount_cents'])}",
+    ]
+    if order["amount_check"] != "match":
+        lines.append("警告：官方返回金额与摘要应付不一致或未返回，支付前请核对金额。")
+    if order.get("expire_pay_time"):
+        lines.append(f"支付截止：{order['expire_pay_time']}")
+    lines.extend(["", f"订单号：{created['orderId']}（仅本次显示，之后只显示打码尾号）"])
+    if created.get("payH5Url"):
+        lines.append(f"支付链接：{created['payH5Url']}（仅本次显示，不写入账本）")
+    if created.get("payId"):
+        lines.append(f"支付编号：{created['payId']}")
+    lines.extend(["", f"之后可用 order-status --digest {result['digest'][:12]} 查询状态。"])
+    return "\n".join(lines)
+
+
+def render_order_status(result: Dict[str, Any]) -> str:
+    """订单查询：只含状态、金额、商品、时间、门店；订单号打码。"""
+    local = result.get("local")
+    lines = ["# 订单状态"]
+    if result["status"] in ("local_only", "not_found"):
+        if result.get("order_id_masked"):
+            lines.append(f"订单号：{result['order_id_masked']}")
+        lines.append(result["message"])
+        if local:
+            lines.append(f"本地账本：下单{STATE_LABELS.get(local['order_state'], local['order_state'])}")
+        return "\n".join(lines)
+    order = result["order"]
+    lines.append(f"订单号：{result['order_id_masked']}")
+    if order["status_code"] is not None:
+        lines.append(f"状态：{order['status_label']}（官方 orderStatus={order['status_code']}）")
+    else:
+        lines.append(f"官方返回状态：{order['official_status_text'] or '未返回'}")
+    lines.append(f"实付/应付金额：{yuan(order['amount_cents'])}")
+    if order["items"]:
+        lines.append("商品：" + "；".join(f"{i['name']}×{i['quantity']}" for i in order["items"]))
+    for label, key in (("门店", "store_name"), ("下单时间", "created_at"), ("支付截止", "expire_pay_time")):
+        if order.get(key):
+            lines.append(f"{label}：{order[key]}")
+    lines.append("本工具不会付款或取消订单。")
+    return "\n".join(lines)
+
+
 def render_notice(result: Dict[str, Any]) -> str:
     """不落账的拒绝提示（超预算、需选取餐方式等）。"""
     lines = [f"# {result['message']}"]

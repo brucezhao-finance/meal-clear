@@ -233,6 +233,46 @@ def run_order_claim(args: argparse.Namespace) -> int:
     return result["exit_code"]
 
 
+def _print_order_result(result: Dict[str, Any], as_json: bool, text: str) -> None:
+    """下单结果输出：仅创建订单那一次的 created_order 子对象允许含订单号/支付信息。"""
+    created = result.get("created_order")
+    rest = {k: v for k, v in result.items() if k != "created_order"}
+    assert_public(rest)
+    if created is not None:
+        assert_public(created, allow=("orderid", "payh5url", "payid"))
+    print(json.dumps(result, ensure_ascii=False, indent=2) if as_json else text)
+
+
+def run_order_place(args: argparse.Namespace) -> int:
+    """order-place：默认预演（只读）；--execute 需三重门，仅回环模拟服务可执行。"""
+    ledger = Ledger(ledger_root())
+    if not args.execute:
+        ledger.resolve(args.digest)
+        preview = orders.place_preview(client_from_args(args), ledger, args.digest,
+                                       allow_duplicate_basket=args.allow_duplicate_basket)
+        _print_order_result(preview, args.json, report_orders.render_place_preview(preview))
+        return preview["exit_code"]
+    orders.precheck_place(ledger, args.digest, args.confirm_digest,
+                          allow_duplicate_basket=args.allow_duplicate_basket)
+    client = client_from_args(args, write=True)
+    result = orders.place_execute(client, ledger, args.digest, args.confirm_digest,
+                                  allow_duplicate_basket=args.allow_duplicate_basket)
+    text = report_orders.render_created(result) if result["status"] == "created" else report_orders.render_result(result)
+    _print_order_result(result, args.json, text)
+    return result["exit_code"]
+
+
+def run_order_status(args: argparse.Namespace) -> int:
+    """order-status：只读；--digest 先读本地账本，没有订单号就不联网。"""
+    ledger = Ledger(ledger_root())
+    if args.digest is not None:
+        ledger.resolve(args.digest)
+    result = orders.order_status(lambda: client_from_args(args), ledger,
+                                 order_id=args.order_id, digest=args.digest)
+    _print_order_result(result, args.json, report_orders.render_order_status(result))
+    return result["exit_code"]
+
+
 def add_rank_options(parser: argparse.ArgumentParser) -> None:
     """v2 排名选项。"""
     parser.add_argument("--top", type=int, help="展示名次数（仅 v2）")
@@ -287,6 +327,7 @@ def main(argv: Optional[list] = None) -> int:
     exit_codes = "退出码：" + "；".join(
         f"{code} {report_orders.exit_hint(code)}" for code in range(7)
     )
+    write_epilog = "默认预演；--execute 需同时提供 --confirm-digest（完整摘要编号）。" + exit_codes
     osum = sub.add_parser(
         "order-summary",
         help="生成确认式订单摘要（只读联网，写本地账本；不领券不下单）",
@@ -308,13 +349,37 @@ def main(argv: Optional[list] = None) -> int:
     oclaim = sub.add_parser(
         "order-claim",
         help="领券：默认只读预演；--execute 需完整摘要确认（一键领全部，不可撤销）",
-        epilog=exit_codes,
+        epilog=write_epilog,
     )
     oclaim.add_argument("--digest", required=True, help="摘要编号（唯一前缀，至少 12 位）")
     oclaim.add_argument("--execute", action="store_true", help="真正领券（仍需 --confirm-digest 与回环目标）")
     oclaim.add_argument("--confirm-digest", help="完整 64 位摘要编号，表示你已确认该摘要")
     oclaim.add_argument("--token-file")
     oclaim.add_argument("--json", action="store_true")
+    oplace = sub.add_parser(
+        "order-place",
+        help="下单：默认只读预演；--execute 需完整摘要确认（仅回环模拟服务可执行，不自动付款）",
+        description="默认预演，不下单；--execute 需 --confirm-digest（完整 64 位摘要编号）。"
+        "订单创建后为待支付，本工具不会付款也不会取消。",
+        epilog=write_epilog,
+    )
+    oplace.add_argument("--digest", required=True, help="摘要编号（唯一前缀，至少 12 位）")
+    oplace.add_argument("--execute", action="store_true", help="真正下单（仍需 --confirm-digest 与回环目标）")
+    oplace.add_argument("--confirm-digest", help="完整 64 位摘要编号，表示你已确认该摘要")
+    oplace.add_argument("--allow-duplicate-basket", action="store_true",
+                        help="24 小时内同一篮子已有订单记录时仍允许下单（默认拒绝，防重复下单）")
+    oplace.add_argument("--token-file")
+    oplace.add_argument("--json", action="store_true")
+    ostatus = sub.add_parser(
+        "order-status",
+        help="只读查询订单状态（订单号只显示打码尾号）",
+        epilog=exit_codes,
+    )
+    which = ostatus.add_mutually_exclusive_group(required=True)
+    which.add_argument("--digest", help="摘要编号（先读本地账本，有订单号才联网）")
+    which.add_argument("--order-id", help="订单号（直接查询官方）")
+    ostatus.add_argument("--token-file")
+    ostatus.add_argument("--json", action="store_true")
     inspect = sub.add_parser("inspect-tools", help="检查当前只读工具可用性")
     inspect.add_argument("--token-file")
     card = sub.add_parser("break-even", help="固定单次节省额的回本计算（整数分）")
@@ -333,6 +398,10 @@ def main(argv: Optional[list] = None) -> int:
             return run_order_summary(args)
         if args.command == "order-claim":
             return run_order_claim(args)
+        if args.command == "order-place":
+            return run_order_place(args)
+        if args.command == "order-status":
+            return run_order_status(args)
         if args.command == "demo":
             catalog = read_json(str(ROOT / "examples/demo-catalog.json"))
             request = read_json(str(ROOT / "examples/request.json"))
