@@ -122,11 +122,13 @@ class MultiRankingTests(unittest.TestCase):
             )
 
     def test_people_bounds_and_duplicate_ids(self):
-        """T-A5/A6：0/7 人报 1至6位；v1 三人仍报 1或2位；重复 id 报错。"""
-        for n in (0, 7):
+        """T-A5/A6/S6：0/51 人报 1至50位；1/50 人通过；v1 三人仍报 1或2位；重复 id 报错。"""
+        for n in (0, 51):
             with self.assertRaises(InputError) as ctx:
                 validate_request_v2(request(n))
-            self.assertIn("1至6位", str(ctx.exception))
+            self.assertIn("1至50位", str(ctx.exception))
+        for n in (1, 50):
+            self.assertEqual(len(validate_request_v2(request(n))["people"]), n)
         v1 = {
             "context": {"store_code": "A", "channel": "pickup", "meal_time": "now"},
             "budget_cents": 100,

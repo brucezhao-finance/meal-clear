@@ -90,13 +90,13 @@ class FulfillmentTests(unittest.TestCase):
             validate_fulfillment({"type": "pickup", "extra": 1})
 
     def test_A5_people_range(self) -> None:
-        """v2 支持 1..6；0/7 报错，v1 仍为 1或2位。"""
-        for n in (1, 3, 6):
+        """v2 支持 1..50；0/51 报错，v1 仍为 1或2位。"""
+        for n in (1, 3, 6, 20, 50):
             self.assertEqual(len(validate_request_v2(req(n))["people"]), n)
-        for n in (0, 7):
+        for n in (0, 51):
             with self.assertRaises(InputError) as caught:
                 validate_request_v2(req(n))
-            self.assertIn("1至6位", str(caught.exception))
+            self.assertIn("1至50位", str(caught.exception))
         v1 = {
             "context": {"store_code": "1", "channel": "pickup", "meal_time": "now"},
             "budget_cents": 100,

@@ -5,7 +5,14 @@ import hashlib
 import math
 from typing import Any, Dict, List, Optional, Tuple
 
-from .config import FULFILLMENTS, PRIORITIES
+from .config import (
+    FULFILLMENTS,
+    GROUP_ALLOCATIONS_CAP,
+    GROUP_MAX_DISTINCT_OFFERS,
+    LEGACY_BEAM_MAX_PEOPLE,
+    PRIORITIES,
+    SPACE_SCI_THRESHOLD,
+)
 from .core import InputError, check_person, validate_catalog
 from .fulfillment import context_key
 from .request_v2 import fingerprint_v2, validate_request_v2
@@ -205,8 +212,18 @@ def _candidate(req: Dict[str, Any], part: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
-def generate_candidates(req: Dict[str, Any], catalog: Dict[str, Any]) -> Dict[str, Any]:
-    """逐人过滤硬要求 → 帕累托 → beam，输出整单候选与统计。"""
+def generate_candidates(
+    req: Dict[str, Any], catalog: Dict[str, Any], use_legacy_beam: bool = False
+) -> Dict[str, Any]:
+    """逐人过滤硬要求 → 帕累托 → beam，输出整单候选与统计。
+
+    人数超过 LEGACY_BEAM_MAX_PEOPLE 时走同质组多重集合搜索（grouping.py）；
+    use_legacy_beam=True 仅供基准与差分测试强制使用旧的逐人 beam。
+    """
+    if len(req["people"]) > LEGACY_BEAM_MAX_PEOPLE and not use_legacy_beam:
+        from .grouping import generate_candidates_grouped  # 延迟导入，避免循环依赖
+
+        return generate_candidates_grouped(req, catalog)
     limits = req["limits"]
     priority = req["ranking"]["priority"]
     per_person: List[List[Dict[str, Any]]] = []
@@ -491,21 +508,44 @@ def classify_no_result(
     return {"status": status, "no_result": {"category": category, "detail": detail, "counts": counts}}
 
 
+def format_space(space: int) -> str:
+    """搜索空间文案：小于阈值逐字显示整数，否则用科学计数法（约 1.4×10^45）。"""
+    if space < SPACE_SCI_THRESHOLD:
+        return str(space)
+    exponent = len(str(space)) - 1
+    mantissa = round(int(str(space)[:3]) / 100, 1)
+    if mantissa >= 10:
+        mantissa, exponent = 1.0, exponent + 1
+    return f"约 {mantissa:.1f}×10^{exponent}"
+
+
+def _group_note(stats: Dict[str, Any], people: int) -> str:
+    """同质组搜索的额外限制说明（仅 >6 人走分组路径时出现）。"""
+    return (
+        f"{people} 位用餐者归并为 {stats['groups']} 个同质组"
+        f"（组内最多 {GROUP_MAX_DISTINCT_OFFERS} 种不同套餐，"
+        f"每组保留前 {GROUP_ALLOCATIONS_CAP} 种分配）。"
+    )
+
+
 def _statement(
-    live: bool, stats: Dict[str, Any], whole: int, selected: int
+    live: bool, stats: Dict[str, Any], whole: int, selected: int, people: int = 0
 ) -> str:
     """检查范围声明：永远说明是已检查方案中的排名。"""
     if live and whole > selected:
-        return (
+        text = (
             f"仅检查了前 {selected} 个候选的官方核价（候选共 {whole} 个），"
             "结果是已检查方案中的排名，不是全局最优。"
         )
-    text = (
-        f"共检查 {whole} 个整单候选（搜索空间 {stats['search_space']} 种），"
-        "结果是已检查方案中的排名，不是全局最优。"
-    )
-    if stats["truncated"]:
-        text += "整单候选达到上限，已截断。"
+    else:
+        text = (
+            f"共检查 {whole} 个整单候选（搜索空间 {format_space(stats['search_space'])} 种），"
+            "结果是已检查方案中的排名，不是全局最优。"
+        )
+        if stats["truncated"]:
+            text += "整单候选达到上限，已截断。"
+    if stats.get("groups"):
+        text += _group_note(stats, people)
     return text
 
 
@@ -598,7 +638,7 @@ def compose_v2(
         whole_truncated=stats["truncated"],
         quotes_attempted=len(selected) if live else 0,
         quotes_verified=sum(1 for i in items if i["price_status"] == "official_verified"),
-        statement=_statement(live, stats, len(whole), len(selected)),
+        statement=_statement(live, stats, len(whole), len(selected), len(req["people"])),
     )
     meta["excluded"] = ranked["excluded"]
     result["search"]["checked_combinations"] = len(whole)

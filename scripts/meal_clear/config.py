@@ -29,7 +29,12 @@ DEFAULT_FULFILLMENT = "pickup"
 PRIORITIES: Tuple[str, ...] = ("price", "preference")
 DEFAULT_PRIORITY = "price"
 DATA_MODES: Tuple[str, ...] = ("live", "simulation", "historical", "user_supplied")
-MAX_PEOPLE = 6
+MAX_PEOPLE = 50  # 单次用餐者人数上限的唯一定义处（校验文案由它生成）
+LEGACY_BEAM_MAX_PEOPLE = 6  # ≤6 人沿用 P0 逐人 beam，输出由哈希基线锁定
+COMPACT_MIN_PEOPLE = 13  # ≥13 人文本报告默认按同质组汇总
+GROUP_MAX_DISTINCT_OFFERS = 2  # 同质组内最多几种不同套餐
+GROUP_ALLOCATIONS_CAP = 48  # 每个同质组保留的分配方案数
+SPACE_SCI_THRESHOLD = 10**12  # 搜索空间 ≥ 此值用科学计数法显示
 MAX_TOP_N = 10
 DEFAULT_TOP_N = 3
 
