@@ -8,6 +8,8 @@ from .config import (
     COMPACT_MIN_PEOPLE,
     EXIT_DUPLICATE,
     EXIT_ERROR,
+    EXIT_LIMIT,
+    EXIT_LOCKED,
     EXIT_NO_PLAN,
     EXIT_OK,
     EXIT_RECONFIRM,
@@ -41,6 +43,8 @@ EXIT_HINTS = {
     EXIT_REFUSED: "安全门或前置条件拒绝，本次未发出写请求",
     EXIT_DUPLICATE: "重复执行被拒：账本已有该步骤记录",
     EXIT_UNKNOWN: "写调用结果未知：先核实，禁止重试",
+    EXIT_LIMIT: "超过本机真实写上限（单笔金额或 24 小时次数），本次未发出写请求",
+    EXIT_LOCKED: "真实写被锁定（write-lock 或结果未知的篮子锁），需你人工处理",
 }
 
 
@@ -254,6 +258,8 @@ def render_created(result: Dict[str, Any]) -> str:
         lines.append(f"支付链接：{created['payH5Url']}（仅本次显示，不写入账本）")
     if created.get("payId"):
         lines.append(f"支付编号：{created['payId']}")
+    if result.get("channel") == "official":
+        lines.extend(["", "这是官方待支付订单，请到麦当劳 App 自行付款或取消；本工具不会付款也不会取消。"])
     lines.extend(["", f"之后可用 order-status --digest {result['digest'][:12]} 查询状态。"])
     return "\n".join(lines)
 
@@ -293,6 +299,22 @@ def render_notice(result: Dict[str, Any]) -> str:
     for option in result.get("options", []):
         lines.append(f"- 选项 {option['index']}：{option['title']} {option['subtitle']}".rstrip())
     return "\n".join(lines)
+
+
+def render_resolve(result: Dict[str, Any]) -> str:
+    """人工标注结果。"""
+    return "\n".join([
+        "# 已人工标注",
+        f"摘要：{result['digest'][:12]}…；步骤：{result['step']}；声明：{result['as']}；账本状态：{result['state']}",
+        result["message"] + "。",
+    ])
+
+
+def render_write_lock(result: Dict[str, Any]) -> str:
+    """紧急锁状态。"""
+    if result["locked"]:
+        return "真实写已锁定：官方领券/下单一律拒绝（退出码 8）。解除请在自己的终端运行 write-lock --off。"
+    return "真实写未锁定。紧急时运行 write-lock --on 立即锁定。"
 
 
 def exit_hint(code: int) -> str:

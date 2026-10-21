@@ -18,12 +18,21 @@ from .core import (
     compose,
     validate_request,
 )
-from . import orders, report_orders
-from .config import EXIT_OK, EXIT_REFUSED, LEDGER_DIRNAME, PRIORITIES, SUMMARY_TTL_SECONDS
-from .gate import WriteDenied, check_write_target
+from . import orders, realwrite, report_orders
+from .config import (
+    EXIT_OK,
+    EXIT_REFUSED,
+    LEDGER_DIRNAME,
+    PRIORITIES,
+    SUMMARY_TTL_SECONDS,
+    TOOL_AUTO_BIND_COUPONS,
+    TOOL_CREATE_ORDER,
+    UNLOCK_PHRASE,
+)
+from .gate import WriteDenied
 from .ledger import Ledger
 from .live import LivePlanner, MultiLivePlanner, timestamp
-from .mcp import ENDPOINT, McpClient, McpError
+from .mcp import McpClient, McpError
 from .privacy import assert_public
 from .ranking import compose_v2
 from .report import render_coupon_preview, render_ranking
@@ -171,11 +180,15 @@ def emit(result: Dict[str, Any], args: argparse.Namespace, v2: bool) -> None:
 
 
 def client_from_args(args: argparse.Namespace, write: bool = False) -> McpClient:
-    """初始化安全客户端；write=True 时先校验写目标，失败则零网络请求。"""
+    """初始化安全客户端；write=True 时先过第四道门的离线预检，失败则不读 Token、零网络请求。"""
+    token_file = args.token_file
     if write:
-        # 在读取 Token、构造客户端、initialize 之前对固定官方端点做写目标检查
-        check_write_target(ENDPOINT)
-    client = McpClient(token_file=args.token_file)
+        # 在读取 Token、构造客户端、initialize 之前：开关→配置→紧急锁→TTY→凭证来源
+        state_dir = ledger_root().parent
+        realwrite.preflight(state_dir)
+        fixed = realwrite.resolve_write_token_file(state_dir, token_file)
+        token_file = str(fixed) if fixed is not None else None
+    client = McpClient(token_file=token_file)
     client.initialize()
     return client
 
@@ -184,6 +197,14 @@ def _print_result(result: Dict[str, Any], as_json: bool, text: str) -> None:
     """输出前自检敏感字段；JSON 或文本二选一。"""
     assert_public(result)
     print(json.dumps(result, ensure_ascii=False, indent=2) if as_json else text)
+
+
+def _offline_real_write_gate(ledger: Ledger, tool: str, record: Dict[str, Any]) -> None:
+    """读 Token、建客户端之前的离线检查：篮子 unknown 锁与 24h 次数上限。
+    两者只看 official 通道记录，对回环模拟流程是空操作；真正的开关/TTY/金额检查在后续各层。"""
+    now = orders.utcnow()
+    realwrite.check_unknown_lock(ledger, record, now)
+    realwrite.precheck_counts(ledger, tool, now)
 
 
 def run_order_summary(args: argparse.Namespace) -> int:
@@ -226,7 +247,8 @@ def run_order_claim(args: argparse.Namespace) -> int:
         preview = orders.claim_preview(client_from_args(args), ledger, args.digest)
         _print_result(preview, args.json, report_orders.render_claim_preview(preview))
         return preview["exit_code"]
-    orders.precheck_claim(ledger, args.digest, args.confirm_digest)
+    record = orders.precheck_claim(ledger, args.digest, args.confirm_digest)
+    _offline_real_write_gate(ledger, TOOL_AUTO_BIND_COUPONS, record)
     client = client_from_args(args, write=True)
     result = orders.claim_execute(client, ledger, args.digest, args.confirm_digest)
     _print_result(result, args.json, report_orders.render_result(result))
@@ -252,8 +274,9 @@ def run_order_place(args: argparse.Namespace) -> int:
                                        allow_duplicate_basket=args.allow_duplicate_basket)
         _print_order_result(preview, args.json, report_orders.render_place_preview(preview))
         return preview["exit_code"]
-    orders.precheck_place(ledger, args.digest, args.confirm_digest,
-                          allow_duplicate_basket=args.allow_duplicate_basket)
+    record = orders.precheck_place(ledger, args.digest, args.confirm_digest,
+                                   allow_duplicate_basket=args.allow_duplicate_basket)
+    _offline_real_write_gate(ledger, TOOL_CREATE_ORDER, record)
     client = client_from_args(args, write=True)
     result = orders.place_execute(client, ledger, args.digest, args.confirm_digest,
                                   allow_duplicate_basket=args.allow_duplicate_basket)
@@ -271,6 +294,27 @@ def run_order_status(args: argparse.Namespace) -> int:
                                  order_id=args.order_id, digest=args.digest)
     _print_order_result(result, args.json, report_orders.render_order_status(result))
     return result["exit_code"]
+
+
+def run_order_resolve(args: argparse.Namespace) -> int:
+    """order-resolve：人工标注真实通道中结果未知的步骤；必须在自己的 TTY 输入短语。"""
+    ledger = Ledger(ledger_root())
+    result = orders.resolve_unknown_cmd(ledger, args.digest, args.step, args.outcome, realwrite.human_confirm)
+    _print_result(result, args.json, report_orders.render_resolve(result))
+    return result["exit_code"]
+
+
+def run_write_lock(args: argparse.Namespace) -> int:
+    """write-lock：--on/--status 无需确认（fail-safe）；--off 必须 TTY 短语。"""
+    state_dir = ledger_root().parent
+    if args.on:
+        realwrite.set_lock(state_dir)
+    elif args.off and realwrite.is_locked(state_dir):
+        realwrite.human_confirm(["== 解除真实写紧急锁 =="], UNLOCK_PHRASE)
+        realwrite.clear_lock(state_dir)
+    result = {"status": "ok", "exit_code": EXIT_OK, "locked": realwrite.is_locked(state_dir)}
+    _print_result(result, args.json, report_orders.render_write_lock(result))
+    return EXIT_OK
 
 
 def add_rank_options(parser: argparse.ArgumentParser) -> None:
@@ -325,7 +369,7 @@ def main(argv: Optional[list] = None) -> int:
     multi = sub.add_parser("demo-multi", help="离线3人多方案排名演示")
     multi.add_argument("--json", action="store_true")
     exit_codes = "退出码：" + "；".join(
-        f"{code} {report_orders.exit_hint(code)}" for code in range(7)
+        f"{code} {report_orders.exit_hint(code)}" for code in range(9)
     )
     write_epilog = "默认预演；--execute 需同时提供 --confirm-digest（完整摘要编号）。" + exit_codes
     osum = sub.add_parser(
@@ -380,6 +424,30 @@ def main(argv: Optional[list] = None) -> int:
     which.add_argument("--order-id", help="订单号（直接查询官方）")
     ostatus.add_argument("--token-file")
     ostatus.add_argument("--json", action="store_true")
+    oresolve = sub.add_parser(
+        "order-resolve",
+        help="人工标注真实通道中『结果未知』的领券/下单（需在自己的终端输入确认短语）",
+        description="你已用 order-status 或麦当劳 App 核实真实结果后，声明该步骤实际是否发生；"
+        "工具不会向官方核实，账本留有人工标注事件。必须在交互式终端输入 <摘要末6位> 确认标注。",
+        epilog=exit_codes,
+    )
+    oresolve.add_argument("--digest", required=True, help="摘要编号（唯一前缀，至少 12 位）")
+    oresolve.add_argument("--step", required=True, choices=("claim", "order"), help="要标注的步骤")
+    oresolve.add_argument("--as", dest="outcome", required=True,
+                          choices=("claimed", "not-claimed", "created", "not-created"),
+                          help="核实后的真实结果（领券：claimed/not-claimed；下单：created/not-created）")
+    oresolve.add_argument("--json", action="store_true")
+    wlock = sub.add_parser(
+        "write-lock",
+        help="真实写紧急锁：--on 立即锁定（无需确认）；--off 解除（需自己终端输入短语）；--status 查看",
+        description="锁定后所有官方真实领券/下单一律拒绝（退出码 8）。",
+        epilog=exit_codes,
+    )
+    mode = wlock.add_mutually_exclusive_group(required=True)
+    mode.add_argument("--on", action="store_true", help="锁定")
+    mode.add_argument("--off", action="store_true", help="解除（需 TTY 与确认短语）")
+    mode.add_argument("--status", action="store_true", help="查看是否已锁定")
+    wlock.add_argument("--json", action="store_true")
     inspect = sub.add_parser("inspect-tools", help="检查当前只读工具可用性")
     inspect.add_argument("--token-file")
     card = sub.add_parser("break-even", help="固定单次节省额的回本计算（整数分）")
@@ -402,6 +470,10 @@ def main(argv: Optional[list] = None) -> int:
             return run_order_place(args)
         if args.command == "order-status":
             return run_order_status(args)
+        if args.command == "order-resolve":
+            return run_order_resolve(args)
+        if args.command == "write-lock":
+            return run_write_lock(args)
         if args.command == "demo":
             catalog = read_json(str(ROOT / "examples/demo-catalog.json"))
             request = read_json(str(ROOT / "examples/request.json"))
@@ -583,8 +655,12 @@ def main(argv: Optional[list] = None) -> int:
             print("\n变化说明：" + json.dumps(difference, ensure_ascii=False))
         return 0 if result.get("recommendations") else 2
     except WriteDenied as exc:
-        print(json.dumps({"status": "error", "message": str(exc)}, ensure_ascii=False))
-        return EXIT_REFUSED
+        body = {"status": "error", "message": str(exc)}
+        reason = getattr(exc, "reason", None)
+        if reason:
+            body["reason"] = reason
+        print(json.dumps(body, ensure_ascii=False))
+        return getattr(exc, "exit_code", EXIT_REFUSED)
     except orders.OrderError as exc:
         print(json.dumps({"status": "error", "message": str(exc), **exc.payload}, ensure_ascii=False))
         return exc.exit_code

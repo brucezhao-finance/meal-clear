@@ -211,6 +211,7 @@ class McpClient:
         self.rate_limiter = rate_limiter or RateLimiter()
         self.audit = []
         self._write_ctx: Optional[str] = None
+        self._official_ctx: Optional[str] = None
         self._opener = urllib.request.build_opener(NoRedirect())
 
     def _post(
@@ -225,19 +226,24 @@ class McpClient:
         if method == "tools/call":
             name = params.get("name") if isinstance(params, dict) else None
             if not isinstance(name, str) or name not in READ_ONLY:
-                # 传输层兜底：非只读工具必须处于 call_write 上下文且目标是严格回环
+                # 传输层兜底：非只读工具必须处于 call_write 上下文，且目标是严格回环，
+                # 或（官方端点）call_write 已校验过人工批准并设置了官方上下文
                 if (
                     not isinstance(name, str)
                     or name != self._write_ctx
                     or name not in CONTROLLED_WRITE
                 ):
                     raise WriteRefused("传输层拒绝非白名单工具，未发出任何请求")
-                try:
-                    net_guard.assert_write_target(self.endpoint)
-                except net_guard.NetGuardError:
-                    raise WriteRefused(
-                        "写操作只允许发往本机回环地址，未发出任何请求"
-                    ) from None
+                if net_guard.is_official_url(self.endpoint):
+                    if name != self._official_ctx:
+                        raise WriteRefused("官方端点缺少人工批准，未发出任何请求")
+                else:
+                    try:
+                        net_guard.assert_write_target(self.endpoint)
+                    except net_guard.NetGuardError:
+                        raise WriteRefused(
+                            "写操作只允许发往本机回环地址，未发出任何请求"
+                        ) from None
                 write = True
                 attempts = 1
         self._counter += 1
@@ -399,6 +405,10 @@ class McpClient:
             raise WriteRefused("拒绝非受控写工具，未发出任何请求")
         if not gate.grant_is_valid(grant, name):
             raise WriteRefused("缺少有效的写授权，未发出任何请求")
+        if net_guard.is_official_url(self.endpoint):
+            if not gate.grant_is_official(grant, name):
+                raise WriteRefused("官方端点缺少人工批准，未发出任何请求")
+            self._official_ctx = name
         self._write_ctx = name
         try:
             payload = unwrap_tool(
@@ -431,5 +441,6 @@ class McpClient:
             raise WriteUnknown("写请求出现未预期错误，结果未知，请先核实，不要重试") from None
         finally:
             self._write_ctx = None
+            self._official_ctx = None
         self.audit.append({"tool": name, "success": True})
         return payload

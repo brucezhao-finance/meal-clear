@@ -15,8 +15,9 @@ from datetime import datetime, timedelta, timezone
 from decimal import Decimal, InvalidOperation
 from typing import Any, Dict, List, Optional, Tuple
 
-from . import gate, live, net_guard
+from . import gate, live, net_guard, realwrite
 from .config import (
+    CHANNEL_OFFICIAL,
     DIGEST_VERSION,
     DUPLICATE_BASKET_WINDOW_SECONDS,
     EXIT_DUPLICATE,
@@ -27,6 +28,9 @@ from .config import (
     EXIT_REFUSED,
     EXIT_UNKNOWN,
     FULFILLMENTS,
+    PHRASE_TAIL_LEN,
+    RESOLVE_CHOICES,
+    RESOLVE_CONFIRM_WORD,
     ORDER_STATUS_LABELS,
     SUMMARY_TTL_RANGE,
     SUMMARY_TTL_SECONDS,
@@ -788,11 +792,40 @@ def _fail_step(ledger: Ledger, digest: str, attempt: Any, state: str, reason: st
     ledger.finish_step(digest, "claim", attempt, state, {"reason": reason})
 
 
+LOCK_HINT = "该篮子已被锁定 24 小时：先用 order-status 或到麦当劳 App 核实，再用 order-resolve 标注结果"
+
+
+def _is_official(client: Any) -> bool:
+    """客户端目标是否为固定官方端点（走第四道门）；回环模拟服务返回 False。"""
+    return net_guard.is_official_url(getattr(client, "endpoint", None))
+
+
+def _confirm_lines(summary: Dict[str, Any], tool: str) -> List[str]:
+    """真实写前给人看的要点（只含摘要里的公开字段，不含券码/地址/Token）。"""
+    ful = summary["fulfillment"]
+    store = summary["store"]
+    lines = [
+        "== 真实%s：请核对后亲手确认 ==" % ("领券" if tool == TOOL_AUTO_BIND_COUPONS else "下单"),
+        "门店：%s（%s）" % (store["store_code"], store["name"] or "名称未核实"),
+        "取餐方式：%s" % ful["label"],
+        "商品：" + "；".join("%s×%s" % (r["name"], r["quantity"]) for r in summary["lines"]),
+        "应付：¥%.2f" % (summary["payable_cents"] / 100),
+    ]
+    if tool == TOOL_AUTO_BIND_COUPONS:
+        lines.append("将领券数：%d 张（一键领全部，无法逐张选择，不可撤销）" % summary["claim"]["total"])
+    else:
+        lines.append("订单创建后为待支付，本工具不会自动付款，也不会取消。")
+    lines.append("摘要有效至：%s" % summary["expires_at"])
+    return lines
+
+
 def claim_execute(client: Any, ledger: Ledger, prefix: str, confirm: Optional[str]) -> Dict[str, Any]:
     """计划 D15/D16/D17：离线校验 → 回环检查 → 工具校验 → 将领券比较 → 写前账本 → 单次写 → 重新核价。"""
     record = precheck_claim(ledger, prefix, confirm)
     digest = record["digest"]
-    gate.check_write_target(getattr(client, "endpoint", None))
+    official = _is_official(client)
+    session = realwrite.authorize(ledger, TOOL_AUTO_BIND_COUPONS, record, utcnow()) if official else None
+    gate.check_write_target(getattr(client, "endpoint", None), session=session)
     budgeted = client if hasattr(client, "spend") else live.BudgetedClient(client)
     _check_claim_tool(budgeted)
     current = claim_set(budgeted)
@@ -804,6 +837,14 @@ def claim_execute(client: Any, ledger: Ledger, prefix: str, confirm: Optional[st
         check = verify_fresh(budgeted, latest)
         new = supersede(ledger, latest, check["fresh"], claimable=current, claim_done=False, now=utcnow())
         return _reconfirm_result(ledger, latest, check, new, "将领券集合已变化，旧确认失效，未领取任何券")
+    approval = None
+    if official:  # 真实领券前也必须重新核价（价格/券/商品不一致→退出码 3 + 新摘要）
+        latest = ledger.read(digest)
+        check = verify_fresh(budgeted, latest)
+        if not check["consistent"]:
+            new = supersede(ledger, latest, check["fresh"], claimable=current, claim_done=False, now=utcnow())
+            return _reconfirm_result(ledger, latest, check, new, "领券前重新核价发现变化，未领取任何券，旧摘要作废")
+        approval = session.confirm(_confirm_lines(public_summary(latest), TOOL_AUTO_BIND_COUPONS))
     now = utcnow()
     guard = gate.WriteGate.open(
         budgeted,
@@ -813,9 +854,15 @@ def claim_execute(client: Any, ledger: Ledger, prefix: str, confirm: Optional[st
         expires_at=parse_time(record["expires_at"]),
         now=now,
         ledger=ledger,
+        approval=approval,
     )
     try:
-        attempt = ledger.begin_step(digest, "claim", ("none",))
+        if official:  # 全局锁内“计数→写前落账”原子完成，防两个进程同时通过上限
+            with ledger.global_locked():
+                session.check_counts()
+                attempt = ledger.begin_step(digest, "claim", ("none",), channel=CHANNEL_OFFICIAL)
+        else:
+            attempt = ledger.begin_step(digest, "claim", ("none",))
     except LedgerStateError:
         raise OrderError("该摘要已有领券记录，拒绝重复执行", EXIT_DUPLICATE,
                          {"status": "duplicate", "prior": _prior(ledger.read(digest))}) from None
@@ -823,7 +870,8 @@ def claim_execute(client: Any, ledger: Ledger, prefix: str, confirm: Optional[st
         guard.call(TOOL_AUTO_BIND_COUPONS, {}, attempt)
     except WriteUnknown as exc:
         _fail_step(ledger, digest, attempt, "unknown", "result_unknown")
-        raise OrderError(str(exc) + "；请先用 available-coupons 或 App 核对，不要重试", EXIT_UNKNOWN) from None
+        hint = "；请先用 available-coupons 或 App 核对，不要重试"
+        raise OrderError(str(exc) + hint + ("。" + LOCK_HINT if official else ""), EXIT_UNKNOWN) from None
     except WriteFailed as exc:
         _fail_step(ledger, digest, attempt, "failed", "rejected")
         raise OrderError(str(exc), EXIT_ERROR) from None
@@ -846,9 +894,12 @@ def claim_execute(client: Any, ledger: Ledger, prefix: str, confirm: Optional[st
     if check["consistent"]:
         ledger.mutate(digest, lambda rec: rec["steps"]["requote"].update(
             state="consistent", checked_at=iso(utcnow()), changes=[]))
-        return {"status": "claimed", "exit_code": EXIT_OK, "digest": digest, "requote": "consistent",
+        done = {"status": "claimed", "exit_code": EXIT_OK, "digest": digest, "requote": "consistent",
                 "changes": [], "notes": check["notes"], "executed": True,
                 "message": "已一键领取全部可领券；领券后重新核价，价格与摘要一致"}
+        if official:
+            done["channel"] = CHANNEL_OFFICIAL
+        return done
     new = supersede(ledger, latest, check["fresh"], claimable=[], claim_done=True, now=utcnow())
     return _reconfirm_result(ledger, latest, check, new, "已一键领取全部可领券；领券后重新核价发现变化，旧摘要作废")
 
@@ -1200,7 +1251,9 @@ def place_execute(client: Any, ledger: Ledger, prefix: str, confirm: Optional[st
     """计划 D16/D18/D19：离线校验 → 回环 → 工具校验 → 新鲜度 → 写前账本 → 单次写 → 分类落账。"""
     record = precheck_place(ledger, prefix, confirm, allow_duplicate_basket=allow_duplicate_basket)
     digest = record["digest"]
-    gate.check_write_target(getattr(client, "endpoint", None))
+    official = _is_official(client)
+    session = realwrite.authorize(ledger, TOOL_CREATE_ORDER, record, utcnow()) if official else None
+    gate.check_write_target(getattr(client, "endpoint", None), session=session)
     budgeted = client if hasattr(client, "spend") else live.BudgetedClient(client)
     _check_create_tool(budgeted)
     try:
@@ -1220,16 +1273,26 @@ def place_execute(client: Any, ledger: Ledger, prefix: str, confirm: Optional[st
     ledger.mutate(digest, lambda rec: rec["steps"]["requote"].update(
         state="consistent", checked_at=iso(utcnow()), changes=[]))
     args = build_create_order_args(latest, check["fresh"]["rebuilt"]["wire_items"], address_id)
+    approval = None
+    if official:  # 金额上限用刚核价的应付额；人工确认在新鲜度检查之后、写前落账之前
+        session.check_amount(check["fresh"]["total_cents"])
+        approval = session.confirm(_confirm_lines(public_summary(latest), TOOL_CREATE_ORDER))
     now = utcnow()
     if not is_fresh(latest, now):
         raise OrderError("摘要已过期，必须重新生成摘要并重新核价", EXIT_RECONFIRM, {"status": "expired"})
     guard = gate.WriteGate.open(
         budgeted, execute=True, confirm_digest=confirm, record_digest=digest,
-        expires_at=parse_time(latest["expires_at"]), now=now, ledger=ledger,
+        expires_at=parse_time(latest["expires_at"]), now=now, ledger=ledger, approval=approval,
     )
     try:
-        attempt = ledger.begin_step(digest, "order", ("none",),
-                                    preconditions={"claim": ("succeeded", "not_required")})
+        preconditions = {"claim": ("succeeded", "not_required")}
+        if official:  # 全局锁内“计数→写前落账”原子完成
+            with ledger.global_locked():
+                session.check_counts()
+                attempt = ledger.begin_step(digest, "order", ("none",), preconditions=preconditions,
+                                            channel=CHANNEL_OFFICIAL)
+        else:
+            attempt = ledger.begin_step(digest, "order", ("none",), preconditions=preconditions)
     except LedgerStateError:
         again = ledger.read(digest)
         if again["steps"]["order"]["state"] != "none":
@@ -1240,7 +1303,8 @@ def place_execute(client: Any, ledger: Ledger, prefix: str, confirm: Optional[st
         payload = guard.call(TOOL_CREATE_ORDER, args, attempt)
     except WriteUnknown:
         _finish_order(ledger, digest, attempt, "unknown", {"reason": "result_unknown"})
-        raise OrderError(MSG_ORDER_UNKNOWN, EXIT_UNKNOWN, {"status": "unknown"}) from None
+        raise OrderError(MSG_ORDER_UNKNOWN + ("。" + LOCK_HINT if official else ""), EXIT_UNKNOWN,
+                         {"status": "unknown"}) from None
     except WriteFailed:
         _finish_order(ledger, digest, attempt, "failed", {"reason": "rejected"})
         raise OrderError("官方明确拒绝或未执行，订单未创建（以官方返回为准）；同一摘要不能重试，"
@@ -1275,7 +1339,7 @@ def place_execute(client: Any, ledger: Ledger, prefix: str, confirm: Optional[st
         created_order["payH5Url"] = info["pay_url"]
     if info["pay_id"]:
         created_order["payId"] = info["pay_id"]
-    return {
+    created_result = {
         "status": "created",
         "exit_code": EXIT_OK,
         "digest": digest,
@@ -1298,6 +1362,33 @@ def place_execute(client: Any, ledger: Ledger, prefix: str, confirm: Optional[st
         "lookup": lookup,
         "created_order": created_order,
     }
+    if official:
+        created_result["channel"] = CHANNEL_OFFICIAL
+    return created_result
+
+
+def resolve_unknown_cmd(ledger: Ledger, prefix: str, step: str, outcome: str, human_confirm: Any) -> Dict[str, Any]:
+    """人工标注真实通道中结果未知的步骤。先通过 TTY 短语确认，再写账本（事件留痕，不写订单号）。"""
+    if (step, outcome) not in RESOLVE_CHOICES:
+        raise InputError("--as 与 --step 不匹配：领券用 claimed/not-claimed，下单用 created/not-created")
+    digest = ledger.resolve(prefix)
+    record = ledger.read(digest)
+    entry = record["steps"][step]
+    if ledger.step_channel(entry) != CHANNEL_OFFICIAL or entry["state"] != "unknown":
+        raise OrderError("只能标注真实通道中『结果未知』的步骤；回环模拟记录和其他状态不可标注",
+                         EXIT_REFUSED, {"status": "not_resolvable", "state": entry["state"]})
+    human_confirm(
+        ["== 人工标注：你声明已核实真实结果，工具不会替你去官方核实 ==",
+         "摘要：%s…；步骤：%s；声明：%s" % (digest[:12], step, outcome)],
+        "%s %s" % (digest[-PHRASE_TAIL_LEN:], RESOLVE_CONFIRM_WORD),
+    )
+    try:
+        updated = ledger.resolve_unknown(digest, step, outcome)
+    except LedgerStateError as exc:
+        raise OrderError(str(exc), EXIT_REFUSED, {"status": "not_resolvable"}) from None
+    return {"status": "resolved", "exit_code": EXIT_OK, "digest": digest, "step": step, "as": outcome,
+            "state": updated["steps"][step]["state"],
+            "message": "已按你的声明标注；账本留有人工标注事件，工具未向官方核实"}
 
 
 def order_status(client_factory: Any, ledger: Ledger, *, order_id: Optional[str] = None,

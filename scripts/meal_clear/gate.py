@@ -30,24 +30,32 @@ class WriteDenied(McpError):
     """写门拒绝：本次没有发出任何写请求。"""
 
 
-def check_write_target(endpoint: object) -> None:
-    """写目标必须是严格回环；官方端点给出『尚未开放』说明。"""
+def check_write_target(endpoint: object, *, session: object = None) -> None:
+    """写目标必须是严格回环；官方端点仅在持有第四道门会话（realwrite.authorize）时放行，否则给出『尚未开放』说明。"""
     try:
         net_guard.assert_write_target(endpoint)
     except net_guard.NetGuardError:
-        raise WriteDenied(MSG_NOT_OPEN if endpoint == ENDPOINT else MSG_NOT_LOOPBACK) from None
+        if not net_guard.is_official_url(endpoint):
+            raise WriteDenied(MSG_NOT_LOOPBACK) from None
+        from . import realwrite  # 延迟导入：realwrite 顶层导入本模块
+
+        if session is not None and realwrite.is_session(session):
+            return
+        raise WriteDenied(MSG_NOT_OPEN) from None
 
 
 class WriteGrant:
     """一次写调用的授权；构造需要模块私有哨兵，只有 WriteGate 会创建。"""
 
-    __slots__ = ("tool", "_key")
+    __slots__ = ("tool", "_key", "approval", "official")
 
-    def __init__(self, tool: str, key: object) -> None:
+    def __init__(self, tool: str, key: object, approval: object = None, official: bool = False) -> None:
         if key is not _SENTINEL:
             raise WriteDenied(MSG_TOOL)
         self.tool = tool
         self._key = key
+        self.approval = approval  # 官方通道：已被消费的 RealWriteApproval
+        self.official = official is True
 
 
 def grant_is_valid(grant: object, tool: str) -> bool:
@@ -57,6 +65,17 @@ def grant_is_valid(grant: object, tool: str) -> bool:
         and getattr(grant, "_key", None) is _SENTINEL
         and grant.tool == tool
         and tool in CONTROLLED_WRITE_TOOLS
+    )
+
+
+def grant_is_official(grant: object, tool: str) -> bool:
+    """McpClient.call_write 在官方端点上用：授权有效、标记官方通道，且携带已消费的人工批准。"""
+    from . import realwrite
+
+    return (
+        grant_is_valid(grant, tool)
+        and getattr(grant, "official", False) is True
+        and realwrite.approval_consumed(getattr(grant, "approval", None), tool)
     )
 
 
@@ -74,6 +93,7 @@ class WriteGate:
         now: Any,
         budget: Any = None,
         ledger: Any = None,
+        approval: Any = None,
     ) -> None:
         # 优先保证 BudgetedClient 的计数，同时拿到底层客户端
         if budget is None and hasattr(client, "spend") and hasattr(client, "_client"):
@@ -86,6 +106,7 @@ class WriteGate:
         self._now = now
         self._budget = budget
         self._ledger = ledger
+        self._approval = approval
         self._check()
 
     @classmethod
@@ -112,7 +133,19 @@ class WriteGate:
             expired = True
         if expired:
             raise WriteDenied(MSG_EXPIRED)
-        check_write_target(getattr(self._client, "endpoint", None))
+        endpoint = getattr(self._client, "endpoint", None)
+        if net_guard.is_official_url(endpoint):
+            self._check_official()
+            return
+        check_write_target(endpoint)
+
+    def _check_official(self) -> None:
+        """官方通道：必须持有绑定本摘要、尚未使用的人工批准（realwrite 签发）。"""
+        from . import realwrite
+
+        ap = self._approval
+        if not realwrite.approval_valid(ap, getattr(ap, "tool", None), self._record):
+            raise WriteDenied(MSG_NOT_OPEN)
 
     def _attempt_ok(self, attempt: Any) -> bool:
         """句柄必须来自 ledger.begin_step 且属于本摘要；有账本时核对仍为 pending。"""
@@ -135,5 +168,12 @@ class WriteGate:
             raise WriteDenied(MSG_NO_ATTEMPT)
         if self._budget is not None:
             self._budget.spend()
-        grant = WriteGrant(tool, _SENTINEL)
+        if net_guard.is_official_url(getattr(self._client, "endpoint", None)):
+            from . import realwrite
+
+            if not realwrite.consume_approval(self._approval, tool, self._record):
+                raise WriteDenied(MSG_NOT_OPEN)  # 批准单次使用，且绑定工具与摘要
+            grant = WriteGrant(tool, _SENTINEL, approval=self._approval, official=True)
+        else:
+            grant = WriteGrant(tool, _SENTINEL)
         return self._client.call_write(tool, args, grant=grant)

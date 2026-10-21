@@ -343,11 +343,24 @@ class RealWriteSession:
         return RealWriteApproval(self.tool, self.digest, _SENTINEL)
 
 
-def authorize(ledger: Any, tool: str, record: Dict[str, Any], now: datetime) -> RealWriteSession:
-    """离线第四道门预检（开关→配置→紧急锁→TTY→unknown 篮子锁）；通过返回会话。"""
-    if not isinstance(tool, str) or tool not in CONTROLLED_WRITE_TOOLS:
-        raise RealWriteDenied(gate.MSG_TOOL, "bad_tool")
-    state_dir = Path(ledger.root).parent
+def approval_consumed(approval: object, tool: str) -> bool:
+    """批准由本模块签发、与工具匹配且已被消费（grant_is_official 用：WriteGate.call 先消费再签发授权）。"""
+    return (
+        isinstance(approval, RealWriteApproval)
+        and getattr(approval, "_key", None) is _SENTINEL
+        and approval._used is True
+        and approval.tool == tool
+        and tool in CONTROLLED_WRITE_TOOLS
+    )
+
+
+def is_session(obj: object) -> bool:
+    """check_write_target 用：是否为 authorize 通过后的会话对象。"""
+    return isinstance(obj, RealWriteSession)
+
+
+def preflight(state_dir: Any) -> Dict[str, Any]:
+    """不依赖具体摘要的离线预检（开关→配置→紧急锁→TTY）；通过返回生效配置。"""
     cfg = ensure_enabled(state_dir)
     if is_locked(state_dir):
         raise RealWriteDenied(
@@ -356,13 +369,37 @@ def authorize(ledger: Any, tool: str, record: Dict[str, Any], now: datetime) -> 
             EXIT_LOCKED,
         )
     require_tty()
-    basket = record.get("basket_key")
-    digest = record.get("digest")
-    if ledger.find_official_unresolved(basket, UNKNOWN_LOCK_SECONDS, now):
+    return cfg
+
+
+def check_unknown_lock(ledger: Any, record: Dict[str, Any], now: datetime) -> None:
+    """同篮子 24 小时内有结果未知的真实写时拒绝；无官方记录时是空操作（与通道无关，可在建客户端前调用）。"""
+    if ledger.find_official_unresolved(record.get("basket_key"), UNKNOWN_LOCK_SECONDS, now):
+        ensure_enabled(Path(ledger.root).parent)  # 开关关闭/配置无效时优先给出对应原因
         raise RealWriteDenied(
             "该篮子有结果未知的真实写操作：先用 order-status 或 App 核实，再用 order-resolve 标注。"
             "本次未发出任何请求。",
             "unknown_lock",
             EXIT_LOCKED,
         )
-    return RealWriteSession(ledger, tool, digest, basket, cfg, now)
+
+
+def precheck_counts(ledger: Any, tool: str, now: datetime) -> None:
+    """24h 次数上限的离线预检（读 Token 之前）；只统计 official 通道，回环记录不占配额，故对模拟流程是空操作。
+    超限时若开关关闭/配置无效，优先报告对应原因。"""
+    state_dir = Path(ledger.root).parent
+    try:
+        check_counts(ledger, load_config(state_dir), tool, now)
+    except RealWriteDenied as exc:
+        if exc.reason in ("orders_cap", "claims_cap"):
+            ensure_enabled(state_dir)
+        raise
+
+
+def authorize(ledger: Any, tool: str, record: Dict[str, Any], now: datetime) -> RealWriteSession:
+    """离线第四道门预检（开关→配置→紧急锁→TTY→unknown 篮子锁）；通过返回会话。"""
+    if not isinstance(tool, str) or tool not in CONTROLLED_WRITE_TOOLS:
+        raise RealWriteDenied(gate.MSG_TOOL, "bad_tool")
+    cfg = preflight(Path(ledger.root).parent)
+    check_unknown_lock(ledger, record, now)
+    return RealWriteSession(ledger, tool, record.get("digest"), record.get("basket_key"), cfg, now)
