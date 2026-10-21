@@ -6,6 +6,7 @@ from typing import Any, Dict, List
 
 from .config import COMPACT_MIN_PEOPLE
 from .grouping import group_people
+from .ranking import PREVIEW_NOTE
 
 MODE_LABELS = {
     "simulation": "模拟演示，不是真实菜单/价格",
@@ -181,8 +182,7 @@ def render_ranking(result: Dict[str, Any], detail: bool = False) -> str:
     lines.extend(
         [
             "",
-            "边界：只读比较，不下单、不领券、不支付；"
-            "领券属后续阶段（P1），未领取的券不计入本次报价。",
+            "边界：只读比较，不下单、不领券、不支付；" + PREVIEW_NOTE + "。",
         ]
     )
     return "\n".join(lines)

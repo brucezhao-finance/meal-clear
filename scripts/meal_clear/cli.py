@@ -18,8 +18,10 @@ from .core import (
     compose,
     validate_request,
 )
-from .config import EXIT_REFUSED, PRIORITIES
+from . import orders, report_orders
+from .config import EXIT_OK, EXIT_REFUSED, LEDGER_DIRNAME, PRIORITIES, SUMMARY_TTL_SECONDS
 from .gate import WriteDenied, check_write_target
+from .ledger import Ledger
 from .live import LivePlanner, MultiLivePlanner, timestamp
 from .mcp import ENDPOINT, McpClient, McpError
 from .privacy import assert_public
@@ -28,6 +30,11 @@ from .report import render_coupon_preview, render_ranking
 from .request_v2 import amend_request_v2, validate_request_v2
 
 ROOT = Path(__file__).resolve().parents[2]
+
+
+def ledger_root() -> Path:
+    """订单账本目录（测试可 patch；不提供命令行/环境变量入口）。"""
+    return ROOT / "local-state" / LEDGER_DIRNAME
 
 
 def read_json(path: str) -> Dict[str, Any]:
@@ -173,6 +180,59 @@ def client_from_args(args: argparse.Namespace, write: bool = False) -> McpClient
     return client
 
 
+def _print_result(result: Dict[str, Any], as_json: bool, text: str) -> None:
+    """输出前自检敏感字段；JSON 或文本二选一。"""
+    assert_public(result)
+    print(json.dumps(result, ensure_ascii=False, indent=2) if as_json else text)
+
+
+def run_order_summary(args: argparse.Namespace) -> int:
+    """order-summary：联网只读，写本地账本（摘要记录）。"""
+    orders.check_ttl(args.ttl_seconds)
+    raw = read_json(args.request)
+    if raw.get("schema_version") != 2:
+        raise InputError("order-summary 需要 schema_version=2 的实时请求")
+    ledger = Ledger(ledger_root())
+    planner = MultiLivePlanner(client_from_args(args))
+    outcome = orders.build_summary(
+        planner,
+        raw,
+        ledger,
+        signature=args.signature,
+        rank=args.rank,
+        take_way=args.take_way,
+        skip_claim=args.skip_claim,
+        ttl_seconds=args.ttl_seconds,
+        city=args.city,
+        keyword=args.keyword,
+    )
+    if outcome["status"] != "ok":
+        public = {k: v for k, v in outcome.items() if k != "record"}
+        _print_result(public, args.json, report_orders.render_notice(public))
+        return outcome["exit_code"]
+    summary = outcome["summary"]
+    assert_public(summary)
+    if args.save:
+        save_json(args.save, summary)
+    _print_result(summary, args.json, report_orders.render_summary(summary, args.detail))
+    return EXIT_OK
+
+
+def run_order_claim(args: argparse.Namespace) -> int:
+    """order-claim：默认预演（只读）；--execute 需三重门。"""
+    ledger = Ledger(ledger_root())
+    if not args.execute:
+        ledger.resolve(args.digest)
+        preview = orders.claim_preview(client_from_args(args), ledger, args.digest)
+        _print_result(preview, args.json, report_orders.render_claim_preview(preview))
+        return preview["exit_code"]
+    orders.precheck_claim(ledger, args.digest, args.confirm_digest)
+    client = client_from_args(args, write=True)
+    result = orders.claim_execute(client, ledger, args.digest, args.confirm_digest)
+    _print_result(result, args.json, report_orders.render_result(result))
+    return result["exit_code"]
+
+
 def add_rank_options(parser: argparse.ArgumentParser) -> None:
     """v2 排名选项。"""
     parser.add_argument("--top", type=int, help="展示名次数（仅 v2）")
@@ -224,6 +284,37 @@ def main(argv: Optional[list] = None) -> int:
     add_rank_options(live)
     multi = sub.add_parser("demo-multi", help="离线3人多方案排名演示")
     multi.add_argument("--json", action="store_true")
+    exit_codes = "退出码：" + "；".join(
+        f"{code} {report_orders.exit_hint(code)}" for code in range(7)
+    )
+    osum = sub.add_parser(
+        "order-summary",
+        help="生成确认式订单摘要（只读联网，写本地账本；不领券不下单）",
+        epilog=exit_codes,
+    )
+    osum.add_argument("--request", required=True, help="schema_version=2 的实时请求")
+    pick = osum.add_mutually_exclusive_group()
+    pick.add_argument("--signature", help="live-plan 排名里的方案编号（8–16 位前缀）")
+    pick.add_argument("--rank", type=int, help="按本次排名名次选择（默认 1；排名可能与上次不同，请核对）")
+    osum.add_argument("--take-way", type=int, help="多个取餐选项时选择第 N 项")
+    osum.add_argument("--skip-claim", action="store_true", help="不领券，摘要不含将领券集合")
+    osum.add_argument("--ttl-seconds", type=int, default=SUMMARY_TTL_SECONDS, help="摘要有效期（60–1800 秒）")
+    osum.add_argument("--city", help="到店/得来速：用于核实门店名")
+    osum.add_argument("--keyword", help="到店/得来速：用于核实门店名")
+    osum.add_argument("--token-file")
+    osum.add_argument("--detail", action="store_true", help="≥13 人时展开逐人")
+    osum.add_argument("--save")
+    osum.add_argument("--json", action="store_true")
+    oclaim = sub.add_parser(
+        "order-claim",
+        help="领券：默认只读预演；--execute 需完整摘要确认（一键领全部，不可撤销）",
+        epilog=exit_codes,
+    )
+    oclaim.add_argument("--digest", required=True, help="摘要编号（唯一前缀，至少 12 位）")
+    oclaim.add_argument("--execute", action="store_true", help="真正领券（仍需 --confirm-digest 与回环目标）")
+    oclaim.add_argument("--confirm-digest", help="完整 64 位摘要编号，表示你已确认该摘要")
+    oclaim.add_argument("--token-file")
+    oclaim.add_argument("--json", action="store_true")
     inspect = sub.add_parser("inspect-tools", help="检查当前只读工具可用性")
     inspect.add_argument("--token-file")
     card = sub.add_parser("break-even", help="固定单次节省额的回本计算（整数分）")
@@ -238,6 +329,10 @@ def main(argv: Optional[list] = None) -> int:
                 )
             )
             return 0
+        if args.command == "order-summary":
+            return run_order_summary(args)
+        if args.command == "order-claim":
+            return run_order_claim(args)
         if args.command == "demo":
             catalog = read_json(str(ROOT / "examples/demo-catalog.json"))
             request = read_json(str(ROOT / "examples/request.json"))
@@ -421,6 +516,9 @@ def main(argv: Optional[list] = None) -> int:
     except WriteDenied as exc:
         print(json.dumps({"status": "error", "message": str(exc)}, ensure_ascii=False))
         return EXIT_REFUSED
+    except orders.OrderError as exc:
+        print(json.dumps({"status": "error", "message": str(exc), **exc.payload}, ensure_ascii=False))
+        return exc.exit_code
     except (
         InputError,
         McpError,

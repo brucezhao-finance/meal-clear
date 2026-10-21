@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import hashlib
-from typing import Any, Dict, List
+from typing import Any, Dict, Iterable, List, Optional
 
 from .core import InputError
 
@@ -20,6 +20,18 @@ FORBIDDEN_KEYS = frozenset(
         "contact",
         "addressid",
         "token",
+        # P1 订单相关（计划 D22）
+        "orderid",
+        "payh5url",
+        "payid",
+        "pickupcode",
+        "lockercode",
+        "lockerqrcode",
+        "mobilephone",
+        "ridermobilephone",
+        "addressdetail",
+        "deliveryaddress",
+        "customernickname",
     }
 )
 
@@ -114,13 +126,17 @@ def sanitize_store_coupons(payload: Any) -> List[Dict[str, Any]]:
     return out
 
 
-def assert_public(value: Any, path: str = "$") -> None:
-    """递归检查输出中不含敏感键名，命中即抛 InputError。"""
+def assert_public(value: Any, path: str = "$", allow: Optional[Iterable[str]] = None) -> None:
+    """递归检查输出中不含敏感键名，命中即抛 InputError。
+
+    allow：小写键名白名单，仅用于明确的受控场景（例如摘要材料里的公开菜单商品编码键 code）。
+    """
+    exempt = frozenset(k.lower() for k in (allow or ()))
     if isinstance(value, dict):
         for key, child in value.items():
-            if isinstance(key, str) and key.lower() in FORBIDDEN_KEYS:
+            if isinstance(key, str) and key.lower() in FORBIDDEN_KEYS and key.lower() not in exempt:
                 raise InputError(f"输出包含敏感字段 {key}，已拦截")
-            assert_public(child, path + "." + str(key))
+            assert_public(child, path + "." + str(key), allow)
     elif isinstance(value, (list, tuple)):
         for child in value:
-            assert_public(child, path + "[]")
+            assert_public(child, path + "[]", allow)

@@ -26,7 +26,7 @@ from .privacy import (
     sanitize_held,
     sanitize_store_coupons,
 )
-from .ranking import compose_v2, generate_candidates, select_for_quote
+from .ranking import PREVIEW_NOTE, compose_v2, generate_candidates, select_for_quote
 from .request_v2 import validate_request_v2
 
 
@@ -636,26 +636,28 @@ class MultiLivePlanner:
             raise InputError("实时门店code必须来自门店查询且全为数字")
         spec = FULFILLMENTS[req["fulfillment"]["type"]]
         address = None
+        store_name = None
         if spec.needs_address:
             index = req["fulfillment"]["address_index"]
             stores = self.list_delivery_stores(index)
             address = self._address(index)
-            if not any(
-                str(s.get("storeCode")) == wire["storeCode"]
-                and str(s.get("beCode")) == wire["beCode"]
+            matched = [
+                s
                 for s in stores
-            ):
+                if str(s.get("storeCode")) == wire["storeCode"]
+                and str(s.get("beCode")) == wire["beCode"]
+            ]
+            if not matched:
                 raise InputError("所选门店与 be_code 不在该地址的可配送列表内，请重新选店")
-        return {"wire": wire, "address": address}
+            name = matched[0].get("storeName")
+            store_name = name if isinstance(name, str) and name.strip() else None
+        return {"wire": wire, "address": address, "store_name": store_name}
 
     def coupon_preview(
         self, wire: Dict[str, Any], store_payload: Any = None
     ) -> Dict[str, Any]:
         """三类券预览；仅保留白名单字段，任一类查询失败只记说明。"""
-        notes = [
-            "领券属后续阶段（P1），且 auto-bind-coupons 只能一键领取全部；"
-            "未领取的券不计入本次报价"
-        ]
+        notes = [PREVIEW_NOTE]
 
         def attempt(label: str, fn: Any) -> List[Dict[str, Any]]:
             """单类查询失败不影响其它两类。"""
@@ -724,6 +726,10 @@ class MultiLivePlanner:
 
     def plan_v2(self, request: Dict[str, Any]) -> Dict[str, Any]:
         """重新取数、有界核价并排名；不创建订单、不领券。"""
+        return self._plan_v2_core(request)[0]
+
+    def _plan_v2_core(self, request: Dict[str, Any]) -> Any:
+        """plan_v2 主体；额外返回仅驻留内存的私有对象（候选、目录、门店券、上下文），不序列化。"""
         req = validate_request_v2(request)
         if req["context"]["meal_time"] != "now":
             raise InputError("实时首版只支持 meal_time=now；不伪造预约参数")
@@ -795,4 +801,12 @@ class MultiLivePlanner:
             fulfillment["address_ref"] = resolved["address"].ref
         result["coupon_preview"] = preview
         result["coverage"] = catalog["coverage"]
-        return result
+        private = {
+            "req": req,
+            "resolved": resolved,
+            "catalog": catalog,
+            "offers": catalog["offers"],
+            "coupons": fetched["coupons"],
+            "candidates": {c["signature"]: c for c in generated["whole"]},
+        }
+        return result, private

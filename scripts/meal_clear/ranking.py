@@ -28,7 +28,8 @@ PREFERENCE_RULE_TEXT = (
 )
 COUPON_NOTE = "未领取的券不计入本次报价（待验证）"
 PREVIEW_NOTE = (
-    "领券属后续阶段（P1），且 auto-bind-coupons 只能一键领取全部；"
+    "排名与券预览阶段只读；领券/下单请先用 order-summary 生成摘要并逐步确认"
+    "（真实环境暂未开放）；auto-bind-coupons 只能一键领取全部；"
     "未领取的券不计入本次报价"
 )
 MODE_NOTES = {

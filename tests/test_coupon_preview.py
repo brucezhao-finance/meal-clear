@@ -31,7 +31,7 @@ class CouponPreviewTests(unittest.TestCase):
             code, out = run_cli(sim, "coupons", "--request", path)
             self.assertEqual(code, 0)
             for needle in ("本店可用：模拟满减券", "可领取：模拟可领券1", "已领取：模拟已领券1",
-                           "领券属后续阶段（P1）", "auto-bind-coupons 只能一键领取全部"):
+                           "order-summary 生成摘要并逐步确认", "auto-bind-coupons 只能一键领取全部"):
                 self.assertIn(needle, out)
             self.assertTrue(only_read_tools(sim))
 

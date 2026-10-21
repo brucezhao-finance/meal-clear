@@ -54,6 +54,19 @@ class PrivacyTests(unittest.TestCase):
                 assert_public(bad)
         assert_public({"rank": 1, "items": [{"name": "x"}]})
 
+    def test_assert_public_order_keys(self) -> None:
+        """订单相关敏感键（D22）被拦截；allow 只放行指定键。"""
+        for key in ("orderId", "payH5Url", "payId", "pickupCode", "lockerCode", "lockerQrCode",
+                    "mobilePhone", "riderMobilePhone", "addressDetail", "deliveryAddress",
+                    "customerNickname"):
+            with self.subTest(key=key):
+                with self.assertRaises(InputError):
+                    assert_public({"x": [{key: "v"}]})
+        assert_public({"created_order": {"orderId": "v", "payH5Url": "u"}}, allow=("orderid", "payh5url"))
+        assert_public({"lines": [{"code": "MAIN"}]}, allow=("code",))
+        with self.assertRaises(InputError):
+            assert_public({"orderId": "v", "couponCode": "c"}, allow=("orderid",))
+
 
 if __name__ == "__main__":
     unittest.main()
