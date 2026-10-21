@@ -61,6 +61,13 @@ LEDGER_DIRNAME = "orders"  # <repo>/local-state/orders
 LEDGER_MAX_BYTES = 1_000_000
 LEDGER_SCHEMA = "meal-clear/ledger/1"
 DIGEST_VERSION = 1
+# 账本步骤状态与写步骤（唯一定义处；ledger.py 从这里导入）
+LEDGER_STEP_STATES: Dict[str, Tuple[str, ...]] = {
+    "claim": ("none", "not_required", "pending", "succeeded", "failed", "unknown"),
+    "requote": ("none", "consistent", "changed", "error"),
+    "order": ("none", "pending", "created", "failed", "unknown"),
+}
+LEDGER_WRITE_STEPS: Tuple[str, ...] = ("claim", "order")
 ORDER_STATUS_LABELS: Dict[str, str] = {
     "1": "待支付",
     "2": "配餐中-已支付",

@@ -18,7 +18,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Callable, Dict, Iterable, Iterator, List, Optional, Tuple
 
-from .config import LEDGER_MAX_BYTES, LEDGER_SCHEMA
+from .config import LEDGER_MAX_BYTES, LEDGER_SCHEMA, LEDGER_STEP_STATES, LEDGER_WRITE_STEPS
 from .mcp import McpError
 
 try:  # 无 fcntl 的平台（如 Windows）不能提供互斥与崩溃恢复
@@ -29,12 +29,8 @@ except ImportError:  # pragma: no cover - 平台相关
 _DIGEST_PREFIX = re.compile(r"\A[0-9a-f]{12,64}\Z")
 _DIGEST_FULL = re.compile(r"\A[0-9a-f]{64}\Z")
 _SAFE_TEXT = re.compile(r"\A[\w.:+\- ]{0,64}\Z")
-STEP_STATES: Dict[str, Tuple[str, ...]] = {
-    "claim": ("none", "not_required", "pending", "succeeded", "failed", "unknown"),
-    "requote": ("none", "consistent", "changed", "error"),
-    "order": ("none", "pending", "created", "failed", "unknown"),
-}
-WRITE_STEPS = ("claim", "order")
+STEP_STATES = LEDGER_STEP_STATES
+WRITE_STEPS = LEDGER_WRITE_STEPS
 _O_NOFOLLOW = getattr(os, "O_NOFOLLOW", 0)
 
 

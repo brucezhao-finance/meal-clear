@@ -101,6 +101,17 @@ class SummaryFieldTests(unittest.TestCase):
             for pid in ("A：", "B："):
                 self.assertIn(pid, out)
 
+    def test_next_steps_follow_claim_state(self):
+        """待领券时提示领券；跳过领券的摘要直接提示 order-place，不再只给领券入口。"""
+        with OrderEnv() as env:
+            path = env.request_path()
+            _, out = env.run("order-summary", "--request", path)
+            self.assertIn("order-claim --digest", out)
+            self.assertNotIn("order-place --digest", out)
+            _, out = env.run("order-summary", "--request", path, "--skip-claim")
+            digest = DIGEST_RE.search(out).group(0)
+            self.assertIn("order-place --digest " + digest[:12] + " --execute --confirm-digest " + digest, out)
+            self.assertNotIn("order-claim --digest", out)
     def test_same_input_same_clock_same_digest(self):
         """固定时钟下同输入同 digest，且不重复落账。"""
         with OrderEnv() as env:

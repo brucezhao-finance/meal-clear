@@ -120,9 +120,14 @@ def render_summary(summary: Dict[str, Any], detail: bool = False) -> str:
     lines.append("")
     lines.append("## 下一步（需你明确同意后才可执行，不要替你确认）")
     short = summary["digest"][:12]
-    lines.append(f"- 预演领券（只读）：order-claim --digest {short}")
-    if claim["required"]:
+    claim_state = (state or {}).get("claim", "none")
+    claim_pending = claim["required"] and claim_state not in ("succeeded", "not_required")
+    if claim_pending:
+        lines.append(f"- 预演领券（只读）：order-claim --digest {short}")
         lines.append(f"- 确认后领券：order-claim --digest {short} --execute --confirm-digest {summary['digest']}")
+    else:
+        lines.append(f"- 预演下单（只读）：order-place --digest {short}")
+        lines.append(f"- 确认后下单：order-place --digest {short} --execute --confirm-digest {summary['digest']}")
     lines.append(f"说明：{summary['execution']['message']}。")
     return "\n".join(lines)
 
