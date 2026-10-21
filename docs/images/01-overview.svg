@@ -1,12 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600" width="1200" height="600" role="img" aria-labelledby="ov-t ov-d">
 <title id="ov-t">麦麦明白点总流程图</title>
-<desc id="ov-d">从一句话需求到逐人检查、比较方案、给出报价,再到改一句只重算受影响部分。麦麦是中国用户对麦当劳的昵称。图形为自制抽象图案,非官方标识;数据为模拟数据。</desc>
+<desc id="ov-d">从一句话需求到逐人检查、比较方案、给出报价,再到改一句只重算受影响部分。默认只读,领券和下单需你逐步确认,不自动付款。麦麦是中国用户对麦当劳的昵称。图形为自制抽象图案,非官方标识;数据为模拟数据。</desc>
 <style>text{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif} text:not([fill]){fill:#3A2A1A} .m{font-family:Menlo,Consolas,'PingFang SC','Microsoft YaHei',monospace}</style>
 <rect width="1200" height="600" fill="#FFF8E1"/>
 <rect x="0" y="0" width="1200" height="130" rx="0" fill="#DA291C"/>
 <g transform="translate(40,25) scale(1.25)"><rect width="96" height="80" rx="16" fill="#DA291C"/><path d="M14 62 C14 14 48 14 48 62 C48 14 82 14 82 62" fill="none" stroke="#FFC72C" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/></g>
 <text x="180" y="72" font-size="46" text-anchor="start" font-weight="bold" fill="#FFFFFF">麦麦明白点</text>
-<text x="180" y="108" font-size="22" text-anchor="start" font-weight="bold" fill="#FFC72C">麦麦 = 大家对麦当劳的昵称 · 到店自取点餐小助手</text>
+<text x="180" y="108" font-size="22" text-anchor="start" font-weight="bold" fill="#FFC72C">麦麦 = 大家对麦当劳的昵称 · 点餐小助手</text>
 <rect x="1050" y="24" width="112" height="34" rx="17" fill="#FFC72C"/>
 <text x="1106" y="48" font-size="18" text-anchor="middle" font-weight="bold">模拟数据</text>
 <rect x="40" y="175" width="208" height="250" rx="14" fill="#FFFFFF" stroke="#FFC72C" stroke-width="4"/>
@@ -49,7 +49,7 @@
 <text x="1072" y="326" font-size="20" text-anchor="middle" font-weight="normal" fill="#3A2A1A">只动 B,其他保留</text>
 <text x="1072" y="370" font-size="20" text-anchor="middle" font-weight="bold" fill="#DA291C">¥43.00(+¥5)</text>
 <rect x="40" y="460" width="1120" height="90" rx="14" fill="#FFFFFF" stroke="#DA291C" stroke-width="3"/>
-<text x="600" y="498" font-size="26" text-anchor="middle" font-weight="bold" fill="#DA291C">只读边界:不下单 · 不领券 · 不支付 · Token 不出现在对话里</text>
+<text x="600" y="498" font-size="26" text-anchor="middle" font-weight="bold" fill="#DA291C">默认只读 · 领券/下单需你逐步确认 · 不自动付款</text>
 <text x="600" y="532" font-size="18" text-anchor="middle" font-weight="normal">非麦当劳官方产品,参赛作品 · 商品与价格均为模拟数据</text>
 <text x="600" y="582" font-size="16" text-anchor="middle" font-weight="normal">本图是流程示意,不是网页界面</text>
 </svg>

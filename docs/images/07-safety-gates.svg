@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 690" width="1200" height="690" role="img" aria-labelledby="sg-t sg-d">
+<title id="sg-t">安全闸门:三道门与永久拒绝</title>
+<desc id="sg-d">三道门缺一不可:一要带 --execute;二要提供与记录匹配且未过期的摘要编号;三要写目标是本机回环地址。永远拒绝的工具包括 cancel-order、delivery-create-address、draw-lottery、mall-create-order、party-order-create 等。真实官方地址在 P1 一律拒绝写请求。模拟数据。图形为自制抽象图案,非官方标识。</desc>
+<style>text{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif} text:not([fill]){fill:#3A2A1A} .m{font-family:Menlo,Consolas,'PingFang SC','Microsoft YaHei',monospace}</style>
+<rect width="1200" height="690" fill="#FFF8E1"/>
+<rect x="0" y="0" width="1200" height="70" fill="#DA291C"/>
+<g transform="translate(24,10) scale(0.6)"><rect width="96" height="80" rx="16" fill="#DA291C"/><path d="M14 62 C14 14 48 14 48 62 C48 14 82 14 82 62" fill="none" stroke="#FFC72C" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/></g>
+<text x="90" y="46" font-size="30" text-anchor="start" font-weight="bold" fill="#FFFFFF">安全闸门:三道门缺一不可</text>
+<text x="1170" y="44" font-size="20" text-anchor="end" fill="#FFC72C" font-weight="bold">模拟数据 · 真实环境未开放(P2)</text>
+<rect x="30" y="95" width="340" height="200" rx="14" fill="#FFFFFF" stroke="#DA291C" stroke-width="4"/>
+<rect x="30" y="95" width="340" height="56" rx="14" fill="#DA291C"/>
+<rect x="30" y="135" width="340" height="16" fill="#DA291C"/>
+<text x="200" y="133" font-size="24" text-anchor="middle" font-weight="bold" fill="#FFFFFF">门 1 · 执行意图</text>
+<text x="200" y="190" font-size="20" text-anchor="middle" font-weight="normal">必须带 --execute</text>
+<text x="200" y="226" font-size="20" text-anchor="middle" font-weight="normal">没带 = 只做预演</text>
+<text x="200" y="262" font-size="20" text-anchor="middle" font-weight="normal">预演不发写请求</text>
+<rect x="400" y="95" width="340" height="200" rx="14" fill="#FFFFFF" stroke="#DA291C" stroke-width="4"/>
+<rect x="400" y="95" width="340" height="56" rx="14" fill="#DA291C"/>
+<rect x="400" y="135" width="340" height="16" fill="#DA291C"/>
+<text x="570" y="133" font-size="24" text-anchor="middle" font-weight="bold" fill="#FFFFFF">门 2 · 摘要确认</text>
+<text x="570" y="190" font-size="20" text-anchor="middle" font-weight="normal">完整 64 位摘要编号</text>
+<text x="570" y="226" font-size="20" text-anchor="middle" font-weight="normal">必须与记录匹配</text>
+<text x="570" y="262" font-size="20" text-anchor="middle" font-weight="normal">且未过期(默认 600 秒)</text>
+<rect x="770" y="95" width="340" height="200" rx="14" fill="#FFFFFF" stroke="#DA291C" stroke-width="4"/>
+<rect x="770" y="95" width="340" height="56" rx="14" fill="#DA291C"/>
+<rect x="770" y="135" width="340" height="16" fill="#DA291C"/>
+<text x="940" y="133" font-size="24" text-anchor="middle" font-weight="bold" fill="#FFFFFF">门 3 · 回环目标</text>
+<text x="940" y="190" font-size="20" text-anchor="middle" font-weight="normal">写目标只能是</text>
+<text x="940" y="226" font-size="20" text-anchor="middle" font-weight="normal">127.0.0.1 或 [::1]</text>
+<text x="940" y="262" font-size="20" text-anchor="middle" font-weight="normal">其他地址发请求前拒绝</text>
+<text x="600" y="325" font-size="20" text-anchor="middle" font-weight="bold">三道门同时满足,才会放行受控写工具:auto-bind-coupons(领券)· create-order(下单)</text>
+<rect x="30" y="345" width="555" height="195" rx="14" fill="#FFFFFF" stroke="#DA291C" stroke-width="4"/>
+<rect x="30" y="345" width="555" height="50" rx="14" fill="#DA291C"/>
+<rect x="30" y="380" width="555" height="15" fill="#DA291C"/>
+<text x="307" y="380" font-size="24" text-anchor="middle" font-weight="bold" fill="#FFFFFF">永远拒绝(任何门都不放行)</text>
+<text x="60" y="428" font-size="20" text-anchor="start" font-weight="bold" fill="#DA291C">✕</text>
+<text x="90" y="428" font-size="19" text-anchor="start" font-weight="normal">cancel-order · 取消订单</text>
+<text x="60" y="452" font-size="20" text-anchor="start" font-weight="bold" fill="#DA291C">✕</text>
+<text x="90" y="452" font-size="19" text-anchor="start" font-weight="normal">delivery-create-address · 新建地址</text>
+<text x="60" y="476" font-size="20" text-anchor="start" font-weight="bold" fill="#DA291C">✕</text>
+<text x="90" y="476" font-size="19" text-anchor="start" font-weight="normal">draw-lottery · 抽奖</text>
+<text x="60" y="500" font-size="20" text-anchor="start" font-weight="bold" fill="#DA291C">✕</text>
+<text x="90" y="500" font-size="19" text-anchor="start" font-weight="normal">mall-create-order · 积分商城下单</text>
+<text x="60" y="524" font-size="20" text-anchor="start" font-weight="bold" fill="#DA291C">✕</text>
+<text x="90" y="524" font-size="19" text-anchor="start" font-weight="normal">party-order-create · 团餐下单</text>
+<rect x="615" y="345" width="555" height="195" rx="14" fill="#FFFFFF" stroke="#2E7D32" stroke-width="4"/>
+<rect x="615" y="345" width="555" height="50" rx="14" fill="#2E7D32"/>
+<rect x="615" y="380" width="555" height="15" fill="#2E7D32"/>
+<text x="892" y="380" font-size="24" text-anchor="middle" font-weight="bold" fill="#FFFFFF">真实官方地址</text>
+<text x="892" y="438" font-size="20" text-anchor="middle" font-weight="bold">P1 一律拒绝写请求</text>
+<text x="892" y="468" font-size="20" text-anchor="middle" font-weight="normal">领券、下单都不会发往官方</text>
+<text x="892" y="498" font-size="20" text-anchor="middle" font-weight="normal">真实环境开放要等 P2</text>
+<text x="892" y="528" font-size="20" text-anchor="middle" font-weight="normal">由你亲自验证后再启用</text>
+<rect x="30" y="560" width="1140" height="100" rx="14" fill="#FFC72C"/>
+<text x="600" y="598" font-size="24" text-anchor="middle" font-weight="bold">写前先落本地账本 · 失败或结果未知时绝不自动重试</text>
+<text x="600" y="634" font-size="19" text-anchor="middle" font-weight="normal">拱形图标为自制示意 · 数字与场景为模拟数据 · 非麦当劳官方产品</text>
+</svg>

@@ -74,7 +74,7 @@ class ReadmeAssetTests(unittest.TestCase):
     """README 引用的图片必须随包提供。"""
 
     def test_readme_assets_in_package(self) -> None:
-        """包内 README 的相对图片/链接目标存在，5 张 SVG 均在且小于100KB。"""
+        """包内 README 的相对图片/链接目标存在，7 张 SVG 均在且小于100KB。"""
         import re
         with zipfile.ZipFile(SKILL) as archive:
             names = set(archive.namelist())
@@ -93,6 +93,8 @@ class ReadmeAssetTests(unittest.TestCase):
             "03-change-one-line.svg",
             "04-safety-boundary.svg",
             "05-ranking.svg",
+            "06-confirm-flow.svg",
+            "07-safety-gates.svg",
         ):
             key = "meal-clear/docs/images/" + svg
             with self.subTest(svg=svg):
@@ -134,15 +136,17 @@ class PackageLinkTests(unittest.TestCase):
                 self.assertNotIn("/verification/", name)
 
     def test_v2_examples_in_package(self) -> None:
-        """外送与得来速示例随包提供，且能通过 v2 校验。"""
+        """外送、得来速与 50 人示例随包提供，且能通过 v2 校验。"""
         import sys
 
         sys.path.insert(0, str(ROOT / "scripts"))
         from meal_clear.request_v2 import validate_request_v2
 
         with zipfile.ZipFile(SKILL) as archive:
-            for name in ("request-delivery.json", "request-drive-thru.json"):
+            for name in ("request-delivery.json", "request-drive-thru.json", "request-multi50.json"):
                 raw = archive.read("meal-clear/examples/" + name).decode("utf-8")
                 self.assertNotIn("/Users/", raw)
                 req = validate_request_v2(json.loads(raw))
-                self.assertIn(req["fulfillment"]["type"], ("delivery", "drive_thru"))
+                self.assertIn(req["fulfillment"]["type"], ("delivery", "drive_thru", "pickup"))
+                if name == "request-multi50.json":
+                    self.assertEqual(len(req["people"]), 50)
