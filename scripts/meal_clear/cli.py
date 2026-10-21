@@ -18,9 +18,10 @@ from .core import (
     compose,
     validate_request,
 )
-from .config import PRIORITIES
+from .config import EXIT_REFUSED, PRIORITIES
+from .gate import WriteDenied, check_write_target
 from .live import LivePlanner, MultiLivePlanner, timestamp
-from .mcp import McpClient, McpError
+from .mcp import ENDPOINT, McpClient, McpError
 from .privacy import assert_public
 from .ranking import compose_v2
 from .report import render_coupon_preview, render_ranking
@@ -162,8 +163,11 @@ def emit(result: Dict[str, Any], args: argparse.Namespace, v2: bool) -> None:
         print(render_ranking(result, getattr(args, "detail", False)) if v2 else render(result))
 
 
-def client_from_args(args: argparse.Namespace) -> McpClient:
-    """初始化安全只读客户端。"""
+def client_from_args(args: argparse.Namespace, write: bool = False) -> McpClient:
+    """初始化安全客户端；write=True 时先校验写目标，失败则零网络请求。"""
+    if write:
+        # 在读取 Token、构造客户端、initialize 之前对固定官方端点做写目标检查
+        check_write_target(ENDPOINT)
     client = McpClient(token_file=args.token_file)
     client.initialize()
     return client
@@ -414,6 +418,9 @@ def main(argv: Optional[list] = None) -> int:
         if difference and not args.json:
             print("\n变化说明：" + json.dumps(difference, ensure_ascii=False))
         return 0 if result.get("recommendations") else 2
+    except WriteDenied as exc:
+        print(json.dumps({"status": "error", "message": str(exc)}, ensure_ascii=False))
+        return EXIT_REFUSED
     except (
         InputError,
         McpError,

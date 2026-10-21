@@ -49,6 +49,37 @@ COUPON_DETAIL_CAP = 4
 RUN_CALL_CAP = 150
 RATE_LIMIT: Tuple[int, float] = (500, 60.0)
 
+# --- P1 受控写通道、账本与退出码（唯一定义处） ---
+TOOL_CREATE_ORDER = "create-order"
+TOOL_AUTO_BIND_COUPONS = "auto-bind-coupons"
+CONTROLLED_WRITE_TOOLS = frozenset({TOOL_AUTO_BIND_COUPONS, TOOL_CREATE_ORDER})
+SUMMARY_TTL_SECONDS = 600
+SUMMARY_TTL_RANGE: Tuple[int, int] = (60, 1800)
+DUPLICATE_BASKET_WINDOW_SECONDS = 24 * 3600
+PENDING_STALE_SECONDS = 600  # 仅影响提示措辞
+LEDGER_DIRNAME = "orders"  # <repo>/local-state/orders
+LEDGER_MAX_BYTES = 1_000_000
+LEDGER_SCHEMA = "meal-clear/ledger/1"
+DIGEST_VERSION = 1
+ORDER_STATUS_LABELS: Dict[str, str] = {
+    "1": "待支付",
+    "2": "配餐中-已支付",
+    "4": "配送中",
+    "6": "已完成",
+    "7": "已取消",
+    "8": "已评价",
+    "10": "配餐中-餐厅确认配餐中",
+}
+(
+    EXIT_OK,
+    EXIT_ERROR,
+    EXIT_NO_PLAN,
+    EXIT_RECONFIRM,
+    EXIT_REFUSED,
+    EXIT_DUPLICATE,
+    EXIT_UNKNOWN,
+) = range(7)
+
 
 def default_limits() -> Dict[str, int]:
     """返回各上限参数的默认值副本。"""

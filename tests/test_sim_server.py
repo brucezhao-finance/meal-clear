@@ -206,10 +206,10 @@ class SimServerTests(unittest.TestCase):
             self.assertEqual(len(clock.slept), 1)
 
     def test_readonly_whitelist_extended(self) -> None:
-        """白名单为 11 个只读工具，含新增 4 个。"""
-        self.assertEqual(len(READ_ONLY), 11)
+        """白名单为 12 个只读工具，含新增 4 个与 query-order。"""
+        self.assertEqual(len(READ_ONLY), 12)
         for tool in ("available-coupons", "query-my-coupons",
-                     "delivery-query-addresses", "delivery-query-stores"):
+                     "delivery-query-addresses", "delivery-query-stores", "query-order"):
             self.assertIn(tool, READ_ONLY)
         self.assertIs(mcp.READ_ONLY, READ_ONLY)
 

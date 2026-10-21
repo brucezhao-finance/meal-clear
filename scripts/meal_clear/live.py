@@ -9,7 +9,13 @@ from datetime import datetime, timezone
 from decimal import Decimal, InvalidOperation
 from typing import Any, Dict, List, Optional
 
-from .config import COUPON_DETAIL_CAP, FULFILLMENTS, RUN_CALL_CAP
+from .config import (
+    COUPON_DETAIL_CAP,
+    FULFILLMENTS,
+    RUN_CALL_CAP,
+    TOOL_AUTO_BIND_COUPONS,
+    TOOL_CREATE_ORDER,
+)
 from .core import InputError, compose, integer, validate_request
 from .fulfillment import context_key, wire_context
 from .mcp import McpClient, McpError, RateLimitedError
@@ -320,6 +326,9 @@ MENU_ALLOWED = frozenset(
 TOOL_ALLOWED = {
     "query-nearby-stores": frozenset({"beType", "searchType"}),
     "delivery-query-stores": frozenset({"beType", "addressId"}),
+    "query-order": frozenset({"orderId"}),
+    TOOL_CREATE_ORDER: frozenset({"storeCode", "orderType", "beType"}),
+    TOOL_AUTO_BIND_COUPONS: frozenset(),
 }
 
 
@@ -545,6 +554,15 @@ class BudgetedClient:
         if self.calls >= self.max_calls:
             raise CallCapError("已达到本次运行调用上限")
         self.calls += 1
+
+    def spend(self) -> None:
+        """公开的计数入口（受控写调用也计入运行上限）。"""
+        self._spend()
+
+    @property
+    def endpoint(self) -> str:
+        """底层客户端端点（只读属性，供写门校验）。"""
+        return self._client.endpoint
 
     def call(self, name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
         """计数后转发只读调用。"""

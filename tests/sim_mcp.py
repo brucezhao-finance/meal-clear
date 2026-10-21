@@ -5,14 +5,36 @@
 """
 from __future__ import annotations
 
+import copy
 import json
 import threading
+import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
-from typing import Any, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional
 
 SIM_TOKEN = "SIM-TOKEN-0123456789-ABCDEFGHIJ"
 SESSION_ID = "SIM-SESSION-1"
-WRITE_TOOLS = ("create-order", "auto-bind-coupons", "cancel-order", "delivery-create-address")
+CONTROLLED_WRITE = ("auto-bind-coupons", "create-order")
+FORBIDDEN_WRITE = (
+    "cancel-order",
+    "delivery-create-address",
+    "draw-lottery",
+    "mall-create-order",
+    "party-order-create",
+)
+# 旧语义：任何写工具名都计入 write_attempts；原有四项顺序不变
+WRITE_TOOLS = ("create-order", "auto-bind-coupons", "cancel-order", "delivery-create-address") + (
+    "draw-lottery",
+    "mall-create-order",
+    "party-order-create",
+)
+ORDER_ID_PREFIX = "SIM-ORDER-"
+PAYURL_SENTINEL = "PAYURL-SENTINEL"
+PICKUP_SENTINEL = "PICKUP-SENTINEL"
+LOCKER_SENTINEL = "LOCKER-SENTINEL"
+RIDER_SENTINEL = "RIDER-SENTINEL"
+ORDER_SENTINELS = (PAYURL_SENTINEL, PICKUP_SENTINEL, LOCKER_SENTINEL, RIDER_SENTINEL)
+NEW_COUPON_CODE = "COUPONCODE-SENTINEL-3"
 READ_TOOLS = (
     "query-nearby-stores",
     "query-meals",
@@ -25,6 +47,7 @@ READ_TOOLS = (
     "query-my-coupons",
     "delivery-query-addresses",
     "delivery-query-stores",
+    "query-order",
 )
 
 # 哨兵：这些字符串绝不能出现在任何对外输出里
@@ -134,6 +157,19 @@ class SimMcpServer:
         self.use_sse = use_sse
         self.calls: List[Dict[str, Any]] = []
         self.write_attempts: List[str] = []
+        self.controlled_calls: List[Dict[str, Any]] = []
+        self.forbidden_attempts: List[str] = []
+        self.orders: List[Dict[str, Any]] = []
+        self.claims = 0
+        self.duplicate_orders = 0
+        self.on_write: Optional[Callable[[str, Dict[str, Any]], None]] = None
+        self.timeout_delay = 0.6
+        self._claim_effect = {"price_delta": 0, "add_store_coupon": False, "clear_claimable": True}
+        self._claimed = False
+        self._price_drift = 0
+        self._take_way_count = 2
+        self._last_take_way: List[str] = []
+        self._order_keys: set = set()
         self.request_log_methods: List[str] = []
         self.faults: Dict[str, List[Any]] = {}
         self._lock = threading.Lock()
@@ -159,24 +195,45 @@ class SimMcpServer:
         self._thread.join(timeout=5)
 
     def fail(self, tool: str, mode: str) -> None:
-        """注入故障：http401 | http429:N | tool_error | business_code | bad_structure | garbage_json。"""
+        """注入故障。
+
+        通用：http401 | http429:N | tool_error | business_code | bad_structure | garbage_json | redirect。
+        create-order 另有：business_fail | timeout | lost_response | disconnect | bad_structure。
+        """
         count = None
         if mode.startswith("http429:"):
             count = int(mode.split(":", 1)[1])
             mode = "http429"
         self.faults[tool] = [mode, count]
 
+    def set_claim_effect(self, price_delta: int = 0, add_store_coupon: bool = False,
+                         clear_claimable: bool = True) -> None:
+        """领券成功后：核价偏移（分）、新增门店券、清空可领券。"""
+        self._claim_effect = {"price_delta": price_delta, "add_store_coupon": add_store_coupon,
+                              "clear_claimable": clear_claimable}
+
+    def set_price_drift(self, delta: int) -> None:
+        """从下一次 calculate-price 起，总价偏移 delta 分。"""
+        self._price_drift = delta
+
+    def set_take_way_count(self, n: int) -> None:
+        """到店核价返回的取餐方式数量（默认 2）。"""
+        self._take_way_count = n
+
     # --- 协议 ---
     def _send(self, h: BaseHTTPRequestHandler, status: int, body: bytes,
               ctype: str = "application/json", extra: Optional[Dict[str, str]] = None) -> None:
-        """写出响应。"""
-        h.send_response(status)
-        h.send_header("Content-Type", ctype)
-        h.send_header("Content-Length", str(len(body)))
-        for k, v in (extra or {}).items():
-            h.send_header(k, v)
-        h.end_headers()
-        h.wfile.write(body)
+        """写出响应（客户端已超时断开时静默）。"""
+        try:
+            h.send_response(status)
+            h.send_header("Content-Type", ctype)
+            h.send_header("Content-Length", str(len(body)))
+            for k, v in (extra or {}).items():
+                h.send_header(k, v)
+            h.end_headers()
+            h.wfile.write(body)
+        except (BrokenPipeError, ConnectionResetError):
+            pass
 
     def _rpc(self, h: BaseHTTPRequestHandler, rid: Any, result: Dict[str, Any],
              extra: Optional[Dict[str, str]] = None) -> None:
@@ -221,10 +278,19 @@ class SimMcpServer:
         """工具调用：记录、注入故障、规则校验、返回合成数据。"""
         name = params.get("name", "")
         args = params.get("arguments") or {}
-        if name in WRITE_TOOLS:
+        if name in FORBIDDEN_WRITE:
             with self._lock:
                 self.write_attempts.append(name)
+                self.forbidden_attempts.append(name)
             self._rpc(h, rid, {"isError": True, "content": []})
+            return
+        if name in CONTROLLED_WRITE:
+            with self._lock:
+                self.write_attempts.append(name)
+                self.controlled_calls.append({"tool": name, "args": copy.deepcopy(args)})
+            if self.on_write is not None:
+                self.on_write(name, copy.deepcopy(args))
+            self._controlled(h, rid, name, args)
             return
         with self._lock:
             self.calls.append({"tool": name, "args": json.loads(json.dumps(args))})
@@ -233,6 +299,9 @@ class SimMcpServer:
             mode, count = fault
             if mode == "http401":
                 self._send(h, 401, b"{}")
+                return
+            if mode == "redirect":
+                self._send(h, 302, b"", extra={"Location": "http://sim.invalid/redirected"})
                 return
             if mode == "http429":
                 if count is None or count > 0:
@@ -252,9 +321,194 @@ class SimMcpServer:
             elif mode == "garbage_json":
                 self._send(h, 200, b"<<<not json>>>")
                 return
+        if name == "query-order":
+            order = next((o for o in self.orders if o["orderId"] == args.get("orderId")), None)
+            if order is None:
+                payload = {"code": 400100, "message": "订单不存在"}
+            else:
+                payload = {"code": 0, "data": self._order_detail(order)}
+            self._rpc(h, rid, {"structuredContent": payload})
+            return
         error = self._rule_error(name, args)
-        payload = {"code": 400100, "message": error} if error else {"code": 0, "data": self._data(name, args)}
+        if error:
+            payload = {"code": 400100, "message": error}
+        elif name == "calculate-price":
+            payload = {"code": 0, "data": self._calc(args)}
+        else:
+            payload = {"code": 0, "data": self._stateful_data(name, args)}
         self._rpc(h, rid, {"structuredContent": payload})
+
+    # --- 受控写 ---
+    def _controlled(self, h: BaseHTTPRequestHandler, rid: Any, name: str, args: Dict[str, Any]) -> None:
+        """auto-bind-coupons 与 create-order：故障注入、规则校验、状态变化。"""
+        fault = self.faults.get(name)
+        mode = None
+        if fault:
+            mode, count = fault
+            if mode == "http401":
+                self._send(h, 401, b"{}")
+                return
+            if mode == "http429":
+                if count is None or count > 0:
+                    if count is not None:
+                        fault[1] = count - 1
+                    self._send(h, 429, b"{}")
+                    return
+                mode = None
+            elif mode == "redirect":
+                self._send(h, 302, b"", extra={"Location": "http://sim.invalid/redirected"})
+                return
+            elif mode == "disconnect":
+                h.close_connection = True
+                return
+            elif mode == "tool_error":
+                self._rpc(h, rid, {"isError": True, "content": []})
+                return
+            elif mode in ("business_fail", "business_code"):
+                self._rpc(h, rid, {"structuredContent": {"code": 500100, "message": "SIM-SECRET"}})
+                return
+            elif mode == "garbage_json":
+                self._send(h, 200, b"<<<not json>>>")
+                return
+        if name == "auto-bind-coupons":
+            if mode == "bad_structure":
+                self._rpc(h, rid, {"content": "not-a-list"})
+                return
+            with self._lock:
+                self.claims += 1
+                self._claimed = True
+            self._rpc(h, rid, {"structuredContent": {"code": 200, "message": "ok",
+                                                      "data": {"boundCount": len(CLAIMABLE)}}})
+            return
+        error = self._order_rule_error(args)
+        if error:
+            self._rpc(h, rid, {"structuredContent": {"code": 400100, "message": error}})
+            return
+        if mode == "timeout":
+            time.sleep(self.timeout_delay)
+        order = self._create_order(args)
+        if mode == "lost_response":
+            h.close_connection = True
+            return
+        if mode == "bad_structure":
+            self._rpc(h, rid, {"structuredContent": {"code": 0, "data": {}}})
+            return
+        detail = self._order_detail(order)
+        data = {
+            "orderId": order["orderId"],
+            "payId": order["payId"],
+            "payH5Url": "http://sim.invalid/pay/%s-%s" % (PAYURL_SENTINEL, order["orderId"]),
+            "orderDetail": detail,
+        }
+        self._rpc(h, rid, {"structuredContent": {"code": 0, "data": data}})
+
+    def _order_rule_error(self, a: Dict[str, Any]) -> Optional[str]:
+        """create-order 按真实规则校验；通过则 None。"""
+        for key in ("storeCode", "orderType", "beType"):
+            if a.get(key) in (None, ""):
+                return "%s 缺失" % key
+        be, order = a.get("beType"), a.get("orderType")
+        if (be, order) not in {(1, 1), (5, 1), (2, 2), (6, 2)}:
+            return "beType 与 orderType 不一致"
+        if be in (5, 2, 6) and not a.get("beCode"):
+            return "beCode 必传"
+        if be == 1 and "beCode" in a:
+            return "到店自取不能传 beCode"
+        if order == 1:
+            if not a.get("takeWayCode") or a.get("takeWayCode") not in self._last_take_way:
+                return "takeWayCode 缺失或不在最近一次核价的取餐方式内"
+        else:
+            if a.get("addressId") not in {x["addressId"] for x in ADDRESSES}:
+                return "addressId 缺失或未知"
+        if not isinstance(a.get("items"), list) or not a["items"]:
+            return "items 缺失"
+        return None
+
+    def _create_order(self, a: Dict[str, Any]) -> Dict[str, Any]:
+        """建单（运行时生成订单号）；相同参数重复下单计入 duplicate_orders。"""
+        amount = self._calc(a)["price"]
+        key = json.dumps(a, sort_keys=True, ensure_ascii=False)
+        with self._lock:
+            if key in self._order_keys:
+                self.duplicate_orders += 1
+            self._order_keys.add(key)
+            seq = len(self.orders) + 1
+            order = {
+                "orderId": "%s%04d" % (ORDER_ID_PREFIX, seq),
+                "payId": "SIM-PAY-%04d" % seq,
+                "args": copy.deepcopy(a),
+                "status": "1",
+                "amount_cents": amount,
+            }
+            self.orders.append(order)
+        return order
+
+    def _order_detail(self, order: Dict[str, Any]) -> Dict[str, Any]:
+        """create-order 与 query-order 共用的订单详情（含应被丢弃的敏感哨兵）。"""
+        a = order["args"]
+        calc = self._calc(a)
+        yuan = lambda cents: "%.2f" % (cents / 100)  # noqa: E731
+        detail: Dict[str, Any] = {
+            "orderId": order["orderId"],
+            "payId": order["payId"],
+            "orderStatus": order["status"],
+            "storeName": "模拟一店",
+            "takeWay": "模拟取餐方式",
+            "totalAmount": yuan(order["amount_cents"]),
+            "realTotalAmount": yuan(order["amount_cents"]),
+            "productPrice": yuan(calc["productPrice"]),
+            "realDeliveryPrice": yuan(calc["deliveryPrice"]),
+            "realPackingFeeTotalPrice": yuan(calc["packingPrice"]),
+            "tablewarePrice": yuan(0),
+            "totalDiscountAmount": yuan(0),
+            "orderTime": "2099-01-01 12:00:00",
+            "expirePayTime": "2099-01-01 12:10:00",
+            "pickupCode": PICKUP_SENTINEL,
+            "lockerCode": LOCKER_SENTINEL,
+            "lockerQrCode": "http://sim.invalid/" + LOCKER_SENTINEL,
+            "payH5Url": "http://sim.invalid/pay/%s-%s" % (PAYURL_SENTINEL, order["orderId"]),
+            "orderProductList": [
+                {"productName": MEALS.get(i.get("productCode"), ("未知", 0))[0],
+                 "quantity": i.get("quantity", 1),
+                 "price": yuan(MEALS.get(i.get("productCode"), ("", 0))[1])}
+                for i in a.get("items", [])
+            ],
+        }
+        if a.get("orderType") == 2:
+            detail["deliveryInfo"] = {
+                "address": ADDR_SENTINELS[0],
+                "phone": ADDR_SENTINELS[1],
+                "contactName": ADDR_SENTINELS[2],
+                "riderPhone": RIDER_SENTINEL,
+            }
+        return detail
+
+    def _calc(self, a: Dict[str, Any]) -> Dict[str, Any]:
+        """calculate-price：基础价 + 领券/漂移偏移；到店返回 takeWayList。"""
+        data = self._data("calculate-price", a)
+        delta = self._price_drift
+        if self._claimed:
+            delta += self._claim_effect["price_delta"]
+        data["productPrice"] = max(data["productPrice"] + delta, 0)
+        data["price"] = data["productPrice"] + data["deliveryPrice"] + data["packingPrice"]
+        if a.get("orderType") == 1:
+            lst = [{"code": "SIM-TW-%d" % i, "title": "模拟取餐方式%d" % i, "subtitle": "合成"}
+                   for i in range(1, self._take_way_count + 1)]
+            data["takeWayList"] = lst
+            with self._lock:
+                self._last_take_way = [x["code"] for x in lst]
+        return data
+
+    def _stateful_data(self, name: str, a: Dict[str, Any]) -> Any:
+        """受领券状态影响的只读工具。"""
+        if name == "available-coupons" and self._claimed and self._claim_effect["clear_claimable"]:
+            return []
+        if name == "query-store-coupons" and self._claimed and self._claim_effect["add_store_coupon"]:
+            extra = {"couponId": "COUPONID-3", "couponCode": NEW_COUPON_CODE, "title": "模拟新领券",
+                     "tradeDateTime": "2099-01-01",
+                     "products": [{"productCode": "M2", "name": "模拟辣鸡肉堡套餐"}]}
+            return [dict(x) for x in COUPONS] + [extra]
+        return self._data(name, a)
 
     # --- 参数规则（像真实接口一样校验） ---
     @staticmethod

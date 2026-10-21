@@ -12,7 +12,8 @@ from collections import deque
 from pathlib import Path
 from typing import Any, Callable, Deque, Dict, Optional
 
-from .config import RATE_LIMIT
+from . import net_guard
+from .config import CONTROLLED_WRITE_TOOLS, RATE_LIMIT, TOOL_CREATE_ORDER
 
 ENDPOINT = "https://mcp.mcd.cn"
 READ_ONLY = frozenset(
@@ -28,8 +29,11 @@ READ_ONLY = frozenset(
         "query-my-coupons",
         "delivery-query-addresses",
         "delivery-query-stores",
+        "query-order",
     }
 )
+# 受控写工具只能经 gate.WriteGate → McpClient.call_write 使用
+CONTROLLED_WRITE = CONTROLLED_WRITE_TOOLS
 
 
 class McpError(RuntimeError):
@@ -38,6 +42,30 @@ class McpError(RuntimeError):
 
 class RateLimitedError(McpError):
     """429 重试耗尽；调用方应停止继续请求并如实说明。"""
+
+
+class BusinessError(McpError):
+    """结构完整的业务失败；.code 只存纯数字。"""
+
+    def __init__(self, message: str, code: str = "unknown") -> None:
+        super().__init__(message)
+        self.code = code
+
+
+class ToolError(McpError):
+    """工具结果带 isError。"""
+
+
+class WriteRefused(McpError):
+    """写调用在发出网络请求前被拒绝（授权、工具或目标不满足）。"""
+
+
+class WriteFailed(McpError):
+    """写调用被明确拒绝或明确未执行；同一确认不得重试。"""
+
+
+class WriteUnknown(McpError):
+    """写调用结果未知；先核实，不要重试。"""
 
 
 class RateLimiter:
@@ -70,11 +98,11 @@ class RateLimiter:
 
 
 def _validate_test_endpoint(url: str) -> str:
-    """仅接受 http://127.0.0.1|localhost:端口（无用户信息和路径）。"""
-    match = re.fullmatch(r"http://(127\.0\.0\.1|localhost):(\d{1,5})", url or "")
-    if not match or not 1 <= int(match.group(2)) <= 65535:
-        raise McpError("测试端点只允许 http://127.0.0.1 或 localhost 的本机端口")
-    return url
+    """仅接受严格回环端点（见 net_guard；无用户信息和路径，不做 DNS 猜测）。"""
+    try:
+        return net_guard.validate_loopback_url(url)
+    except net_guard.NetGuardError:
+        raise McpError("测试端点只允许 http://127.0.0.1、[::1] 或 localhost 的本机端口") from None
 
 
 class NoRedirect(urllib.request.HTTPRedirectHandler):
@@ -122,7 +150,7 @@ def unwrap_tool(result: Dict[str, Any]) -> Dict[str, Any]:
     if not isinstance(result, dict):
         raise McpError("工具结果必须为对象")
     if result.get("isError"):
-        raise McpError("MCP工具返回isError，原始账户响应未写入日志")
+        raise ToolError("MCP工具返回isError，原始账户响应未写入日志")
     payload = result.get("structuredContent")
     if not isinstance(payload, dict):
         payload = None
@@ -145,7 +173,10 @@ def unwrap_tool(result: Dict[str, Any]) -> Dict[str, Any]:
     code = payload.get("code")
     if code is not None and str(code) not in {"0", "200"}:
         safe_code = str(code) if str(code).isdigit() else "unknown"
-        raise McpError(f"业务请求未成功（code={safe_code}），未保存原始回包")
+        raise BusinessError(
+            f"业务请求未成功（code={safe_code}），未保存原始回包",
+            safe_code if safe_code.isdigit() else "unknown",
+        )
     return payload
 
 
@@ -179,6 +210,7 @@ class McpClient:
         self.retry_delay = retry_delay
         self.rate_limiter = rate_limiter or RateLimiter()
         self.audit = []
+        self._write_ctx: Optional[str] = None
         self._opener = urllib.request.build_opener(NoRedirect())
 
     def _post(
@@ -186,8 +218,28 @@ class McpClient:
         method: str,
         params: Optional[Dict[str, Any]] = None,
         notification: bool = False,
+        attempts: int = 3,
     ) -> Dict[str, Any]:
-        """发送协议消息；只对安全的只读暂时故障有限重试。"""
+        """发送协议消息；只对安全的只读暂时故障有限重试，写调用恒为单次。"""
+        write = False
+        if method == "tools/call":
+            name = params.get("name") if isinstance(params, dict) else None
+            if not isinstance(name, str) or name not in READ_ONLY:
+                # 传输层兜底：非只读工具必须处于 call_write 上下文且目标是严格回环
+                if (
+                    not isinstance(name, str)
+                    or name != self._write_ctx
+                    or name not in CONTROLLED_WRITE
+                ):
+                    raise WriteRefused("传输层拒绝非白名单工具，未发出任何请求")
+                try:
+                    net_guard.assert_write_target(self.endpoint)
+                except net_guard.NetGuardError:
+                    raise WriteRefused(
+                        "写操作只允许发往本机回环地址，未发出任何请求"
+                    ) from None
+                write = True
+                attempts = 1
         self._counter += 1
         rid = None if notification else self._counter
         body: Dict[str, Any] = {"jsonrpc": "2.0", "method": method}
@@ -204,7 +256,7 @@ class McpClient:
         if self._session:
             headers["Mcp-Session-Id"] = self._session
         encoded = json.dumps(body).encode()
-        for attempt in range(3):
+        for attempt in range(attempts):
             try:
                 self.rate_limiter.acquire()
                 req = urllib.request.Request(
@@ -216,32 +268,59 @@ class McpClient:
                         self._session = session
                     raw = response.read(8 * 1024 * 1024 + 1)
                 if len(raw) > 8 * 1024 * 1024:
-                    raise McpError("响应超过8MB上限，停止解析")
+                    raise (WriteUnknown if write else McpError)("响应超过8MB上限，停止解析")
                 if notification:
                     return {}
-                result = decode_response(raw, rid)
+                err = WriteUnknown if write else McpError
+                try:
+                    result = decode_response(raw, rid)
+                except McpError:
+                    raise err("响应无法解码；未记录原始内容") from None
                 if "error" in result:
-                    raise McpError("JSON-RPC请求失败；未记录原始账户响应")
+                    raise err("JSON-RPC请求失败；未记录原始账户响应")
                 if type(result.get("id")) is not type(rid) or result.get("id") != rid:
-                    raise McpError("JSON-RPC响应id不匹配")
+                    raise err("JSON-RPC响应id不匹配")
                 data = result.get("result", {})
                 if not isinstance(data, dict):
-                    raise McpError("JSON-RPC结果结构异常")
+                    raise err("JSON-RPC结果结构异常")
                 return data
+            except (WriteUnknown, WriteFailed, WriteRefused):
+                raise
             except urllib.error.HTTPError as exc:
+                if write:
+                    if exc.code in {400, 401, 403, 404, 422, 429}:
+                        raise WriteFailed(
+                            f"HTTP {exc.code}：服务端明确拒绝，本次未执行"
+                        ) from None
+                    raise WriteUnknown(
+                        f"HTTP {exc.code}：写请求结果未知，请先核实，不要重试"
+                    ) from None
                 if exc.code in {401, 403}:
                     raise McpError(
                         f"HTTP {exc.code}：认证或访问受限，停止重试"
                     ) from None
-                if exc.code not in {429, 500, 502, 503, 504} or attempt == 2:
+                if exc.code not in {429, 500, 502, 503, 504} or attempt == attempts - 1:
                     if exc.code == 429:
                         raise RateLimitedError(
                             f"HTTP {exc.code}：只读请求失败"
                         ) from None
                     raise McpError(f"HTTP {exc.code}：只读请求失败") from None
-            except (urllib.error.URLError, TimeoutError, OSError):
-                if attempt == 2:
+            except (urllib.error.URLError, TimeoutError, OSError) as exc:
+                if write:
+                    reason = getattr(exc, "reason", exc)
+                    if isinstance(reason, ConnectionRefusedError):
+                        raise WriteFailed("连接被拒绝，本次未执行") from None
+                    raise WriteUnknown(
+                        "网络或超时错误；写请求结果未知，请先核实，不要重试"
+                    ) from None
+                if attempt == attempts - 1:
                     raise McpError("网络或超时错误；只读请求已达到重试上限") from None
+            except Exception:
+                if write:
+                    raise WriteUnknown(
+                        "写请求出现未预期错误；结果未知，请先核实，不要重试"
+                    ) from None
+                raise
             time.sleep(self.retry_delay * (2**attempt))
         raise McpError("未完成请求")
 
@@ -309,3 +388,48 @@ class McpClient:
             }
         )
         return result
+
+    def call_write(
+        self, name: str, arguments: Dict[str, Any], *, grant: Any
+    ) -> Dict[str, Any]:
+        """受控写调用：只接受 CONTROLLED_WRITE，需 gate.py 签发的授权，单次尝试。"""
+        from . import gate  # 延迟导入避免循环依赖
+
+        if not isinstance(name, str) or name not in CONTROLLED_WRITE:
+            raise WriteRefused("拒绝非受控写工具，未发出任何请求")
+        if not gate.grant_is_valid(grant, name):
+            raise WriteRefused("缺少有效的写授权，未发出任何请求")
+        self._write_ctx = name
+        try:
+            payload = unwrap_tool(
+                self._post(
+                    "tools/call",
+                    {"name": name, "arguments": arguments},
+                    attempts=1,
+                )
+            )
+            data = payload.get("data")
+            if name == TOOL_CREATE_ORDER and not (
+                isinstance(data, dict)
+                and isinstance(data.get("orderId"), str)
+                and data["orderId"].strip()
+            ):
+                raise WriteUnknown("成功码但缺少订单号，结果未知，请先核实，不要重试")
+        except WriteRefused:
+            raise
+        except (WriteFailed, WriteUnknown):
+            self.audit.append({"tool": name, "success": False})
+            raise
+        except (BusinessError, ToolError) as exc:
+            self.audit.append({"tool": name, "success": False})
+            raise WriteFailed(str(exc)) from None
+        except McpError:
+            self.audit.append({"tool": name, "success": False})
+            raise WriteUnknown("写请求响应结构异常，结果未知，请先核实，不要重试") from None
+        except Exception:
+            self.audit.append({"tool": name, "success": False})
+            raise WriteUnknown("写请求出现未预期错误，结果未知，请先核实，不要重试") from None
+        finally:
+            self._write_ctx = None
+        self.audit.append({"tool": name, "success": True})
+        return payload

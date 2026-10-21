@@ -1,0 +1,53 @@
+{
+  "auto-bind-coupons": {
+    "properties": [],
+    "required": []
+  },
+  "calculate-price": {
+    "properties": [
+      "beCode",
+      "beType",
+      "gmServiceCode",
+      "items",
+      "needTableware",
+      "orderType",
+      "reservationDate",
+      "storeCode",
+      "withOrder"
+    ],
+    "required": [
+      "beType",
+      "orderType",
+      "storeCode"
+    ]
+  },
+  "create-order": {
+    "properties": [
+      "addressId",
+      "beCode",
+      "beType",
+      "gmServiceCode",
+      "items",
+      "needTableware",
+      "orderType",
+      "remark",
+      "reservationDate",
+      "storeCode",
+      "takeWayCode",
+      "withOrder"
+    ],
+    "required": [
+      "beType",
+      "orderType",
+      "storeCode"
+    ]
+  },
+  "query-order": {
+    "properties": [
+      "orderId"
+    ],
+    "required": [
+      "orderId"
+    ]
+  }
+}
