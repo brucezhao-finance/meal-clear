@@ -134,6 +134,41 @@ def run_scenario(name, req, path="unchanged", take_way_count=1):
         return flow, flow.stats()
 
 
+def run_official_scenario():
+    """场景 7：官方通道（打桩传输，零联网）。开关+假 TTY+正确短语 → claim→place 成功；无开关 → 退出 4 且零请求。"""
+    from official_support import CLAIM, ORDER, OfficialEnv
+
+    print("=" * 78)
+    print("场景：官方通道打桩（开关 + 假 TTY + 正确短语）")
+    print("=" * 78)
+    with OfficialEnv(switch=True) as env:
+        code, out, data = env.summary()
+        ensure(code == 0, "官方打桩：order-summary 退出 %s" % code)
+        digest = data["digest"]
+        code, out = env.official_claim(digest)
+        ensure(code == 0 and len(env.official_writes(CLAIM)) == 1, "官方打桩：领券应退出 0 且恰好 1 次，实际 %s" % code)
+        code, out = env.official_place(digest)
+        ensure(code == 0 and len(env.official_writes(ORDER)) == 1 and len(env.sim.orders) == 1,
+               "官方打桩：下单应退出 0 且恰好 1 次，实际 %s" % code)
+        ensure("待支付" in out or "未付款" in out, "官方打桩：创建文案应说明未付款")
+        ensure({r["url"] for r in env.stub.requests} == {"https://mcp.mcd.cn"}, "官方打桩：所有请求应发往官方 URL（经桩转发）")
+        ensure(env.sim.forbidden_attempts == [], "官方打桩：出现被禁止的工具调用")
+        print("开关开启：claim 退出 0，place 退出 0；create-order 1 次，auto-bind-coupons 1 次。")
+    with OfficialEnv(switch=False) as env:
+        code, out, data = env.summary()
+        ensure(code == 0, "官方打桩(无开关)：order-summary 退出 %s" % code)
+        env.mark()
+        code, out = env.official_claim(data["digest"])
+        requests, inits = env.since()
+        ensure(code == 4, "无开关：领券应退出 4，实际 %s" % code)
+        ensure(requests == [] and inits == 0 and env.stub.writes() == [], "无开关：桩应零请求")
+        code, out, skip = env.summary("--skip-claim")
+        env.mark()
+        code, out = env.official_place(skip["digest"])
+        ensure(code == 4 and env.since() == ([], 0), "无开关：下单应退出 4 且零请求，实际 %s" % code)
+        print("开关关闭：claim/place 均退出 4，桩零请求。")
+
+
 def main():
     for name, req in SCENARIOS.items():
         for path in ("unchanged", "changed"):
@@ -150,6 +185,7 @@ def main():
             print(f"只读调用 {stats['read_calls']} 次；auto-bind-coupons {stats['auto-bind-coupons']} 次；"
                   f"create-order {stats['create-order']} 次；已创建订单 {stats['orders']} 个；"
                   f"重复订单 {stats['duplicate_orders']} 个；被禁止工具尝试 {len(stats['forbidden_attempts'])} 次")
+    run_official_scenario()
     print("\n全部场景断言成立。")
     return 0
 
