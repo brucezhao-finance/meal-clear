@@ -313,3 +313,15 @@ def group_reasons(item: Dict[str, Any], req: Dict[str, Any]) -> List[str]:
         verdict = "每人餐品结构与建议一致" if item["group_fit"] == 0 else "每人餐品结构与建议有出入，仅作参考"
         reasons.append(f"对照官方搭配建议「{band['label']}」（{band['text']}，按人均划分属推测）：{verdict}")
     return reasons
+
+
+def is_group_record(record: Any) -> bool:
+    """账本记录（或其材料）是否为团餐；结构异常按非团餐处理由调用方的其他校验兜底。"""
+    if not isinstance(record, dict):
+        return False
+    material = record.get("material")
+    ful = material.get("fulfillment") if isinstance(material, dict) else None
+    if not isinstance(ful, dict):
+        summary = record.get("summary")
+        ful = summary.get("fulfillment") if isinstance(summary, dict) else None
+    return isinstance(ful, dict) and ful.get("type") == "group"

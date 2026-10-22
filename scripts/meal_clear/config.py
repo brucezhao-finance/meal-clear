@@ -175,3 +175,4 @@ GROUP_BAND_TABLE: Tuple[Tuple[int, Optional[int], str, Tuple[Tuple[str, ...], ..
 MSG_GROUP_REAL_WRITE_CLOSED = (
     "团餐真实下单尚未开放，待你在真实环境验证只读流程后再决定。本次未发出任何请求。"
 )
+MSG_GROUP_PREVIEW_CLOSED = "团餐真实下单未开放，待你在真实环境验证只读流程后再决定"  # 预演提示

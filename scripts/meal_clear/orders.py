@@ -28,6 +28,9 @@ from .config import (
     EXIT_REFUSED,
     EXIT_UNKNOWN,
     FULFILLMENTS,
+    GROUP_REFUSAL_REASON,
+    MSG_GROUP_PREVIEW_CLOSED,
+    MSG_GROUP_REAL_WRITE_CLOSED,
     PHRASE_TAIL_LEN,
     RESOLVE_CHOICES,
     RESOLVE_CONFIRM_WORD,
@@ -38,6 +41,7 @@ from .config import (
     TOOL_CREATE_ORDER,
 )
 from .core import InputError
+from .group_meal import is_group_record, split_budget
 from .grouping import group_people
 from .ledger import Ledger, LedgerCorrupt, LedgerError, LedgerStateError
 from .mcp import BusinessError, McpError, WriteFailed, WriteRefused, WriteUnknown
@@ -240,10 +244,22 @@ def parse_quote(payload: Dict[str, Any], wire_items: List[Dict[str, Any]]) -> Di
     }
 
 
-def quote_basket(client: Any, wire_ctx: Dict[str, Any], wire_items: List[Dict[str, Any]]) -> Dict[str, Any]:
-    """对合并后的商品行重新 calculate-price。"""
-    payload = client.call("calculate-price", {**wire_ctx, "items": wire_items, "needTableware": False})
+def quote_basket(
+    client: Any,
+    wire_ctx: Dict[str, Any],
+    wire_items: List[Dict[str, Any]],
+    price_extra: Optional[Dict[str, Any]] = None,
+) -> Dict[str, Any]:
+    """对合并后的商品行重新 calculate-price；price_extra 仅团餐（gmServiceCode），旧账本记录缺省为空。"""
+    payload = client.call(
+        "calculate-price", {**wire_ctx, **(price_extra or {}), "items": wire_items, "needTableware": False}
+    )
     return parse_quote(payload, wire_items)
+
+
+def _quote(client: Any, wire: Dict[str, Any], items: List[Dict[str, Any]], extra: Any) -> Dict[str, Any]:
+    """非团餐沿用三参调用（price_extra 为空时不传第四参，保持既有调用形态）。"""
+    return quote_basket(client, wire, items, extra) if extra else quote_basket(client, wire, items)
 
 
 def claim_set(client: Any) -> List[Dict[str, Any]]:
@@ -403,7 +419,7 @@ def build_summary(
         rebuilt = rebuild_basket(client, wire, lines)
     except MenuChanged as exc:
         return {"status": "menu_changed", "exit_code": EXIT_RECONFIRM, "message": str(exc) + "，请重新比价后再生成摘要"}
-    quote = quote_basket(client, wire, rebuilt["wire_items"])
+    quote = _quote(client, wire, rebuilt["wire_items"], private.get("price_extra"))
     if quote["total_cents"] > req["budget_cents"]:
         return {
             "status": "over_budget",
@@ -460,6 +476,15 @@ def build_summary(
         "address_index": req["fulfillment"].get("address_index"),
         "address_ref": address.ref if address is not None else None,
     }
+    group_budget = None
+    if spec.needs_gm_service:  # 团餐专属材料键仅 group 写入，非 group 的 digest 不变
+        group_budget = split_budget(req)
+        fulfillment.update(
+            gm_service_code=req["fulfillment"].get("gm_service_code"),
+            reservation_date=req["fulfillment"].get("reservation_date"),
+            per_person_budget_cents=group_budget["per_person_cents"],
+            people_count=group_budget["people_count"],
+        )
     now = utcnow()
     expires = now + timedelta(seconds=ttl_seconds)
     mat_lines = material_lines(rebuilt["wire_items"])
@@ -508,6 +533,16 @@ def build_summary(
             **({"be_code": wire["beCode"]} if "beCode" in wire else {}),
             **({"address_label": address.label, "address_index": fulfillment["address_index"],
                 "address_ref": address.ref} if address is not None else {}),
+            **(
+                {
+                    "gm_service_code": fulfillment["gm_service_code"],
+                    "gm_service_name": ((private.get("group") or {}).get("selected") or {}).get("name"),
+                    "reservation_date": fulfillment["reservation_date"],
+                    "per_person_budget_cents": fulfillment["per_person_budget_cents"],
+                }
+                if spec.needs_gm_service
+                else {}
+            ),
         },
         "people_count": len(people),
         "groups": groups,
@@ -524,6 +559,7 @@ def build_summary(
             "selected_code": take_way_code,
         },
         "claim": _claim_block(claimable, skip_claim),
+        **({"group_budget": group_budget} if group_budget is not None else {}),
         "plan_ref": {"request_id": result["request_id"], "signature": chosen["signature"], "rank": chosen["rank"]},
         "execution": {
             "target_loopback": _target_loopback(client),
@@ -539,6 +575,7 @@ def build_summary(
         "take_way_code": take_way_code,
         "lines": lines,
         "store_coupon_keys": rebuilt["coupon_keys"],
+        "price_extra": dict(private.get("price_extra") or {}),
     }
     record = _exists_or_create(
         ledger,
@@ -598,7 +635,7 @@ def verify_fresh(client: Any, record: Dict[str, Any]) -> Dict[str, Any]:
     except MenuChanged as exc:
         return {"consistent": False, "fresh": None, "notes": [],
                 "changes": [{"kind": "menu", "field": "menu_or_coupon", "before": "原商品/券", "after": str(exc)}]}
-    quote = quote_basket(client, wire, rebuilt["wire_items"])
+    quote = _quote(client, wire, rebuilt["wire_items"], rebuild.get("price_extra"))
     fresh = dict(quote, lines=material_lines(rebuilt["wire_items"]), rebuilt=rebuilt)
     changes = compare_fresh(record["material"], fresh)
     notes = []
@@ -739,6 +776,9 @@ def claim_preview(client: Any, ledger: Ledger, prefix: str, now: Optional[dateti
         "selectable": False,
         "irreversible": True,
     }
+    if _is_official(client) and is_group_record(record):
+        out["note"] += "；" + MSG_GROUP_PREVIEW_CLOSED
+        out["group_real_write_closed"] = True
     blocked = _reconfirm_reason(record, moment)
     if blocked is not None:
         out.update(status=blocked.payload["status"], exit_code=EXIT_RECONFIRM, message=str(blocked))
@@ -800,6 +840,16 @@ def _is_official(client: Any) -> bool:
     return net_guard.is_official_url(getattr(client, "endpoint", None))
 
 
+def _refuse_official_group(client: Any, record: Dict[str, Any]) -> None:
+    """第二层防线：官方端点 + 团餐记录一律拒绝（退出码 4），早于第四道门与任何网络动作。"""
+    if _is_official(client) and is_group_record(record):
+        raise OrderError(
+            MSG_GROUP_REAL_WRITE_CLOSED,
+            EXIT_REFUSED,
+            {"status": "group_real_write_closed", "reason": GROUP_REFUSAL_REASON},
+        )
+
+
 def _confirm_lines(summary: Dict[str, Any], tool: str) -> List[str]:
     """真实写前给人看的要点（只含摘要里的公开字段，不含券码/地址/Token）。"""
     ful = summary["fulfillment"]
@@ -822,6 +872,7 @@ def _confirm_lines(summary: Dict[str, Any], tool: str) -> List[str]:
 def claim_execute(client: Any, ledger: Ledger, prefix: str, confirm: Optional[str]) -> Dict[str, Any]:
     """计划 D15/D16/D17：离线校验 → 回环检查 → 工具校验 → 将领券比较 → 写前账本 → 单次写 → 重新核价。"""
     record = precheck_claim(ledger, prefix, confirm)
+    _refuse_official_group(client, record)
     digest = record["digest"]
     official = _is_official(client)
     session = realwrite.authorize(ledger, TOOL_AUTO_BIND_COUPONS, record, utcnow()) if official else None
@@ -1217,6 +1268,9 @@ def place_preview(client: Any, ledger: Ledger, prefix: str, *, allow_duplicate_b
             "pay_by_you": True,
         },
     }
+    if _is_official(client) and is_group_record(record):
+        out["note"] += "；" + MSG_GROUP_PREVIEW_CLOSED
+        out["group_real_write_closed"] = True
     if record["steps"]["order"]["state"] != "none":
         out.update(status="already_done", exit_code=EXIT_OK, message="该摘要已有下单记录，不能再次下单",
                    prior=_prior_order(record))
@@ -1256,6 +1310,7 @@ def place_execute(client: Any, ledger: Ledger, prefix: str, confirm: Optional[st
                   allow_duplicate_basket: bool = False) -> Dict[str, Any]:
     """计划 D16/D18/D19：离线校验 → 回环 → 工具校验 → 新鲜度 → 写前账本 → 单次写 → 分类落账。"""
     record = precheck_place(ledger, prefix, confirm, allow_duplicate_basket=allow_duplicate_basket)
+    _refuse_official_group(client, record)
     digest = record["digest"]
     official = _is_official(client)
     session = realwrite.authorize(ledger, TOOL_CREATE_ORDER, record, utcnow()) if official else None

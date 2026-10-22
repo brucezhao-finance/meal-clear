@@ -16,6 +16,7 @@ from . import net_guard
 from .config import (
     CONTROLLED_WRITE_TOOLS,
     GROUP_READ_ONLY_TOOLS,
+    MSG_GROUP_REAL_WRITE_CLOSED,
     OFFICIAL_ENDPOINT,
     RATE_LIMIT,
     TOOL_CREATE_ORDER,
@@ -41,6 +42,18 @@ READ_ONLY = frozenset(
 # 团餐专用只读工具（READ_ONLY 保持 12 个不变；传输层白名单是 ALL_READ_ONLY）
 GROUP_READ_ONLY = frozenset(GROUP_READ_ONLY_TOOLS)
 ALL_READ_ONLY = READ_ONLY | GROUP_READ_ONLY
+GROUP_BE_TYPE = 6  # 团餐 beType；官方端点上带该值的 create-order 在传输层直接拒绝
+
+
+def _is_group_create_order(name: Any, arguments: Any) -> bool:
+    """create-order 且 beType==6（团餐）。"""
+    return (
+        name == TOOL_CREATE_ORDER
+        and isinstance(arguments, dict)
+        and arguments.get("beType") == GROUP_BE_TYPE
+    )
+
+
 # 受控写工具只能经 gate.WriteGate → McpClient.call_write 使用
 CONTROLLED_WRITE = CONTROLLED_WRITE_TOOLS
 
@@ -244,6 +257,8 @@ class McpClient:
                 ):
                     raise WriteRefused("传输层拒绝非白名单工具，未发出任何请求")
                 if net_guard.is_official_url(self.endpoint):
+                    if _is_group_create_order(name, params.get("arguments")):
+                        raise WriteRefused(MSG_GROUP_REAL_WRITE_CLOSED)  # 第四层防线：零请求
                     if name != self._official_ctx:
                         raise WriteRefused("官方端点缺少人工批准，未发出任何请求")
                 else:
@@ -412,6 +427,8 @@ class McpClient:
 
         if not isinstance(name, str) or name not in CONTROLLED_WRITE:
             raise WriteRefused("拒绝非受控写工具，未发出任何请求")
+        if net_guard.is_official_url(self.endpoint) and _is_group_create_order(name, arguments):
+            raise WriteRefused(MSG_GROUP_REAL_WRITE_CLOSED)  # 官方端点团餐真实写：授权前即拒
         if not gate.grant_is_valid(grant, name):
             raise WriteRefused("缺少有效的写授权，未发出任何请求")
         if net_guard.is_official_url(self.endpoint):

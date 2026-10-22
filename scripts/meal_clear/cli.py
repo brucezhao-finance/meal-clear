@@ -22,7 +22,9 @@ from . import orders, realwrite, report_orders
 from .config import (
     EXIT_OK,
     EXIT_REFUSED,
+    GROUP_REFUSAL_REASON,
     LEDGER_DIRNAME,
+    MSG_GROUP_REAL_WRITE_CLOSED,
     PRIORITIES,
     SUMMARY_TTL_SECONDS,
     TOOL_AUTO_BIND_COUPONS,
@@ -30,7 +32,7 @@ from .config import (
     UNLOCK_PHRASE,
 )
 from .gate import WriteDenied
-from .group_meal import NeedGmServiceCode
+from .group_meal import NeedGmServiceCode, is_group_record
 from .ledger import Ledger
 from .live import LivePlanner, MultiLivePlanner, timestamp
 from .mcp import McpClient, McpError
@@ -184,6 +186,9 @@ def client_from_args(args: argparse.Namespace, write: bool = False) -> McpClient
     """初始化安全客户端；write=True 时先过第四道门的离线预检，失败则不读 Token、零网络请求。"""
     token_file = args.token_file
     if write:
+        # 第一层防线：团餐记录的真实写在读 Token、构造客户端、initialize 之前拒绝（零网络）
+        if getattr(args, "_group_record", False):
+            raise realwrite.RealWriteDenied(MSG_GROUP_REAL_WRITE_CLOSED, GROUP_REFUSAL_REASON)
         # 在读取 Token、构造客户端、initialize 之前：开关→配置→紧急锁→TTY→凭证来源
         state_dir = ledger_root().parent
         realwrite.preflight(state_dir)
@@ -249,6 +254,7 @@ def run_order_claim(args: argparse.Namespace) -> int:
         _print_result(preview, args.json, report_orders.render_claim_preview(preview))
         return preview["exit_code"]
     record = orders.precheck_claim(ledger, args.digest, args.confirm_digest)
+    args._group_record = is_group_record(record)
     _offline_real_write_gate(ledger, TOOL_AUTO_BIND_COUPONS, record)
     client = client_from_args(args, write=True)
     result = orders.claim_execute(client, ledger, args.digest, args.confirm_digest)
@@ -277,6 +283,7 @@ def run_order_place(args: argparse.Namespace) -> int:
         return preview["exit_code"]
     record = orders.precheck_place(ledger, args.digest, args.confirm_digest,
                                    allow_duplicate_basket=args.allow_duplicate_basket)
+    args._group_record = is_group_record(record)
     _offline_real_write_gate(ledger, TOOL_CREATE_ORDER, record)
     client = client_from_args(args, write=True)
     result = orders.place_execute(client, ledger, args.digest, args.confirm_digest,

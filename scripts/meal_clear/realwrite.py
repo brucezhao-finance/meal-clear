@@ -22,6 +22,8 @@ from .config import (
     EXIT_LIMIT,
     EXIT_LOCKED,
     EXIT_REFUSED,
+    GROUP_REFUSAL_REASON,
+    MSG_GROUP_REAL_WRITE_CLOSED,
     PHRASE_TAIL_LEN,
     REAL_CONFIG_KEYS,
     REAL_CONFIG_MAX_BYTES,
@@ -36,6 +38,7 @@ from .config import (
     WRITE_LOCK_NAME,
     WRITE_TOKEN_REL,
 )
+from .group_meal import is_group_record
 
 _SENTINEL = object()  # 模块私有哨兵：外部拿不到就伪造不了批准
 _O_NOFOLLOW = getattr(os, "O_NOFOLLOW", 0)
@@ -407,6 +410,8 @@ def precheck_counts(ledger: Any, tool: str, now: datetime) -> None:
 
 def authorize(ledger: Any, tool: str, record: Dict[str, Any], now: datetime) -> RealWriteSession:
     """离线第四道门预检（开关→配置→紧急锁→TTY→unknown 篮子锁）；通过返回会话。"""
+    if is_group_record(record):  # 第三层防线：早于 preflight，开关/紧急锁/TTY 都不影响
+        raise RealWriteDenied(MSG_GROUP_REAL_WRITE_CLOSED, GROUP_REFUSAL_REASON)
     if not isinstance(tool, str) or tool not in CONTROLLED_WRITE_TOOLS:
         raise RealWriteDenied(gate.MSG_TOOL, "bad_tool")
     cfg = preflight(Path(ledger.root).parent)
