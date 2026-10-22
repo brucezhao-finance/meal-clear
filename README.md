@@ -10,6 +10,12 @@
 
 > 图中商品与价格均为**模拟数据**。**非麦当劳官方产品，参赛作品。**
 
+## 适合谁
+
+- 几个人聚餐、同事团餐，想让每个人各自满足忌口和偏好、同时控制总预算的人。
+- 想把“带约束的选餐与比价”接入自己的 Agent、并希望默认只读、写操作有明确门槛的开发者。
+- 目前的结果来自模拟数据和自动测试；真实账户上的新增能力、真实领券/下单均未经真实验证（见下文“能力与边界”）。
+
 ## 3 步用起来
 
 | 步骤 | 你做什么 |
@@ -55,7 +61,7 @@ flowchart LR
 ```bash
 python3 scripts/meal_clear.py plan --request examples/request-multi50.json --catalog examples/demo-catalog-multi.json
 ```
-这是对已检查组合的排名，不是全局最优；50 人的耗时与核价次数见仓库内的性能记录。真实环境下 50 人的官方核价行为（数量合并是否与逐行等价）尚未验证。
+这是对已检查组合的排名，不是全局最优；50 人的耗时与核价次数见[性能记录](docs/性能记录.md)（合成数据、本机离线基准）。真实环境下 50 人的官方核价行为（数量合并是否与逐行等价）尚未验证。
 
 ## 团餐（模拟已验证，团餐真实下单未开放）
 ![团餐流程：地址、可配送门店、促销与助餐服务、人均预算搭配、排名与理由、订单摘要；模拟数据；团餐真实下单未开放](docs/images/08-group-meal.svg)
@@ -85,6 +91,7 @@ python3 scripts/meal_clear.py plan --request examples/request-multi50.json --cat
 ## 安装与依赖
 
 - Python ≥ 3.9，**零运行依赖**。
+- **平台：** 领券/下单的本地账本依赖 `fcntl`，仅支持 macOS/Linux；`demo`、`demo-multi`、`demo-group`、规划与排名等只读功能不依赖该账本。账本相关命令（`order-summary`、`order-claim`、`order-place` 等）在不支持的平台上会直接拒绝执行。
 - 把整个 `meal-clear` 目录放进 Agent 的 Skill 位置，或使用发布包 `dist/meal-clear.skill`（由 `python3 scripts/build_skill.py` 生成）。
 - 真实菜单模式需自行配置凭证，详见 [使用与接入](docs/使用与接入.md)。
 
@@ -95,12 +102,12 @@ python3 scripts/meal_clear.py plan --request examples/request-multi50.json --cat
 | `SKILL.md` | Skill 入口 |
 | `scripts/` | 命令行程序与打包脚本 |
 | `references/` · `examples/` | 数据格式、验收场景、模拟数据 |
-| `docs/` | 使用指南、[真实验证与能力边界](docs/真实验证与能力边界.md)、[真实写操作启用指南](docs/真实写操作启用指南.md)、配图 |
+| `docs/` | 使用指南、[参赛补充说明](docs/参赛补充说明.md)、[性能记录](docs/性能记录.md)、[真实验证与能力边界](docs/真实验证与能力边界.md)、[真实写操作启用指南](docs/真实写操作启用指南.md)、配图 |
 | `tests/` | 离线回归测试 |
 
 ## 合规与文档
 
-[参赛声明](CONTEST_DECLARATION.md) · [MCP 接入说明](MCP_INTEGRATION.md) · [MCP 配置示例](mcp-config.example.json) · [LICENSE](LICENSE) · [真实验证与能力边界](docs/真实验证与能力边界.md) · [真实写操作启用指南](docs/真实写操作启用指南.md)
+[参赛声明（官方原文）](CONTEST_DECLARATION.md) · [参赛补充说明](docs/参赛补充说明.md) · [MCP 接入说明](MCP_INTEGRATION.md) · [MCP 配置示例](mcp-config.example.json) · [LICENSE](LICENSE) · [真实验证与能力边界](docs/真实验证与能力边界.md) · [真实写操作启用指南](docs/真实写操作启用指南.md)
 
 **同日全量验收（作者本地报告记录，未经第三方复核）：** 自动测试方法与数据子用例、测试点和函数覆盖、两店真实只读验证、跨早餐至正餐重算、真实 401 停止和非白名单工具阻断检查的具体数字与口径见[全量报告与逐点覆盖矩阵](https://github.com/brucezhao-finance/meal-clear/blob/main/verification/2026-10-19-full/全量测试报告.md)。
 
@@ -127,7 +134,7 @@ python3 scripts/meal_clear.py plan --request examples/request-multi50.json --cat
 python3 -m unittest discover -s tests -v
 ```
 
-**466 项离线测试**（含本地回环模拟 MCP 服务器）覆盖金额精度、卡费、未知约束、多人排名、50 人同质组、取餐方式、隐私脱敏、限流、券预览、摘要与账本、受控领券/下单（模拟服务与官方路径网络桩）、重复与未知结果保护、换店报价失效、官方费用矛盾、协议解析、文件安全、文档一致性与写工具拒绝。测试不需要网络和真实账户。另有本次验收的 [27 项命令行场景与 5 项故障测试](https://github.com/brucezhao-finance/meal-clear/blob/main/verification/2026-10-19-acceptance/完整测试过程.md)。
+**550 项离线测试**（含本地回环模拟 MCP 服务器）覆盖金额精度、卡费、未知约束、多人排名、50 人同质组、取餐方式、隐私脱敏、限流、券预览、摘要与账本、受控领券/下单（模拟服务与官方路径网络桩）、重复与未知结果保护、换店报价失效、官方费用矛盾、协议解析、文件安全、文档一致性与写工具拒绝。测试不需要网络和真实账户。另有本次验收的 [27 项命令行场景与 5 项故障测试](https://github.com/brucezhao-finance/meal-clear/blob/main/verification/2026-10-19-acceptance/完整测试过程.md)。
 
 全量复现入口是 `python3 verification/2026-10-19-full/run_full.py`，其中可能包含联网真实只读步骤，运行前请先阅读脚本；全量清单不等于所有账户、门店、模型或未来输入永不失败，外部验证边界逐项列在[报告](https://github.com/brucezhao-finance/meal-clear/blob/main/verification/2026-10-19-full/全量测试报告.md)中。
 
