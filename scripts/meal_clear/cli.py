@@ -30,6 +30,7 @@ from .config import (
     UNLOCK_PHRASE,
 )
 from .gate import WriteDenied
+from .group_meal import NeedGmServiceCode
 from .ledger import Ledger
 from .live import LivePlanner, MultiLivePlanner, timestamp
 from .mcp import McpClient, McpError
@@ -654,6 +655,14 @@ def main(argv: Optional[list] = None) -> int:
         if difference and not args.json:
             print("\n变化说明：" + json.dumps(difference, ensure_ascii=False))
         return 0 if result.get("recommendations") else 2
+    except NeedGmServiceCode as exc:
+        print(
+            json.dumps(
+                {"status": "need_gm_service_code", "message": str(exc), "options": exc.options},
+                ensure_ascii=False,
+            )
+        )
+        return 1
     except WriteDenied as exc:
         body = {"status": "error", "message": str(exc)}
         reason = getattr(exc, "reason", None)

@@ -15,6 +15,7 @@ from .config import (
 )
 from .core import InputError, check_person, validate_catalog
 from .fulfillment import context_key
+from .group_meal import annotate_group_fit, build_group_section, group_reasons
 from .request_v2 import fingerprint_v2, validate_request_v2
 
 UNKNOWN_COST = 10**12
@@ -224,7 +225,9 @@ def generate_candidates(
     if len(req["people"]) > LEGACY_BEAM_MAX_PEOPLE and not use_legacy_beam:
         from .grouping import generate_candidates_grouped  # 延迟导入，避免循环依赖
 
-        return generate_candidates_grouped(req, catalog)
+        grouped = generate_candidates_grouped(req, catalog)
+        annotate_group_fit(grouped["whole"], req)  # 仅团餐：写 group_fit，影响送核价顺序
+        return grouped
     limits = req["limits"]
     priority = req["ranking"]["priority"]
     per_person: List[List[Dict[str, Any]]] = []
@@ -272,6 +275,7 @@ def generate_candidates(
         )
         stats.update(beam_stats)
         whole = [_candidate(req, p) for p in parts]
+        annotate_group_fit(whole, req)  # 仅团餐：写 group_fit，影响送核价顺序
     return {"per_person": per_person, "whole": whole, "diagnostics": diagnostics, "stats": stats}
 
 
@@ -283,6 +287,8 @@ def _hint_key(cand: Dict[str, Any], priority: str) -> Tuple[Any, ...]:
         head: Tuple[Any, ...] = (hint, pref)
     else:
         head = (pref, hint)
+    if "group_fit" in cand:  # 团餐搭配契合度优先送核价（无该键时行为不变）
+        head = (-cand["group_fit"],) + head
     return head + (cand["new_card_count"], cand["coupon_count"], cand["ids"])
 
 
@@ -412,6 +418,8 @@ def rank_candidates(
                 "_ids": cand["ids"],
             }
         )
+        if "group_fit" in cand:
+            items[-1]["group_fit"] = cand["group_fit"]
     items.sort(key=lambda i: _rank_key(i, priority))
     for index, item in enumerate(items, 1):
         item["rank"] = index
@@ -450,8 +458,9 @@ def explain(
     first: Dict[str, Any],
     priority: str,
     count: int = 1,
+    req: Optional[Dict[str, Any]] = None,
 ) -> List[str]:
-    """按固定模板生成理由，无 LLM、无综合打分。"""
+    """按固定模板生成理由，无 LLM、无综合打分；团餐请求追加团餐理由。"""
     people = len(item["assignments"])
     reasons = [f"{people} 位用餐者硬要求全部已核实"]
     if previous is None:
@@ -478,6 +487,8 @@ def explain(
         reasons.append(f"官方核价（{when}），购买前价格可能变化")
     else:
         reasons.append(MODE_NOTES.get(item["data_mode"], "非当前报价"))
+    if req is not None and req["fulfillment"]["type"] == "group":
+        reasons.extend(group_reasons(item, req))
     return reasons
 
 
@@ -602,6 +613,8 @@ def compose_v2(
         "recommendations": [],
         "coupon_preview": _coupon_preview(catalog["offers"]),
     }
+    if spec.key == "group":
+        result["group"] = build_group_section(req)
     meta = {
         "priority": priority,
         "top_n": top_n,
@@ -646,7 +659,7 @@ def compose_v2(
     top = items[:top_n]
     for index, item in enumerate(top):
         previous = top[index - 1] if index else None
-        item["reasons"] = explain(item, previous, items[0], priority, len(items))
+        item["reasons"] = explain(item, previous, items[0], priority, len(items), req)
     for item in items:
         item.pop("_ids", None)
     result["ranking"] = top

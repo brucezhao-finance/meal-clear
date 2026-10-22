@@ -19,7 +19,8 @@ from .config import (
     TOOL_QUERY_PROMOTIONS,
 )
 from .core import InputError, compose, integer, validate_request
-from .fulfillment import context_key, wire_context
+from .fulfillment import context_key, price_extra, wire_context
+from .group_meal import promo_hints, sanitize_assistance, sanitize_promotions, select_gm_service
 from .mcp import McpClient, McpError, RateLimitedError
 from .privacy import (
     ResolvedAddress,
@@ -622,12 +623,12 @@ class MultiLivePlanner:
             raise InputError(f"address_index 超出地址列表范围（共{len(addresses)}个）")
         return addresses[address_index - 1]
 
-    def list_delivery_stores(self, address_index: int) -> List[Dict[str, Any]]:
-        """某地址可配送的门店（仅门店名/编码）。"""
+    def list_delivery_stores(self, address_index: int, be_type: int = 2) -> List[Dict[str, Any]]:
+        """某地址可配送的门店（仅门店名/编码）；be_type 2=麦乐送，6=团餐。"""
         address = self._address(address_index)
         check_schemas(self._tools(), ("delivery-query-stores",), MENU_ALLOWED)
         value = self.client.call(
-            "delivery-query-stores", {"beType": 2, "addressId": address.address_id}
+            "delivery-query-stores", {"beType": be_type, "addressId": address.address_id}
         )
         rows = value.get("data", [])
         if not isinstance(rows, list):
@@ -648,7 +649,7 @@ class MultiLivePlanner:
         store_name = None
         if spec.needs_address:
             index = req["fulfillment"]["address_index"]
-            stores = self.list_delivery_stores(index)
+            stores = self.list_delivery_stores(index, spec.be_type)
             address = self._address(index)
             matched = [
                 s
@@ -661,6 +662,35 @@ class MultiLivePlanner:
             name = matched[0].get("storeName")
             store_name = name if isinstance(name, str) and name.strip() else None
         return {"wire": wire, "address": address, "store_name": store_name}
+
+    def group_info(
+        self, req: Dict[str, Any], wire: Dict[str, Any], require_selection: bool = True
+    ) -> Dict[str, Any]:
+        """团餐只读信息：助餐服务（必需）与促销规则（非致命）；require_selection 时校验用户选定的 gm。"""
+        check_schemas(self._tools(), (TOOL_QUERY_MEAL_ASSISTANCE,), MENU_ALLOWED)
+        options = sanitize_assistance(self.client.call(TOOL_QUERY_MEAL_ASSISTANCE, wire))
+        requested = req["fulfillment"].get("gm_service_code")
+        selected = None
+        if require_selection:
+            selected = select_gm_service(options, requested)  # 缺失/无效/不可用即停，零菜单零核价
+        else:
+            selected = next(
+                (o for o in options if o["gm_service_code"] == requested and o["enable"]), None
+            )
+        notes: List[str] = []
+        rules: List[Dict[str, Any]] = []
+        try:
+            check_schemas(self._tools(), (TOOL_QUERY_PROMOTIONS,), MENU_ALLOWED)
+            rules = sanitize_promotions(self.client.call(TOOL_QUERY_PROMOTIONS, wire))
+        except CallCapError:
+            raise
+        except (McpError, InputError):
+            notes.append("促销规则查询失败，未展示（不影响官方核价）")
+        gm = selected["gm_service_code"] if selected else None
+        for rule in rules:
+            bound = rule["gm_service_code"]
+            rule["applies_to_selected"] = (not bound) or (gm is not None and bound == gm)
+        return {"options": options, "selected": selected, "promotions": rules, "notes": notes}
 
     def coupon_preview(
         self, wire: Dict[str, Any], store_payload: Any = None
@@ -744,6 +774,9 @@ class MultiLivePlanner:
             raise InputError("实时首版只支持 meal_time=now；不伪造预约参数")
         resolved = self.resolve_context(req)
         wire = resolved["wire"]
+        is_group = FULFILLMENTS[req["fulfillment"]["type"]].needs_gm_service
+        group = self.group_info(req, wire) if is_group else None  # 先助餐服务，再菜单
+        extra = price_extra(req)
         fetched = self.catalog_v2(req, wire)
         catalog = fetched["catalog"]
         limits = req["limits"]
@@ -763,7 +796,7 @@ class MultiLivePlanner:
                 attempts += 1
                 payload = self.client.call(
                     "calculate-price",
-                    {**wire, "items": wire_items, "needTableware": False},
+                    {**wire, **extra, "items": wire_items, "needTableware": False},
                 )
                 total = check_pricing(payload, wire_items)
             except RateLimitedError:
@@ -810,6 +843,8 @@ class MultiLivePlanner:
             fulfillment["address_ref"] = resolved["address"].ref
         result["coupon_preview"] = preview
         result["coverage"] = catalog["coverage"]
+        if group is not None:
+            self._attach_group(result, group)
         private = {
             "req": req,
             "resolved": resolved,
@@ -817,5 +852,24 @@ class MultiLivePlanner:
             "offers": catalog["offers"],
             "coupons": fetched["coupons"],
             "candidates": {c["signature"]: c for c in generated["whole"]},
+            "price_extra": extra,
+            "group": group,
         }
         return result, private
+
+    @staticmethod
+    def _attach_group(result: Dict[str, Any], group: Dict[str, Any]) -> None:
+        """把助餐服务与促销提示并入 result['group'] 与各名次理由（促销只提示，不改任何价格）。"""
+        selected = group["selected"]
+        gm = selected["gm_service_code"] if selected else None
+        section = result["group"]
+        section["assistance"] = {
+            "selected": {"gm_service_code": gm, "name": selected["name"]} if selected else None,
+            "options": group["options"],
+        }
+        section["promotions"] = group["promotions"]
+        section["notes"].extend(group["notes"])
+        for item in result["ranking"]:
+            if selected:
+                item["reasons"].append(f"助餐服务：{selected['name']}（由你指定，未采用官方默认项）")
+            item["reasons"].extend(promo_hints(group["promotions"], item["total_cents"], gm))

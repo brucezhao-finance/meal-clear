@@ -95,6 +95,39 @@ def _render_group_item(item: Dict[str, Any], groups: List[Dict[str, Any]]) -> Li
     return lines
 
 
+def render_group(group: Dict[str, Any]) -> List[str]:
+    """团餐段：人均预算（向下取整与余数）、搭配建议、助餐服务、促销提示（以官方核价为准）。"""
+    budget = group["budget"]
+    lines = [
+        "## 团餐",
+        f"人均预算 {_yuan(budget['per_person_cents'])}（向下取整），余 {budget['remainder_cents']} 分留在总预算内；"
+        f"总预算 {_yuan(budget['total_cents'])} 是硬约束，共 {budget['people_count']} 人",
+        f"搭配建议（官方 query-meals 描述，按人均预算划分属推测）：{group['band']['label']}档：{group['band']['suggestion']}",
+    ]
+    if group.get("reservation_date"):
+        lines.append(f"预约时间：{group['reservation_date']}")
+    assistance = group.get("assistance")
+    if assistance:
+        picked = assistance.get("selected")
+        lines.append(
+            "助餐服务：" + (f"{picked['name']}（你指定的 gm_service_code）" if picked else "未选定")
+        )
+    promos = [r for r in group.get("promotions", []) if r.get("applies_to_selected")]
+    if promos:
+        lines.append("促销提示（以官方核价为准，本工具不据此计价）：")
+        for rule in promos:
+            if rule.get("tiers"):
+                tiers = "；".join(f"满¥{t['threshold_yuan']}减¥{t['reduce_yuan']}" for t in rule["tiers"])
+                lines.append(f"- 满减规则：{tiers}")
+            elif rule["kind"] == "满折":
+                lines.append(
+                    f"- 满折规则：满¥{rule.get('discount_threshold_yuan') or '?'}，官方原始 discount={rule.get('discount') or '?'}"
+                )
+    lines.extend(f"- 说明：{note}" for note in group.get("notes", []))
+    lines.append("")
+    return lines
+
+
 def render_ranking(result: Dict[str, Any], detail: bool = False) -> str:
     """渲染名次表、每名分配与理由、检查范围、券预览和边界提示。
 
@@ -114,6 +147,8 @@ def render_ranking(result: Dict[str, Any], detail: bool = False) -> str:
         f"排序规则：{meta['rule']}",
         "",
     ]
+    if result.get("group"):
+        lines.extend(render_group(result["group"]))
     ranking = result.get("ranking", [])
     compact = len(req["people"]) >= COMPACT_MIN_PEOPLE and not detail
     if ranking:
