@@ -238,7 +238,7 @@ class PlaceSuccessTests(unittest.TestCase):
                 code, out = env.run("order-place", "--digest", digest[:12], "--execute",
                                     "--confirm-digest", digest, "--json")
             self.assertEqual(code, 4)
-            self.assertIn("真实领券/下单尚未开放，计划在 P2 由用户亲自验证后启用", out)
+            self.assertIn("真实领券/下单默认关闭且未经真实验证；如需启用，请阅读 docs/真实写操作启用指南.md", out)
             self.assertEqual(len(env.sim.calls), calls_before)
             self.assertEqual(env.create_calls(), [])
             self.assertEqual(env.record(digest)["steps"]["order"]["state"], "none")

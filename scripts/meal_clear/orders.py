@@ -979,7 +979,7 @@ def _reconfirm_result(ledger: Ledger, old: Dict[str, Any], check: Dict[str, Any]
     return result
 
 
-# --- 下单（仅回环模拟服务）与订单查询 ---
+# --- 下单（官方端点真实写默认关闭）与订单查询 ---
 ORDER_ID_RE = re.compile(r"\A[A-Za-z0-9_-]{1,64}\Z")
 CREATE_ORDER_REQUIRED_OK = frozenset({"storeCode", "orderType", "beType"})
 UNKNOWN_HINT = "请先用 order-status 或到麦当劳 App 订单列表核对，不要重试；本工具不会自动重试"

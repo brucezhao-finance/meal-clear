@@ -10,6 +10,8 @@ SKILL = ROOT / "dist" / "meal-clear.skill"
 REQUIRED = [
     "README.md",
     "CONTEST_DECLARATION.md",
+    "docs/参赛补充说明.md",
+    "docs/性能记录.md",
     "MCP_INTEGRATION.md",
     "mcp-config.example.json",
     "LICENSE",

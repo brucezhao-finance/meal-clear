@@ -14,7 +14,7 @@ from . import net_guard
 from .config import CONTROLLED_WRITE_TOOLS
 from .mcp import ENDPOINT, McpError
 
-MSG_NOT_OPEN = "真实领券/下单尚未开放，计划在 P2 由用户亲自验证后启用。本次未发出任何请求。"
+MSG_NOT_OPEN = "真实领券/下单默认关闭且未经真实验证；如需启用，请阅读 docs/真实写操作启用指南.md。本次未发出任何请求。"
 MSG_NOT_LOOPBACK = "写操作只允许发往本机回环地址（127.0.0.1 或 [::1]）。本次未发出任何请求。"
 MSG_NO_EXECUTE = "缺少 --execute：当前只是预演，本次未发出任何写请求。"
 MSG_DIGEST = "确认摘要缺失或与记录不符，请核对完整摘要编号后重新确认。本次未发出任何写请求。"

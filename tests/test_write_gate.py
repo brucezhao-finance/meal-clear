@@ -184,7 +184,7 @@ class ThreeDoorTests(GateBase):
                 cli.client_from_args(args, write=True)
         for mocked in (ctor, urlopen, opener, init, reader):
             mocked.assert_not_called()
-        self.assertIn("真实领券/下单尚未开放，计划在 P2 由用户亲自验证后启用。本次未发出任何请求。", str(caught.exception))
+        self.assertIn("真实领券/下单默认关闭且未经真实验证；如需启用，请阅读 docs/真实写操作启用指南.md。本次未发出任何请求。", str(caught.exception))
 
     def test_cli_maps_write_denied_to_exit_4(self) -> None:
         with patch.object(cli, "client_from_args", side_effect=WriteDenied("拒绝")):

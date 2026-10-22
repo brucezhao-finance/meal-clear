@@ -255,7 +255,7 @@ def run_order_summary(args: argparse.Namespace) -> int:
 
 
 def run_order_claim(args: argparse.Namespace) -> int:
-    """order-claim：默认预演（只读）；--execute 需三重门。"""
+    """order-claim：默认预演（只读）；--execute 需四道门（官方端点真实写默认关闭）。"""
     ledger = Ledger(ledger_root())
     if not args.execute:
         ledger.resolve(args.digest)
@@ -282,7 +282,7 @@ def _print_order_result(result: Dict[str, Any], as_json: bool, text: str) -> Non
 
 
 def run_order_place(args: argparse.Namespace) -> int:
-    """order-place：默认预演（只读）；--execute 需三重门，仅回环模拟服务可执行。"""
+    """order-place：默认预演（只读）；--execute 需四道门（官方端点真实写默认关闭）。"""
     ledger = Ledger(ledger_root())
     if not args.execute:
         ledger.resolve(args.digest)
@@ -405,7 +405,7 @@ def add_rank_options(parser: argparse.ArgumentParser) -> None:
 
 def main(argv: Optional[list] = None) -> int:
     """分发命令并对预期错误返回非零退出状态。"""
-    parser = argparse.ArgumentParser(description="麦麦明白点：只读选餐与增量调整")
+    parser = argparse.ArgumentParser(description="麦麦明白点：多人约束选餐、多方案排名与增量调整；默认只读，领券/下单默认预演")
     sub = parser.add_subparsers(dest="command", required=True)
     demo = sub.add_parser("demo", help="模拟数据演示修改前后")
     demo.add_argument("--json", action="store_true")
@@ -481,19 +481,19 @@ def main(argv: Optional[list] = None) -> int:
         epilog=write_epilog,
     )
     oclaim.add_argument("--digest", required=True, help="摘要编号（唯一前缀，至少 12 位）")
-    oclaim.add_argument("--execute", action="store_true", help="真正领券（仍需 --confirm-digest 与回环目标）")
+    oclaim.add_argument("--execute", action="store_true", help="真正领券（仍需 --confirm-digest 并通过四道门；官方端点真实写默认关闭）")
     oclaim.add_argument("--confirm-digest", help="完整 64 位摘要编号，表示你已确认该摘要")
     oclaim.add_argument("--token-file")
     oclaim.add_argument("--json", action="store_true")
     oplace = sub.add_parser(
         "order-place",
-        help="下单：默认只读预演；--execute 需完整摘要确认（仅回环模拟服务可执行，不自动付款）",
+        help="下单：默认只读预演；--execute 需完整摘要确认并通过四道门（官方端点真实写默认关闭；不自动付款）",
         description="默认预演，不下单；--execute 需 --confirm-digest（完整 64 位摘要编号）。"
         "订单创建后为待支付，本工具不会付款也不会取消。",
         epilog=write_epilog,
     )
     oplace.add_argument("--digest", required=True, help="摘要编号（唯一前缀，至少 12 位）")
-    oplace.add_argument("--execute", action="store_true", help="真正下单（仍需 --confirm-digest 与回环目标）")
+    oplace.add_argument("--execute", action="store_true", help="真正下单（仍需 --confirm-digest 并通过四道门；官方端点真实写默认关闭）")
     oplace.add_argument("--confirm-digest", help="完整 64 位摘要编号，表示你已确认该摘要")
     oplace.add_argument("--allow-duplicate-basket", action="store_true",
                         help="24 小时内同一篮子已有订单记录时仍允许下单（默认拒绝，防重复下单）")

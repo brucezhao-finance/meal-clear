@@ -159,7 +159,7 @@ class ClaimExecuteTests(unittest.TestCase):
                 code, out = env.run("order-claim", "--digest", digest[:12], "--execute",
                                     "--confirm-digest", digest, "--json")
             self.assertEqual(code, 4)
-            self.assertIn("尚未开放", out)
+            self.assertIn("默认关闭且未经真实验证", out)
             self.assertEqual(len(env.sim.calls), calls_before)
             self.assertEqual(env.sim.controlled_calls, [])
             self.assertEqual(env.record(digest)["steps"]["claim"]["state"], "none")
