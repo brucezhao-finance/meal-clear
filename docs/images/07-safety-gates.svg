@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 690" width="1200" height="690" role="img" aria-labelledby="sg-t sg-d">
 <title id="sg-t">安全闸门:四道门、上限与永久拒绝</title>
-<desc id="sg-d">四道门缺一不可:一要带 --execute;二要提供与记录匹配且未过期的摘要编号;三要写目标固定为本机回环或官方端点;四仅限官方端点,要打开真实写开关、在自己的终端亲手输入确认短语、且不超过金额与次数上限。官方真实写默认关闭、未经真实验证。终端检查无法区分真人与伪终端。永远拒绝的工具包括 cancel-order、delivery-create-address、draw-lottery、mall-create-order、party-order-create 等。模拟数据。图形为自制抽象图案,非官方标识。</desc>
+<desc id="sg-d">四道门缺一不可:一要带 --execute;二要提供与记录匹配且未过期的摘要编号;三要写目标固定为本机回环或官方端点;四仅限官方端点,要打开真实写开关、在自己的终端亲手输入确认短语、且不超过金额与次数上限。官方真实写默认关闭、未经真实验证。终端检查无法区分真人与伪终端。永远拒绝的工具包括 cancel-order、delivery-create-address、draw-lottery、mall-create-order、party-order-create(派对/活动预约)等。团餐没有独立下单工具,团餐的 create-order(beType=6)在官方端点被代码拒绝。模拟数据。图形为自制抽象图案,非官方标识。</desc>
 <style>text{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif} text:not([fill]){fill:#3A2A1A} .m{font-family:Menlo,Consolas,'PingFang SC','Microsoft YaHei',monospace}</style>
 <rect width="1200" height="690" fill="#FFF8E1"/>
 <rect x="0" y="0" width="1200" height="70" fill="#DA291C"/>
@@ -50,15 +50,16 @@
 <text x="60" y="500" font-size="20" text-anchor="start" font-weight="bold" fill="#DA291C">✕</text>
 <text x="90" y="500" font-size="19" text-anchor="start" font-weight="normal">mall-create-order · 积分商城下单</text>
 <text x="60" y="524" font-size="20" text-anchor="start" font-weight="bold" fill="#DA291C">✕</text>
-<text x="90" y="524" font-size="19" text-anchor="start" font-weight="normal">party-order-create · 团餐下单</text>
+<text x="90" y="524" font-size="19" text-anchor="start" font-weight="normal">party-order-create · 派对/活动预约</text>
 <rect x="615" y="345" width="555" height="195" rx="14" fill="#FFFFFF" stroke="#2E7D32" stroke-width="4"/>
 <rect x="615" y="345" width="555" height="50" rx="14" fill="#2E7D32"/>
 <rect x="615" y="380" width="555" height="15" fill="#2E7D32"/>
 <text x="892" y="380" font-size="24" text-anchor="middle" font-weight="bold" fill="#FFFFFF">官方端点(默认关闭)</text>
-<text x="892" y="428" font-size="20" text-anchor="middle" font-weight="bold">默认关闭 · 未经真实验证</text>
-<text x="892" y="458" font-size="20" text-anchor="middle" font-weight="normal">开关未开:发请求前就拒绝</text>
-<text x="892" y="488" font-size="20" text-anchor="middle" font-weight="normal">开启后仍要终端亲手确认</text>
-<text x="892" y="518" font-size="20" text-anchor="middle" font-weight="normal">终端检查分不清真人与伪终端</text>
+<text x="892" y="424" font-size="20" text-anchor="middle" font-weight="bold">默认关闭 · 未经真实验证</text>
+<text x="892" y="450" font-size="19" text-anchor="middle" font-weight="normal">开关未开:发请求前就拒绝</text>
+<text x="892" y="476" font-size="19" text-anchor="middle" font-weight="normal">开启后仍要终端亲手确认</text>
+<text x="892" y="502" font-size="19" text-anchor="middle" font-weight="normal">终端检查分不清真人与伪终端</text>
+<text x="892" y="528" font-size="19" text-anchor="middle" font-weight="normal">团餐 create-order(beType=6)在此端点被拒</text>
 <rect x="30" y="560" width="1140" height="100" rx="14" fill="#FFC72C"/>
 <text x="600" y="598" font-size="24" text-anchor="middle" font-weight="bold">写前先落本地账本 · 失败或结果未知时绝不自动重试</text>
 <text x="600" y="634" font-size="19" text-anchor="middle" font-weight="normal">拱形图标为自制示意 · 数字与场景为模拟数据 · 非麦当劳官方产品</text>

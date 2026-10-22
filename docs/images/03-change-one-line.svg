@@ -37,4 +37,5 @@
 <text x="180" y="587" font-size="38" text-anchor="middle" font-weight="bold" fill="#3A2A1A">+¥5.00</text>
 <text x="350" y="570" font-size="22" text-anchor="start" font-weight="bold">差价 delta_cents: 500(分)</text>
 <text x="350" y="600" font-size="18" text-anchor="start" font-weight="normal">只重算受影响部分 · old_quote_reused: false(旧报价不复用)</text>
+<text x="600" y="628" font-size="17" text-anchor="middle" font-weight="normal">非麦当劳官方产品 · 图标为自制示意</text>
 </svg>

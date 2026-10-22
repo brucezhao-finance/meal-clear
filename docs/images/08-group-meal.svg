@@ -53,4 +53,5 @@
 <text x="600" y="590" font-size="28" text-anchor="middle" font-weight="bold" fill="#B71C1C">团餐真实下单未开放</text>
 <text x="600" y="624" font-size="20" text-anchor="middle" font-weight="normal">官方端点上团餐领券/下单被代码拒绝(退出码 4);本机回环模拟服务可演练</text>
 <text x="600" y="650" font-size="18" text-anchor="middle" font-weight="normal">模拟已验证 · 真实只读待用户验证 · 图中数字均为模拟数据</text>
+<text x="600" y="681" font-size="17" text-anchor="middle" font-weight="normal">非麦当劳官方产品 · 图标为自制示意</text>
 </svg>
