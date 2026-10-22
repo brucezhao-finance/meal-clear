@@ -9,7 +9,7 @@ from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
 from meal_clear.cli import main  # noqa: E402
-from meal_clear.mcp import READ_ONLY, McpClient  # noqa: E402
+from meal_clear.mcp import ALL_READ_ONLY, READ_ONLY, McpClient  # noqa: E402
 from sim_mcp import ADDR_SENTINELS, COUPON_SENTINELS, SIM_TOKEN, SimMcpServer  # noqa: E402
 
 SENTINELS = ADDR_SENTINELS + COUPON_SENTINELS + (
@@ -60,3 +60,8 @@ def write_json(directory: Path, name: str, value) -> str:
 def only_read_tools(sim: SimMcpServer) -> bool:
     """服务端记录的调用全部属于只读白名单，且没有写尝试。"""
     return not sim.write_attempts and {c["tool"] for c in sim.calls} <= READ_ONLY
+
+
+def only_group_read_tools(sim: SimMcpServer) -> bool:
+    """服务端调用全部属于只读白名单（含团餐专用只读），且没有写尝试。"""
+    return not sim.write_attempts and {c["tool"] for c in sim.calls} <= ALL_READ_ONLY

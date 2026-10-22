@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import copy
 import json
+import re
 import threading
 import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -49,6 +50,13 @@ READ_TOOLS = (
     "delivery-query-stores",
     "query-order",
 )
+# 团餐专用只读工具（READ_TOOLS 不变）
+GROUP_READ_TOOLS = ("query-promotions", "query-meal-assistance")
+GROUP_REQUIRED = {
+    "query-promotions": ["storeCode", "orderType", "beType"],
+    "query-meal-assistance": ["storeCode"],
+}
+RESERVATION_RE = re.compile(r"^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$")
 
 # 哨兵：这些字符串绝不能出现在任何对外输出里
 ADDR_SENTINELS = ("ADDR-SENTINEL-1", "PHONE-SENTINEL-1", "CONTACT-SENTINEL-1")
@@ -66,6 +74,41 @@ DELIVERY_STORES = {
     ],
     "ADDRID-2": [{"storeCode": "30002", "storeName": "模拟外送店B", "beCode": "BE30002"}],
 }
+# 团餐（beType=6）可配送门店，与外送（beType=2）分开
+GROUP_STORES = {
+    "ADDRID-1": [
+        {"storeCode": "30001", "storeName": "模拟团餐店A", "beCode": "GBE30001"},
+        {"storeCode": "30002", "storeName": "模拟团餐店B", "beCode": "GBE30002"},
+    ],
+    "ADDRID-2": [{"storeCode": "30002", "storeName": "模拟团餐店B", "beCode": "GBE30002"}],
+}
+# 助餐服务（合成）：一个默认选中、一个可选、一个不可用
+GROUP_ASSISTANCE = [
+    {"gmServiceCode": "GM-STD", "gmServiceName": "模拟标准送达", "enable": True, "selected": True,
+     "serviceItems": [{"name": "模拟送达服务"}], "unusableReason": ""},
+    {"gmServiceCode": "GM-ALT", "gmServiceName": "模拟分装送达", "enable": True, "selected": False,
+     "serviceItems": [{"name": "模拟分装服务"}], "unusableReason": ""},
+    {"gmServiceCode": "GM-PRO", "gmServiceName": "模拟专人服务", "enable": False, "selected": False,
+     "serviceItems": [{"name": "模拟专人服务"}], "unusableReason": "2: 专人服务需提前4h预约"},
+]
+# 促销规则（合成；金额单位「元」字符串，仅供提示，绝不参与报价）
+GROUP_PROMOTIONS = [
+    {"promotionId": "PROMO-1", "promotionType": 31, "ruleCategory": 40, "beTypes": [6],
+     "startTime": "2099-01-01 00:00:00", "endTime": "2099-12-31 23:59:59", "gmServiceCode": "",
+     "products": [{"productCode": "", "type": 3}],
+     "ruleDetail": {"orderReduce": {"reduceInfo": [
+         {"startDiscountPoint": "500", "reduceAmount": "50"},
+         {"startDiscountPoint": "1000", "reduceAmount": "120"}]}}},
+    {"promotionId": "PROMO-2", "promotionType": 33, "ruleCategory": 30, "beTypes": [6],
+     "startTime": "2099-01-01 00:00:00", "endTime": "2099-12-31 23:59:59", "gmServiceCode": "GM-STD",
+     "products": [{"productCode": "", "type": 3}],
+     "ruleDetail": {"orderDiscount": {"discount": "30", "startDiscountPoint": "2000"}}},
+    {"promotionId": "PROMO-3", "promotionType": 31, "ruleCategory": 40, "beTypes": [6],
+     "startTime": "2099-01-01 00:00:00", "endTime": "2099-12-31 23:59:59", "gmServiceCode": "GM-ALT",
+     "products": [{"productCode": "", "type": 3}],
+     "ruleDetail": {"orderReduce": {"reduceInfo": [
+         {"startDiscountPoint": "300", "reduceAmount": "20"}]}}},
+]
 ADDRESSES = [
     {
         "addressId": "ADDRID-1",
@@ -172,6 +215,9 @@ class SimMcpServer:
         self._order_keys: set = set()
         self.request_log_methods: List[str] = []
         self.faults: Dict[str, List[Any]] = {}
+        self._group_discount = 0
+        self.group_promotions: List[Dict[str, Any]] = copy.deepcopy(GROUP_PROMOTIONS)
+        self.group_assistance: List[Dict[str, Any]] = copy.deepcopy(GROUP_ASSISTANCE)
         self._lock = threading.Lock()
         self._server: Optional[ThreadingHTTPServer] = None
         self._thread: Optional[threading.Thread] = None
@@ -215,6 +261,22 @@ class SimMcpServer:
     def set_price_drift(self, delta: int) -> None:
         """从下一次 calculate-price 起，总价偏移 delta 分。"""
         self._price_drift = delta
+
+    def set_group_discount(self, cents: int) -> None:
+        """团餐 calculate-price 的官方折扣（分）；默认 0。价格只随它变化，与促销规则表无关。"""
+        self._group_discount = cents
+
+    def set_group_promotions(self, rules: List[Dict[str, Any]]) -> None:
+        """替换/清空 query-promotions 返回的规则表（不影响 calculate-price）。"""
+        self.group_promotions = copy.deepcopy(rules)
+
+    def set_group_assistance(self, items: List[Dict[str, Any]]) -> None:
+        """替换 query-meal-assistance 返回的助餐服务。"""
+        self.group_assistance = copy.deepcopy(items)
+
+    def group_calls(self) -> List[Dict[str, Any]]:
+        """服务端收到的团餐专用只读工具调用。"""
+        return [c for c in self.calls if c["tool"] in GROUP_READ_TOOLS]
 
     def set_take_way_count(self, n: int) -> None:
         """到店核价返回的取餐方式数量（默认 2）。"""
@@ -268,6 +330,8 @@ class SimMcpServer:
         elif method == "tools/list":
             tools = [{"name": n, "inputSchema": {"type": "object", "required": []}}
                      for n in READ_TOOLS + WRITE_TOOLS]
+            tools += [{"name": n, "inputSchema": {"type": "object", "required": list(GROUP_REQUIRED[n])}}
+                      for n in GROUP_READ_TOOLS]
             self._rpc(h, rid, {"tools": tools})
         elif method == "tools/call":
             self._call(h, rid, msg.get("params") or {})
@@ -329,7 +393,7 @@ class SimMcpServer:
                 payload = {"code": 0, "data": self._order_detail(order)}
             self._rpc(h, rid, {"structuredContent": payload})
             return
-        error = self._rule_error(name, args)
+        error = self._rule_error(name, args) or self._group_rule_error(name, args)
         if error:
             payload = {"code": 400100, "message": error}
         elif name == "calculate-price":
@@ -380,7 +444,7 @@ class SimMcpServer:
             self._rpc(h, rid, {"structuredContent": {"code": 200, "message": "ok",
                                                       "data": {"boundCount": len(CLAIMABLE)}}})
             return
-        error = self._order_rule_error(args)
+        error = self._order_rule_error(args) or self._group_rule_error("create-order", args)
         if error:
             self._rpc(h, rid, {"structuredContent": {"code": 400100, "message": error}})
             return
@@ -487,6 +551,8 @@ class SimMcpServer:
         """calculate-price：基础价 + 领券/漂移偏移；到店返回 takeWayList。"""
         data = self._data("calculate-price", a)
         delta = self._price_drift
+        if a.get("beType") == 6:
+            delta -= self._group_discount
         if self._claimed:
             delta += self._claim_effect["price_delta"]
         data["productPrice"] = max(data["productPrice"] + delta, 0)
@@ -499,8 +565,48 @@ class SimMcpServer:
                 self._last_take_way = [x["code"] for x in lst]
         return data
 
+    def _group_rule_error(self, name: str, a: Dict[str, Any]) -> Optional[str]:
+        """团餐专用规则：新工具入参、gmServiceCode/reservationDate 校验；非团餐不接受 gmServiceCode。"""
+        if name == "query-promotions":
+            if not a.get("storeCode") or a.get("orderType") != 2 or a.get("beType") != 6:
+                return "storeCode/orderType=2/beType=6 必传"
+            if not a.get("beCode"):
+                return "团餐场景 beCode 必传"
+        elif name == "query-meal-assistance":
+            if not a.get("storeCode"):
+                return "storeCode 缺失"
+            if a.get("beType") not in (None, 6):
+                return "此接口仅团餐场景使用"
+            if a.get("beType") == 6 and (a.get("orderType") != 2 or not a.get("beCode")):
+                return "团餐 orderType=2 且 beCode 必传"
+        if name in GROUP_READ_TOOLS or name in ("calculate-price", "create-order"):
+            if "reservationDate" in a and not (
+                isinstance(a["reservationDate"], str) and RESERVATION_RE.match(a["reservationDate"])
+            ):
+                return "reservationDate 格式必须为 yyyy-MM-dd HH:mm"
+        if name in ("calculate-price", "create-order"):
+            if a.get("beType") != 6:
+                if "gmServiceCode" in a:
+                    return "gmServiceCode 仅团餐使用"
+                return None
+            gm = a.get("gmServiceCode")
+            if not gm:
+                return "团餐 gmServiceCode 必传"
+            match = [x for x in self.group_assistance if x["gmServiceCode"] == gm]
+            if not match or not match[0]["enable"]:
+                return "gmServiceCode 无效或不可用"
+            if name == "create-order" and "takeWayCode" in a:
+                return "外送/团餐不传 takeWayCode"
+        return None
+
     def _stateful_data(self, name: str, a: Dict[str, Any]) -> Any:
         """受领券状态影响的只读工具。"""
+        if name == "delivery-query-stores" and a.get("beType") == 6:
+            return [dict(x) for x in GROUP_STORES.get(a["addressId"], [])]
+        if name == "query-promotions":
+            return copy.deepcopy(self.group_promotions)
+        if name == "query-meal-assistance":
+            return {"mealAssistanceItems": copy.deepcopy(self.group_assistance)}
         if name == "available-coupons" and self._claimed and self._claim_effect["clear_claimable"]:
             return []
         if name == "query-store-coupons" and self._claimed and self._claim_effect["add_store_coupon"]:

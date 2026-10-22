@@ -13,7 +13,13 @@ from pathlib import Path
 from typing import Any, Callable, Deque, Dict, Optional
 
 from . import net_guard
-from .config import CONTROLLED_WRITE_TOOLS, OFFICIAL_ENDPOINT, RATE_LIMIT, TOOL_CREATE_ORDER
+from .config import (
+    CONTROLLED_WRITE_TOOLS,
+    GROUP_READ_ONLY_TOOLS,
+    OFFICIAL_ENDPOINT,
+    RATE_LIMIT,
+    TOOL_CREATE_ORDER,
+)
 
 ENDPOINT = OFFICIAL_ENDPOINT
 READ_ONLY = frozenset(
@@ -32,6 +38,9 @@ READ_ONLY = frozenset(
         "query-order",
     }
 )
+# 团餐专用只读工具（READ_ONLY 保持 12 个不变；传输层白名单是 ALL_READ_ONLY）
+GROUP_READ_ONLY = frozenset(GROUP_READ_ONLY_TOOLS)
+ALL_READ_ONLY = READ_ONLY | GROUP_READ_ONLY
 # 受控写工具只能经 gate.WriteGate → McpClient.call_write 使用
 CONTROLLED_WRITE = CONTROLLED_WRITE_TOOLS
 
@@ -225,7 +234,7 @@ class McpClient:
         write = False
         if method == "tools/call":
             name = params.get("name") if isinstance(params, dict) else None
-            if not isinstance(name, str) or name not in READ_ONLY:
+            if not isinstance(name, str) or name not in ALL_READ_ONLY:
                 # 传输层兜底：非只读工具必须处于 call_write 上下文，且目标是严格回环，
                 # 或（官方端点）call_write 已校验过人工批准并设置了官方上下文
                 if (
@@ -376,7 +385,7 @@ class McpClient:
 
     def call(self, name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
         """拒绝所有白名单外工具，包括下单和领券。"""
-        if name not in READ_ONLY:
+        if name not in ALL_READ_ONLY:
             raise McpError("首版客户端拒绝非白名单工具")
         started = time.monotonic()
         try:

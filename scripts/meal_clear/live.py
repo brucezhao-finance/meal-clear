@@ -15,6 +15,8 @@ from .config import (
     RUN_CALL_CAP,
     TOOL_AUTO_BIND_COUPONS,
     TOOL_CREATE_ORDER,
+    TOOL_QUERY_MEAL_ASSISTANCE,
+    TOOL_QUERY_PROMOTIONS,
 )
 from .core import InputError, compose, integer, validate_request
 from .fulfillment import context_key, wire_context
@@ -329,6 +331,13 @@ TOOL_ALLOWED = {
     "query-order": frozenset({"orderId"}),
     TOOL_CREATE_ORDER: frozenset({"storeCode", "orderType", "beType"}),
     TOOL_AUTO_BIND_COUPONS: frozenset(),
+    # 团餐专用只读工具：必填字段只允许官方 schema 中列出的字段
+    TOOL_QUERY_PROMOTIONS: frozenset(
+        {"storeCode", "orderType", "beType", "beCode", "reservationDate"}
+    ),
+    TOOL_QUERY_MEAL_ASSISTANCE: frozenset(
+        {"storeCode", "beCode", "reservationDate", "beType", "orderType"}
+    ),
 }
 
 
