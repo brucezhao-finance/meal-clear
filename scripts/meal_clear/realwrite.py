@@ -335,6 +335,15 @@ class RealWriteSession:
         check_amount(self.cfg, total_cents)
 
     def check_counts(self) -> None:
+        """全局锁内、写前落账之前调用：先重检开关与 write-lock（人工确认期间可能已变），再查次数上限。"""
+        state_dir = Path(self.ledger.root).parent
+        ensure_enabled(state_dir)
+        if is_locked(state_dir):
+            raise RealWriteDenied(
+                "真实写已被 write-lock 锁定（确认期间生效）。本次未发出任何请求。",
+                "locked",
+                EXIT_LOCKED,
+            )
         check_counts(self.ledger, self.cfg, self.tool, self.now)
 
     def confirm(self, summary_view: Iterable[str]) -> RealWriteApproval:

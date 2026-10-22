@@ -338,5 +338,61 @@ class OutputTests(Base):
             self.assertEqual(len(env.official_writes(CLAIM)), 1)
 
 
+class MidPromptRecheckTests(Base):
+    """人工确认提示期间：write-lock 加锁或开关被关闭，必须在发出请求前重检并拒绝（传输层零写调用）。"""
+
+    @staticmethod
+    def _hook(env, digest, tool, action):
+        import os as _os
+        from real_write_support import FakeTTY
+
+        class Hooked(FakeTTY):
+            def readline(self):
+                action(env)
+                return super().readline()
+
+        env.stdin = Hooked(env.phrase(digest, tool) + "\n")
+        env.stdout = FakeTTY("")
+        return _os
+
+    def test_lock_during_claim_prompt_blocks_write(self):
+        with OfficialEnv() as env:
+            code, out, data = env.summary()
+            digest = data["digest"]
+            self._hook(env, digest, CLAIM, lambda e: realwrite.set_lock(e.state))
+            code, out = env.claim(digest, execute=True)
+            self.assertEqual(code, EXIT_LOCKED, out)
+            self.assertEqual(env.official_writes(), [])
+            self.assertEqual(env.sim.claims, 0)
+
+    def test_lock_during_order_prompt_blocks_write(self):
+        with OfficialEnv() as env:
+            digest = env.official_ready()
+            self._hook(env, digest, ORDER, lambda e: realwrite.set_lock(e.state))
+            code, out = env.place(digest, True, None)
+            self.assertEqual(code, EXIT_LOCKED, out)
+            self.assertEqual(env.official_writes(ORDER), [])
+
+    def test_switch_off_during_claim_prompt_blocks_write(self):
+        import os
+        with OfficialEnv() as env:
+            code, out, data = env.summary()
+            digest = data["digest"]
+            self._hook(env, digest, CLAIM, lambda e: os.environ.pop(realwrite.REAL_WRITE_ENV, None))
+            code, out = env.claim(digest, execute=True)
+            self.assertNotEqual(code, 0, out)
+            self.assertEqual(env.official_writes(), [])
+            self.assertEqual(env.sim.claims, 0)
+
+    def test_switch_off_during_order_prompt_blocks_write(self):
+        import os
+        with OfficialEnv() as env:
+            digest = env.official_ready()
+            self._hook(env, digest, ORDER, lambda e: os.environ.pop(realwrite.REAL_WRITE_ENV, None))
+            code, out = env.place(digest, True, None)
+            self.assertNotEqual(code, 0, out)
+            self.assertEqual(env.official_writes(ORDER), [])
+
+
 if __name__ == "__main__":
     unittest.main()
