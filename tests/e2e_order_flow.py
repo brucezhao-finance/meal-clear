@@ -4,6 +4,7 @@
 打印每一步的真实终端输出和服务端调用统计；退出码 0 表示全部断言成立。
 用法：python3 tests/e2e_order_flow.py
 """
+import json
 import re
 import sys
 from pathlib import Path
@@ -17,14 +18,19 @@ NEW_DIGEST_LINE = re.compile(r"新摘要编号：([0-9a-f]{64})")
 EXPECTED_READ_TOOLS = {
     "query-nearby-stores", "query-meals", "query-meal-detail", "query-store-coupons", "calculate-price",
     "available-coupons", "query-my-coupons", "delivery-query-addresses", "delivery-query-stores",
-    "query-order",
+    "query-order", "query-promotions", "query-meal-assistance",
 }
 CONTROLLED = ("auto-bind-coupons", "create-order")
+GROUP_PEOPLE = [{"id": "P%02d" % i, "hard": {}, "prefer": {}} for i in range(1, 21)]
+GROUP_FUL = {"type": "group", "be_code": "GBE30001", "address_index": 1, "gm_service_code": "GM-STD"}
+GROUP_REQ = {"store": "30001", "fulfillment": GROUP_FUL, "people": GROUP_PEOPLE,
+             "budget": 200040, "per_person_budget_cents": 10002}
 SCENARIOS = {
     "到店单人": {},
     "外送": delivery_request(),
     "3 人到店": {"people": [{"id": i, "hard": {"non_spicy": True}, "prefer": {}} for i in "ABC"]},
 }
+GROUP_SCENARIOS = {"团餐20人": GROUP_REQ}  # 与 SCENARIOS 分开，保持既有场景清单不变
 
 
 def ensure(condition, message):
@@ -169,8 +175,105 @@ def run_official_scenario():
         print("开关关闭：claim/place 均退出 4，桩零请求。")
 
 
+def run_group_walkthrough():
+    """团餐脚本驱动全流程（回环 sim）：地址→团餐门店→group-info→live-plan→摘要→预演→领券/下单，并手算核对。"""
+    from sim_mcp import MEALS
+    print("=" * 78)
+    print("场景：团餐 20 人脚本驱动全流程（回环模拟服务，全部合成数据）")
+    print("=" * 78)
+    with OrderEnv() as env:
+        total_only = dict(GROUP_REQ, budget=200050)
+        del total_only["per_person_budget_cents"]
+        total_path = env.request_path(**total_only)
+        path = env.request_path(**GROUP_REQ)
+        flow = Flow(env, path)
+        code, out = flow.run("列出配送地址序号（不含地址内容）", "addresses")
+        ensure(code == 0 and "ADDR-SENTINEL" not in out, "团餐：addresses 退出 %s" % code)
+        code, out = flow.run("团餐可配送门店（beType=6）", "delivery-stores", "--address-index", "1", "--be-type", "6")
+        ensure(code == 0 and "GBE30001" in out, "团餐：delivery-stores --be-type 6 退出 %s" % code)
+        stores = [c["args"] for c in env.sim.calls if c["tool"] == "delivery-query-stores"]
+        ensure([a["beType"] for a in stores] == [6], "团餐：门店查询应为 beType=6")
+        code, out = flow.run("group-info：只给总预算 ¥2000.50（手算：200050÷20=10002 余 10）",
+                             "group-info", "--request", total_path)
+        ensure(code == 0 and "¥100.02" in out and "余 10 分" in out and "以官方核价为准" in out,
+               "团餐：group-info 预算/文案不符：%s" % out)
+        ensure(not any(w in out for w in ("ADDR-SENTINEL", "PHONE-SENTINEL", "CONTACT-SENTINEL", "ADDRID")), "团餐：group-info 泄露地址")
+        code, out = flow.run("live-plan：20 人、人均预算 ¥100.02", "live-plan", "--request", path, "--top", "2")
+        ensure(code == 0 and "官方核价" in out, "团餐：live-plan 退出 %s" % code)
+        quotes = [c["args"] for c in env.sim.calls if c["tool"] == "calculate-price"]
+        ensure(quotes and all(q["gmServiceCode"] == "GM-STD" and q["beType"] == 6 for q in quotes), "团餐：核价入参不符")
+        code, out = flow.run("order-summary（生成摘要）", "order-summary", "--request", path)
+        ensure(code == 0, "团餐：order-summary 退出 %s" % code)
+        digest = DIGEST_LINE.search(out).group(1)
+        short = digest[:12]
+        code, jout = env.run("order-summary", "--request", path, "--json")
+        summary = json.loads(jout)
+        ensure(summary["digest"] == digest, "团餐：同输入摘要应一致")
+        # 手算：商品价（MEALS）× 数量（有券行每件减 500）+ 配送费 600 + 包装费 100
+        price_by_name = {n: p for n, p in MEALS.values()}
+        product = 0
+        parts = []
+        for row in summary["lines"]:
+            base = max((n for n in price_by_name if row["name"].startswith(n)), key=len)  # 行名可能带选项后缀
+            unit = price_by_name[base] - (500 if row.get("coupon") else 0)
+            product += unit * row["quantity"]
+            parts.append("%d×%d" % (row["quantity"], unit))
+        hand = product + 600 + 100
+        print("\n手算核对：商品 " + "＋".join(parts) + " = %d 分 + 配送费 600 + 包装费 100 = %d 分（¥%.2f）；摘要官方核价 %d 分；人均 %d 分（向下取整）余 %d 分；预算上限 %d 分"
+              % (product, hand, hand / 100, summary["payable_cents"], hand // 20, hand % 20, GROUP_REQ["budget"]))
+        ensure(hand == summary["payable_cents"], "团餐：手算总价与摘要不一致")
+        ensure(summary["group_budget"]["per_person_cents"] == 10002 and summary["group_budget"]["total_cents"] == 200040,
+               "团餐：摘要人均预算不符")
+        ensure(hand <= GROUP_REQ["budget"], "团餐：总价应在预算内")
+        ensure(flow.controlled() == 0, "团餐：预演前不应有写调用")
+        code, out = flow.run("领券预演（默认不领）", "order-claim", "--digest", short)
+        ensure(code == 0 and flow.controlled() == 0, "团餐：领券预演应不写")
+        code, out = flow.run("下单预演（默认不下）", "order-place", "--digest", short)
+        ensure(code == 0 and flow.controlled() == 0, "团餐：下单预演应不写")
+        code, out = flow.run("确认后领券", "order-claim", "--digest", short, "--execute", "--confirm-digest", digest)
+        ensure(code == 0 and flow.controlled("auto-bind-coupons") == 1, "团餐：领券应恰 1 次")
+        code, out = flow.run("确认后下单", "order-place", "--digest", short, "--execute", "--confirm-digest", digest)
+        ensure(code == 0 and flow.controlled("create-order") == 1 and len(env.sim.orders) == 1, "团餐：下单应恰 1 次")
+        args = env.create_calls()[0]["args"]
+        ensure({k: v for k, v in args.items() if k != "items"} == {
+            "storeCode": "30001", "orderType": 2, "beType": 6, "beCode": "GBE30001", "addressId": "ADDRID-1",
+            "gmServiceCode": "GM-STD", "needTableware": False}, "团餐：create-order 入参不符")
+        ensure("takeWayCode" not in args, "团餐：不应带 takeWayCode")
+        code, out = flow.run("重复下单被拒", "order-place", "--digest", short, "--execute", "--confirm-digest", digest)
+        ensure(code == 5 and flow.controlled("create-order") == 1, "团餐：重复下单应退出 5")
+        _common_checks(flow)
+        for number, step in enumerate(flow.steps, 1):
+            print(f"\n--- 步骤 {number}：{step['title']} ---")
+            print("$ meal-clear " + " ".join(step["argv"]) + f"    [退出码 {step['code']}]")
+            print(step["out"].rstrip())
+        stats = flow.stats()
+        print("\n--- 服务端调用统计（模拟服务）---")
+        print(f"只读调用 {stats['read_calls']} 次（{stats['read_by_tool']}）；auto-bind-coupons {stats['auto-bind-coupons']} 次；"
+              f"create-order {stats['create-order']} 次；已创建订单 {stats['orders']} 个；重复订单 {stats['duplicate_orders']} 个")
+def run_group_official_refusal():
+    """官方端点团餐真实写被拒（打桩，零请求零 initialize），开关开/关均如此。"""
+    from official_support import OfficialEnv
+    print("=" * 78)
+    print("场景：官方端点团餐真实写被拒（打桩传输，零联网）")
+    print("=" * 78)
+    for label, switch in (("开关开启", True), ("开关关闭", False)):
+        with OfficialEnv(switch=switch) as env:
+            code, out, skip = env.summary("--skip-claim", **GROUP_REQ)
+            ensure(code == 0, "官方团餐(%s)：摘要退出 %s" % (label, code))
+            code, out, claim = env.summary(**dict(GROUP_REQ, fulfillment=dict(GROUP_FUL, gm_service_code="GM-ALT")))
+            ensure(code == 0, "官方团餐(%s)：摘要退出 %s" % (label, code))
+            env.mark()
+            code, out = env.official_claim(claim["digest"])
+            ensure(code == 4 and env.since() == ([], 0) and env.official_writes() == [], "官方团餐(%s)：claim 应退出 4 且零请求，实际 %s" % (label, code))
+            print("$ order-claim --execute（官方端点，团餐，%s）    [退出码 %s]\n%s" % (label, code, out.strip()))
+            env.mark()
+            code, out = env.official_place(skip["digest"])
+            ensure(code == 4 and env.since() == ([], 0) and env.official_writes() == [], "官方团餐(%s)：place 应退出 4 且零请求，实际 %s" % (label, code))
+            print("$ order-place --execute（官方端点，团餐，%s）    [退出码 %s]\n%s" % (label, code, out.strip()))
+            ensure(env.sim.controlled_calls == [], "官方团餐：服务端不应有受控写调用")
+        print("%s：团餐 claim/place 均退出 4，桩请求数与 initialize 次数均为 0。" % label)
 def main():
-    for name, req in SCENARIOS.items():
+    for name, req in list(SCENARIOS.items()) + list(GROUP_SCENARIOS.items()):
         for path in ("unchanged", "changed"):
             label = f"{name}／" + ("价格不变" if path == "unchanged" else "领券后价格变化")
             print("=" * 78)
@@ -185,7 +288,9 @@ def main():
             print(f"只读调用 {stats['read_calls']} 次；auto-bind-coupons {stats['auto-bind-coupons']} 次；"
                   f"create-order {stats['create-order']} 次；已创建订单 {stats['orders']} 个；"
                   f"重复订单 {stats['duplicate_orders']} 个；被禁止工具尝试 {len(stats['forbidden_attempts'])} 次")
+    run_group_walkthrough()
     run_official_scenario()
+    run_group_official_refusal()
     print("\n全部场景断言成立。")
     return 0
 

@@ -1,0 +1,162 @@
+{
+  "_comment": "模拟数据，非真实菜单/价格：离线团餐演示请求（20 人，总预算 ¥2000.50 = 200050 分，人均向下取整 10002 分，余 10 分）。",
+  "schema_version": 2,
+  "context": {
+    "store_code": "DEMO",
+    "meal_time": "demo-time"
+  },
+  "fulfillment": {
+    "type": "group",
+    "be_code": "DEMO-GROUP",
+    "address_index": 1,
+    "gm_service_code": "GM-DEMO-1",
+    "reservation_date": "2026-10-30 12:00"
+  },
+  "budget_cents": 200050,
+  "people": [
+    {
+      "id": "P01",
+      "hard": {},
+      "prefer": {
+        "main_meat": "chicken"
+      }
+    },
+    {
+      "id": "P02",
+      "hard": {},
+      "prefer": {
+        "main_meat": "chicken"
+      }
+    },
+    {
+      "id": "P03",
+      "hard": {},
+      "prefer": {
+        "main_meat": "chicken"
+      }
+    },
+    {
+      "id": "P04",
+      "hard": {},
+      "prefer": {
+        "main_meat": "chicken"
+      }
+    },
+    {
+      "id": "P05",
+      "hard": {},
+      "prefer": {
+        "main_meat": "chicken"
+      }
+    },
+    {
+      "id": "P06",
+      "hard": {},
+      "prefer": {
+        "main_meat": "chicken"
+      }
+    },
+    {
+      "id": "P07",
+      "hard": {},
+      "prefer": {
+        "main_meat": "chicken"
+      }
+    },
+    {
+      "id": "P08",
+      "hard": {},
+      "prefer": {
+        "main_meat": "chicken"
+      }
+    },
+    {
+      "id": "P09",
+      "hard": {},
+      "prefer": {
+        "main_meat": "beef"
+      }
+    },
+    {
+      "id": "P10",
+      "hard": {},
+      "prefer": {
+        "main_meat": "beef"
+      }
+    },
+    {
+      "id": "P11",
+      "hard": {},
+      "prefer": {
+        "main_meat": "beef"
+      }
+    },
+    {
+      "id": "P12",
+      "hard": {},
+      "prefer": {
+        "main_meat": "beef"
+      }
+    },
+    {
+      "id": "P13",
+      "hard": {},
+      "prefer": {
+        "main_meat": "beef"
+      }
+    },
+    {
+      "id": "P14",
+      "hard": {},
+      "prefer": {
+        "main_meat": "beef"
+      }
+    },
+    {
+      "id": "P15",
+      "hard": {},
+      "prefer": {
+        "main_meat": "pork"
+      }
+    },
+    {
+      "id": "P16",
+      "hard": {},
+      "prefer": {
+        "main_meat": "pork"
+      }
+    },
+    {
+      "id": "P17",
+      "hard": {},
+      "prefer": {
+        "main_meat": "pork"
+      }
+    },
+    {
+      "id": "P18",
+      "hard": {},
+      "prefer": {
+        "main_meat": "pork"
+      }
+    },
+    {
+      "id": "P19",
+      "hard": {},
+      "prefer": {
+        "main_meat": "pork"
+      }
+    },
+    {
+      "id": "P20",
+      "hard": {},
+      "prefer": {
+        "main_meat": "pork"
+      }
+    }
+  ],
+  "ranking": {
+    "top_n": 3,
+    "priority": "price"
+  }
+}

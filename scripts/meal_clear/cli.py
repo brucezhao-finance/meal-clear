@@ -32,7 +32,15 @@ from .config import (
     UNLOCK_PHRASE,
 )
 from .gate import WriteDenied
-from .group_meal import NeedGmServiceCode, is_group_record
+from .group_meal import (
+    PROMO_NOTE,
+    NeedGmServiceCode,
+    is_group_record,
+    sanitize_assistance,
+    sanitize_promotions,
+    select_gm_service,
+    split_budget,
+)
 from .ledger import Ledger
 from .live import LivePlanner, MultiLivePlanner, timestamp
 from .mcp import McpClient, McpError
@@ -42,6 +50,7 @@ from .report import render_coupon_preview, render_ranking
 from .request_v2 import amend_request_v2, validate_request_v2
 
 ROOT = Path(__file__).resolve().parents[2]
+DEMO_GROUP_NOTICE = "模拟数据，非真实菜单/价格"
 
 
 def ledger_root() -> Path:
@@ -325,6 +334,66 @@ def run_write_lock(args: argparse.Namespace) -> int:
     return EXIT_OK
 
 
+def run_group_info(args: argparse.Namespace) -> int:
+    """group-info：只读。校验门店可配送，展示助餐服务选项、促销规则原始提示与人均预算拆分。"""
+    req = validate_request_v2(read_json(args.request))
+    if req["fulfillment"]["type"] != "group":
+        raise InputError("group-info 需要 fulfillment.type=group 的团餐请求")
+    planner = MultiLivePlanner(client_from_args(args))
+    context = planner.resolve_context(req)  # 门店 + beCode 必须在该地址 beType=6 可配送列表内
+    info = planner.group_info(req, context["wire"], require_selection=False)
+    requested = req["fulfillment"].get("gm_service_code")
+    known = {o["gm_service_code"]: o for o in info["options"]}
+    if not requested:
+        status = "missing"
+    elif requested not in known:
+        status = "not_in_list"
+    elif not known[requested]["enable"]:
+        status = "unavailable"
+    else:
+        status = "valid"
+    output = {
+        "as_of": timestamp(),
+        "delivery": {
+            "deliverable": True,
+            "store_code": req["context"]["store_code"],
+            "store_name": context["store_name"],
+            "be_code": req["fulfillment"]["be_code"],
+        },
+        "budget": split_budget(req),
+        "reservation_date": req["fulfillment"].get("reservation_date"),
+        "assistance": {
+            "user_choice": {"gm_service_code": requested, "status": status},
+            "options": info["options"],
+        },
+        "promotions": info["promotions"],
+        "notes": [PROMO_NOTE, "工具不会替你选择助餐服务，官方默认项只作参考", *info["notes"]],
+    }
+    _print_result(output, args.json, report_orders.render_group_info(output))
+    return EXIT_OK
+def run_demo_group(args: argparse.Namespace) -> int:
+    """demo-group：离线 20 人团餐演示，全部为内置合成数据，不联网。"""
+    catalog = read_json(str(ROOT / "examples/demo-catalog-group.json"))
+    request = read_json(str(ROOT / "examples/request-group-demo.json"))
+    info = read_json(str(ROOT / "examples/demo-group-info.json"))
+    result = compose_v2(request, catalog)
+    options = sanitize_assistance(info["assistance"])
+    selected = select_gm_service(options, result["request"]["fulfillment"].get("gm_service_code"))
+    rules = sanitize_promotions(info["promotions"])
+    for rule in rules:
+        bound = rule["gm_service_code"]
+        rule["applies_to_selected"] = (not bound) or bound == selected["gm_service_code"]
+    MultiLivePlanner._attach_group(
+        result, {"options": options, "selected": selected, "promotions": rules, "notes": []}
+    )
+    result["notice"] = DEMO_GROUP_NOTICE
+    assert_public(result)
+    if args.json:
+        print(json.dumps(result, ensure_ascii=False, indent=2))
+    else:
+        print(DEMO_GROUP_NOTICE)
+        print(render_ranking(result, getattr(args, "detail", False)))
+    return 0
 def add_rank_options(parser: argparse.ArgumentParser) -> None:
     """v2 排名选项。"""
     parser.add_argument("--top", type=int, help="展示名次数（仅 v2）")
@@ -363,6 +432,7 @@ def main(argv: Optional[list] = None) -> int:
     addresses.add_argument("--token-file")
     dstores = sub.add_parser("delivery-stores", help="只读查询某地址可配送门店")
     dstores.add_argument("--address-index", type=int, required=True)
+    dstores.add_argument("--be-type", type=int, choices=(2, 6), default=2, help="2=麦乐送外送（默认），6=团餐")
     dstores.add_argument("--token-file")
     coupons = sub.add_parser("coupons", help="只读券预览（可领/已领/本店可用）")
     coupons.add_argument("--request", required=True)
@@ -376,6 +446,13 @@ def main(argv: Optional[list] = None) -> int:
     add_rank_options(live)
     multi = sub.add_parser("demo-multi", help="离线3人多方案排名演示")
     multi.add_argument("--json", action="store_true")
+    ginfo = sub.add_parser("group-info", help="只读团餐信息：可配送确认、助餐服务选项、促销规则提示、人均预算")
+    ginfo.add_argument("--request", required=True, help="fulfillment.type=group 的 schema_version=2 请求")
+    ginfo.add_argument("--token-file")
+    ginfo.add_argument("--json", action="store_true")
+    dgroup = sub.add_parser("demo-group", help="离线20人团餐演示（模拟数据）")
+    dgroup.add_argument("--json", action="store_true")
+    dgroup.add_argument("--detail", action="store_true", help="展开逐人")
     exit_codes = "退出码：" + "；".join(
         f"{code} {report_orders.exit_hint(code)}" for code in range(9)
     )
@@ -513,9 +590,13 @@ def main(argv: Optional[list] = None) -> int:
             result = compose_v2(request, catalog)
             emit(result, args, True)
             return 0
+        if args.command == "group-info":
+            return run_group_info(args)
+        if args.command == "demo-group":
+            return run_demo_group(args)
         if args.command == "inspect-tools":
             current = client_from_args(args).list_tools()["tools"]
-            from .mcp import READ_ONLY
+            from .mcp import ALL_READ_ONLY as READ_ONLY
 
             print(
                 json.dumps(
@@ -578,7 +659,7 @@ def main(argv: Optional[list] = None) -> int:
             planner = MultiLivePlanner(client_from_args(args))
             output = {
                 "as_of": timestamp(),
-                "stores": planner.list_delivery_stores(args.address_index),
+                "stores": planner.list_delivery_stores(args.address_index, args.be_type),
                 "note": "请用户明确选定门店与 beCode，未自动选店或下单",
             }
             assert_public(output)

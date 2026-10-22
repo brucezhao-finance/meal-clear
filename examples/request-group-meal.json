@@ -1,0 +1,122 @@
+{
+  "_comment": "团餐实时示例（占位值，不含任何真实地址）：先 `addresses` 看地址序号，再 `delivery-stores --address-index N --be-type 6` 取团餐可配送门店的 storeCode 与 beCode 填入下面，再用 `group-info --request` 查看助餐服务选项并自己选定 gm_service_code（工具不会替你选官方默认项），最后 `live-plan`/`order-summary`。实时核价请把 meal_time 保持为 now；reservation_date 格式 yyyy-MM-dd HH:mm，可省略。团餐真实下单未开放，只能只读比价与回环模拟演练。",
+  "schema_version": 2,
+  "context": {
+    "store_code": "REPLACE_WITH_STORE_CODE",
+    "meal_time": "now"
+  },
+  "fulfillment": {
+    "type": "group",
+    "be_code": "REPLACE_WITH_BE_CODE",
+    "address_index": 1,
+    "gm_service_code": "REPLACE_WITH_GM_SERVICE_CODE",
+    "reservation_date": "2099-01-01 12:00"
+  },
+  "per_person_budget_cents": 10000,
+  "people": [
+    {
+      "id": "P01",
+      "hard": {},
+      "prefer": {}
+    },
+    {
+      "id": "P02",
+      "hard": {},
+      "prefer": {}
+    },
+    {
+      "id": "P03",
+      "hard": {},
+      "prefer": {}
+    },
+    {
+      "id": "P04",
+      "hard": {},
+      "prefer": {}
+    },
+    {
+      "id": "P05",
+      "hard": {},
+      "prefer": {}
+    },
+    {
+      "id": "P06",
+      "hard": {},
+      "prefer": {}
+    },
+    {
+      "id": "P07",
+      "hard": {},
+      "prefer": {}
+    },
+    {
+      "id": "P08",
+      "hard": {},
+      "prefer": {}
+    },
+    {
+      "id": "P09",
+      "hard": {},
+      "prefer": {}
+    },
+    {
+      "id": "P10",
+      "hard": {},
+      "prefer": {}
+    },
+    {
+      "id": "P11",
+      "hard": {},
+      "prefer": {}
+    },
+    {
+      "id": "P12",
+      "hard": {},
+      "prefer": {}
+    },
+    {
+      "id": "P13",
+      "hard": {},
+      "prefer": {}
+    },
+    {
+      "id": "P14",
+      "hard": {},
+      "prefer": {}
+    },
+    {
+      "id": "P15",
+      "hard": {},
+      "prefer": {}
+    },
+    {
+      "id": "P16",
+      "hard": {},
+      "prefer": {}
+    },
+    {
+      "id": "P17",
+      "hard": {},
+      "prefer": {}
+    },
+    {
+      "id": "P18",
+      "hard": {},
+      "prefer": {}
+    },
+    {
+      "id": "P19",
+      "hard": {},
+      "prefer": {}
+    },
+    {
+      "id": "P20",
+      "hard": {},
+      "prefer": {}
+    }
+  ],
+  "ranking": {
+    "top_n": 3,
+    "priority": "price"
+  }
+}

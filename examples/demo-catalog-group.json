@@ -1,0 +1,167 @@
+{
+  "mode": "simulation",
+  "as_of": "2026-10-24（模拟数据，非真实采集）",
+  "context": {
+    "store_code": "DEMO",
+    "meal_time": "demo-time",
+    "fulfillment": "group",
+    "be_code": "DEMO-GROUP",
+    "reservation_date": "2026-10-30 12:00"
+  },
+  "order_fee_cents": 0,
+  "price_source": "完全虚构的测试价格，不是麦当劳现价",
+  "offers": [
+    {
+      "id": "g-chicken",
+      "name": "模拟团餐鸡肉套餐",
+      "price_cents": 4800,
+      "card_fee_cents": 0,
+      "facts": {
+        "main_meat": {
+          "value": "chicken",
+          "source": "模拟数据：主食肉类"
+        }
+      },
+      "items": [
+        {
+          "code": "g-chicken-main",
+          "name": "模拟鸡肉堡",
+          "quantity": 1,
+          "role": "main"
+        },
+        {
+          "code": "g-chicken-side1",
+          "name": "模拟薯条",
+          "quantity": 1,
+          "role": "side"
+        },
+        {
+          "code": "g-chicken-side2",
+          "name": "模拟鸡块",
+          "quantity": 1,
+          "role": "side"
+        },
+        {
+          "code": "g-chicken-drink",
+          "name": "模拟饮料",
+          "quantity": 1,
+          "role": "drink"
+        }
+      ]
+    },
+    {
+      "id": "g-beef",
+      "name": "模拟团餐牛肉套餐",
+      "price_cents": 5600,
+      "card_fee_cents": 0,
+      "facts": {
+        "main_meat": {
+          "value": "beef",
+          "source": "模拟数据：主食肉类"
+        }
+      },
+      "items": [
+        {
+          "code": "g-beef-main",
+          "name": "模拟牛肉堡",
+          "quantity": 1,
+          "role": "main"
+        },
+        {
+          "code": "g-beef-side1",
+          "name": "模拟薯条",
+          "quantity": 1,
+          "role": "side"
+        },
+        {
+          "code": "g-beef-side2",
+          "name": "模拟鸡块",
+          "quantity": 1,
+          "role": "side"
+        },
+        {
+          "code": "g-beef-drink",
+          "name": "模拟饮料",
+          "quantity": 1,
+          "role": "drink"
+        }
+      ]
+    },
+    {
+      "id": "g-pork",
+      "name": "模拟团餐猪肉套餐",
+      "price_cents": 4500,
+      "card_fee_cents": 0,
+      "facts": {
+        "main_meat": {
+          "value": "pork",
+          "source": "模拟数据：主食肉类"
+        }
+      },
+      "items": [
+        {
+          "code": "g-pork-main",
+          "name": "模拟猪肉堡",
+          "quantity": 1,
+          "role": "main"
+        },
+        {
+          "code": "g-pork-side1",
+          "name": "模拟薯条",
+          "quantity": 1,
+          "role": "side"
+        },
+        {
+          "code": "g-pork-side2",
+          "name": "模拟玉米杯",
+          "quantity": 1,
+          "role": "side"
+        },
+        {
+          "code": "g-pork-drink",
+          "name": "模拟饮料",
+          "quantity": 1,
+          "role": "drink"
+        }
+      ]
+    },
+    {
+      "id": "g-fish",
+      "name": "模拟团餐鱼排套餐",
+      "price_cents": 5200,
+      "card_fee_cents": 0,
+      "facts": {
+        "main_meat": {
+          "value": "fish",
+          "source": "模拟数据：主食肉类"
+        }
+      },
+      "items": [
+        {
+          "code": "g-fish-main",
+          "name": "模拟鱼排堡",
+          "quantity": 1,
+          "role": "main"
+        },
+        {
+          "code": "g-fish-side1",
+          "name": "模拟薯条",
+          "quantity": 1,
+          "role": "side"
+        },
+        {
+          "code": "g-fish-side2",
+          "name": "模拟玉米杯",
+          "quantity": 1,
+          "role": "side"
+        },
+        {
+          "code": "g-fish-drink",
+          "name": "模拟饮料",
+          "quantity": 1,
+          "role": "drink"
+        }
+      ]
+    }
+  ]
+}

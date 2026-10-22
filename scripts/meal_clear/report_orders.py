@@ -84,6 +84,13 @@ def render_summary(summary: Dict[str, Any], detail: bool = False) -> str:
     else:
         for person in summary["per_person"]:
             lines.append(f"- {person['person_id']}：{person['name']}（{_items_text(person['items'])}）")
+    budget = summary.get("group_budget")
+    if budget:
+        lines.append(
+            f"团餐人均预算：{yuan(budget['per_person_cents'])}（向下取整），余 {budget['remainder_cents']} 分留在总预算内；"
+            f"助餐服务：{ful.get('gm_service_name') or ful.get('gm_service_code')}"
+            + (f"；预约时间：{ful['reservation_date']}" if ful.get("reservation_date") else "")
+        )
     lines.append("")
     lines.append("## 商品行（将提交核价的数量）")
     for row in summary["lines"]:
@@ -136,6 +143,48 @@ def render_summary(summary: Dict[str, Any], detail: bool = False) -> str:
     return "\n".join(lines)
 
 
+def render_group_info(info: Dict[str, Any]) -> str:
+    """group-info 文本：可配送确认、预算拆分、助餐服务选项、促销规则原始提示。"""
+    delivery = info["delivery"]
+    budget = info["budget"]
+    lines = [
+        "# 团餐信息（只读）",
+        "",
+        f"可配送确认：门店 {delivery['store_code']}（{delivery['store_name'] or '名称未核实'}）、be_code {delivery['be_code']} 在所选地址的团餐可配送列表内",
+        f"人均预算：{yuan(budget['per_person_cents'])}（向下取整），余 {budget['remainder_cents']} 分留在总预算内；"
+        f"总预算 {yuan(budget['total_cents'])} 是硬约束，共 {budget['people_count']} 人",
+    ]
+    if info.get("reservation_date"):
+        lines.append(f"预约时间：{info['reservation_date']}")
+    choice = info["assistance"]["user_choice"]
+    lines.extend(["", "## 助餐服务（请自己选定，写入 fulfillment.gm_service_code）"])
+    for opt in info["assistance"]["options"]:
+        state = "可选" if opt["enable"] else "不可用" + (f"（{opt['unusable_reason']}）" if opt["unusable_reason"] else "")
+        tags = "；官方默认项，仅供参考，不会自动采用" if opt["official_default"] else ""
+        lines.append(f"{opt['index']}) {opt['name']}  gm_service_code={opt['gm_service_code']}：{state}{tags}")
+    if not info["assistance"]["options"]:
+        lines.append("当前门店没有返回任何助餐服务")
+    meaning = {"valid": "有效", "missing": "尚未填写", "not_in_list": "不在列表内", "unavailable": "当前不可用"}
+    lines.append(f"你当前填写的 gm_service_code：{choice['gm_service_code'] or '（空）'}：{meaning[choice['status']]}")
+    lines.extend(["", "## 促销规则（官方原始提示，以官方核价为准，本工具不据此计价）"])
+    if not info["promotions"]:
+        lines.append("- 未返回促销规则")
+    for rule in info["promotions"]:
+        scope = "适用于你选定的助餐服务" if rule.get("applies_to_selected") else (
+            "绑定助餐服务 " + rule["gm_service_code"]
+        )
+        if rule.get("tiers"):
+            body = "；".join(f"满¥{t['threshold_yuan']}减¥{t['reduce_yuan']}" for t in rule["tiers"])
+            lines.append(f"- 满减：{body}（{scope}；时间 {rule['start_time']} ~ {rule['end_time']}）")
+        elif rule["kind"] == "满折":
+            lines.append(
+                f"- 满折：满¥{rule.get('discount_threshold_yuan') or '?'}，官方原始 discount={rule.get('discount') or '?'}"
+                f"（含义待验证，不做换算；{scope}）"
+            )
+        else:
+            lines.append(f"- 其他规则（{scope}）")
+    lines.extend(f"- 说明：{note}" for note in info["notes"])
+    return "\n".join(lines)
 def render_claim_preview(preview: Dict[str, Any]) -> str:
     """领券预演：一键领全部、无法逐张选择、不可撤销、本次未调用 auto-bind-coupons。"""
     lines = [

@@ -1,0 +1,103 @@
+{
+  "_comment": "模拟数据，非真实菜单/价格：形状同官方 query-meal-assistance / query-promotions 的合成版本。",
+  "assistance": {
+    "data": {
+      "mealAssistanceItems": [
+        {
+          "gmServiceCode": "GM-DEMO-1",
+          "gmServiceName": "模拟标准送达",
+          "enable": true,
+          "selected": true,
+          "serviceItems": [
+            {
+              "name": "模拟送达服务"
+            }
+          ],
+          "unusableReason": ""
+        },
+        {
+          "gmServiceCode": "GM-DEMO-2",
+          "gmServiceName": "模拟分装送达",
+          "enable": true,
+          "selected": false,
+          "serviceItems": [
+            {
+              "name": "模拟分装服务"
+            }
+          ],
+          "unusableReason": ""
+        },
+        {
+          "gmServiceCode": "GM-DEMO-3",
+          "gmServiceName": "模拟专人服务",
+          "enable": false,
+          "selected": false,
+          "serviceItems": [
+            {
+              "name": "模拟专人服务"
+            }
+          ],
+          "unusableReason": "需提前4小时预约"
+        }
+      ]
+    }
+  },
+  "promotions": {
+    "data": [
+      {
+        "promotionId": "DEMO-PROMO-1",
+        "promotionType": 31,
+        "ruleCategory": 40,
+        "beTypes": [
+          6
+        ],
+        "startTime": "2026-01-01 00:00:00",
+        "endTime": "2099-12-31 23:59:59",
+        "gmServiceCode": "",
+        "products": [
+          {
+            "productCode": "",
+            "type": 3
+          }
+        ],
+        "ruleDetail": {
+          "orderReduce": {
+            "reduceInfo": [
+              {
+                "startDiscountPoint": "500",
+                "reduceAmount": "50"
+              },
+              {
+                "startDiscountPoint": "1000",
+                "reduceAmount": "120"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "promotionId": "DEMO-PROMO-2",
+        "promotionType": 33,
+        "ruleCategory": 30,
+        "beTypes": [
+          6
+        ],
+        "startTime": "2026-01-01 00:00:00",
+        "endTime": "2099-12-31 23:59:59",
+        "gmServiceCode": "GM-DEMO-2",
+        "products": [
+          {
+            "productCode": "",
+            "type": 3
+          }
+        ],
+        "ruleDetail": {
+          "orderDiscount": {
+            "discount": "30",
+            "startDiscountPoint": "2000"
+          }
+        }
+      }
+    ]
+  }
+}
