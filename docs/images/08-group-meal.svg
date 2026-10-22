@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 690" width="1200" height="690" role="img" aria-labelledby="gm-t gm-d">
+<title id="gm-t">团餐流程:六步,模拟数据,团餐真实下单未开放</title>
+<desc id="gm-d">团餐六步:一选地址序号;二查团餐可配送门店(beType=6);三用 group-info 查看促销规则与助餐服务,助餐服务编码由用户选定;四按人均预算搭配,例如 20 人预算 2000.50 元,人均 100.02 元余 10 分;五给出名次与理由,例如 900.00、903.00、906.00 元,价格以官方核价为准;六生成订单摘要。数字来自 demo-group 模拟数据。团餐真实下单未开放,官方端点上团餐领券和下单被代码拒绝。图形为自制抽象图案,非官方标识。</desc>
+<style>text{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif} text:not([fill]){fill:#3A2A1A} .m{font-family:Menlo,Consolas,'PingFang SC','Microsoft YaHei',monospace}</style>
+<rect width="1200" height="690" fill="#FFF8E1"/>
+<rect x="0" y="0" width="1200" height="70" fill="#DA291C"/>
+<g transform="translate(24,10) scale(0.6)"><rect width="96" height="80" rx="16" fill="#DA291C"/><path d="M14 62 C14 14 48 14 48 62 C48 14 82 14 82 62" fill="none" stroke="#FFC72C" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/></g>
+<text x="90" y="46" font-size="30" text-anchor="start" font-weight="bold" fill="#FFFFFF">团餐:先选店,再选助餐服务,按人均预算搭配</text>
+<text x="1170" y="44" font-size="20" text-anchor="end" fill="#FFC72C" font-weight="bold">模拟数据 · demo-group</text>
+<rect x="30" y="95" width="370" height="200" rx="14" fill="#FFFFFF" stroke="#DA291C" stroke-width="4"/>
+<rect x="30" y="95" width="370" height="52" rx="14" fill="#DA291C"/>
+<rect x="30" y="131" width="370" height="16" fill="#DA291C"/>
+<text x="215" y="131" font-size="22" text-anchor="middle" font-weight="bold" fill="#FFFFFF">1 · 地址</text>
+<text class="m" x="215" y="185" font-size="17" text-anchor="middle" font-weight="normal">addresses</text>
+<text x="215" y="225" font-size="19" text-anchor="middle" font-weight="normal">只显示地址序号与标签</text>
+<text x="215" y="259" font-size="19" text-anchor="middle" font-weight="normal">不含地址内容</text>
+<rect x="415" y="95" width="370" height="200" rx="14" fill="#FFFFFF" stroke="#DA291C" stroke-width="4"/>
+<rect x="415" y="95" width="370" height="52" rx="14" fill="#DA291C"/>
+<rect x="415" y="131" width="370" height="16" fill="#DA291C"/>
+<text x="600" y="131" font-size="22" text-anchor="middle" font-weight="bold" fill="#FFFFFF">2 · 可配送门店</text>
+<text class="m" x="600" y="185" font-size="17" text-anchor="middle" font-weight="normal">delivery-stores --be-type 6</text>
+<text x="600" y="225" font-size="19" text-anchor="middle" font-weight="normal">所选门店与 beCode</text>
+<text x="600" y="259" font-size="19" text-anchor="middle" font-weight="normal">须在可配送列表内</text>
+<rect x="800" y="95" width="370" height="200" rx="14" fill="#FFFFFF" stroke="#DA291C" stroke-width="4"/>
+<rect x="800" y="95" width="370" height="52" rx="14" fill="#DA291C"/>
+<rect x="800" y="131" width="370" height="16" fill="#DA291C"/>
+<text x="985" y="131" font-size="22" text-anchor="middle" font-weight="bold" fill="#FFFFFF">3 · 促销与助餐服务</text>
+<text class="m" x="985" y="185" font-size="17" text-anchor="middle" font-weight="normal">group-info</text>
+<text x="985" y="225" font-size="19" text-anchor="middle" font-weight="normal">助餐服务由你选定</text>
+<text x="985" y="259" font-size="19" text-anchor="middle" font-weight="normal">促销规则只作提示</text>
+<rect x="30" y="315" width="370" height="200" rx="14" fill="#FFFFFF" stroke="#DA291C" stroke-width="4"/>
+<rect x="30" y="315" width="370" height="52" rx="14" fill="#DA291C"/>
+<rect x="30" y="351" width="370" height="16" fill="#DA291C"/>
+<text x="215" y="351" font-size="22" text-anchor="middle" font-weight="bold" fill="#FFFFFF">4 · 人均预算搭配</text>
+<text class="m" x="215" y="405" font-size="17" text-anchor="middle" font-weight="normal">live-plan</text>
+<text x="215" y="445" font-size="19" text-anchor="middle" font-weight="normal">20 人 · 预算 ¥2000.50</text>
+<text x="215" y="479" font-size="19" text-anchor="middle" font-weight="normal">人均 ¥100.02 · 余 10 分</text>
+<rect x="415" y="315" width="370" height="200" rx="14" fill="#FFFFFF" stroke="#DA291C" stroke-width="4"/>
+<rect x="415" y="315" width="370" height="52" rx="14" fill="#DA291C"/>
+<rect x="415" y="351" width="370" height="16" fill="#DA291C"/>
+<text x="600" y="351" font-size="22" text-anchor="middle" font-weight="bold" fill="#FFFFFF">5 · 排名与理由</text>
+<text class="m" x="600" y="405" font-size="17" text-anchor="middle" font-weight="normal">live-plan --top 3</text>
+<text x="600" y="445" font-size="19" text-anchor="middle" font-weight="normal">¥900.00 · ¥903.00 · ¥906.00</text>
+<text x="600" y="479" font-size="19" text-anchor="middle" font-weight="normal">价格以官方核价为准</text>
+<rect x="800" y="315" width="370" height="200" rx="14" fill="#FFFFFF" stroke="#B71C1C" stroke-width="4"/>
+<rect x="800" y="315" width="370" height="52" rx="14" fill="#B71C1C"/>
+<rect x="800" y="351" width="370" height="16" fill="#B71C1C"/>
+<text x="985" y="351" font-size="22" text-anchor="middle" font-weight="bold" fill="#FFFFFF">6 · 订单摘要</text>
+<text class="m" x="985" y="405" font-size="17" text-anchor="middle" font-weight="normal">order-summary</text>
+<text x="985" y="445" font-size="19" text-anchor="middle" font-weight="normal">团餐人均预算 · 助餐服务</text>
+<text x="985" y="479" font-size="19" text-anchor="middle" font-weight="normal">官方端点不放行执行</text>
+<rect x="30" y="545" width="1140" height="115" rx="14" fill="#FFC72C" stroke="#B71C1C" stroke-width="4"/>
+<text x="600" y="590" font-size="28" text-anchor="middle" font-weight="bold" fill="#B71C1C">团餐真实下单未开放</text>
+<text x="600" y="624" font-size="20" text-anchor="middle" font-weight="normal">官方端点上团餐领券/下单被代码拒绝(退出码 4);本机回环模拟服务可演练</text>
+<text x="600" y="650" font-size="18" text-anchor="middle" font-weight="normal">模拟已验证 · 真实只读待用户验证 · 图中数字均为模拟数据</text>
+</svg>

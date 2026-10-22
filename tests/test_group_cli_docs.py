@@ -119,5 +119,37 @@ class ExampleFileTests(unittest.TestCase):
         req = validate_request_v2(json.loads((ROOT / "examples" / "request-group-meal.json").read_text(encoding="utf-8")))
         self.assertEqual(req["per_person_budget_cents"], 10000)
         self.assertEqual(req["budget_cents"], 200000)
+class GroupDocsTests(unittest.TestCase):
+    """团餐文档与配图 08：如实、不夸大。"""
+    def read(self, rel):
+        return (ROOT / rel).read_text(encoding="utf-8")
+    def test_no_stale_group_wording(self):
+        for rel in ("README.md", "SKILL.md", "MCP_INTEGRATION.md", "references/data-contract.md",
+                    "docs/使用与接入.md", "docs/真实验证与能力边界.md", "docs/真实写操作启用指南.md"):
+            text = self.read(rel)
+            for phrase in ("团餐未实现", "团餐尚未实现", "团餐为后续阶段", "团餐（group）尚未实现"):
+                with self.subTest(doc=rel, phrase=phrase):
+                    self.assertNotIn(phrase, text)
+    def test_readme_skill_reference_08_and_closed_wording(self):
+        for rel in ("README.md", "SKILL.md"):
+            text = self.read(rel)
+            with self.subTest(doc=rel):
+                self.assertIn("docs/images/08-group-meal.svg", text)
+                self.assertIn("团餐真实下单未开放", text)
+    def test_svg_08_valid(self):
+        import xml.etree.ElementTree as ET
+        path = ROOT / "docs/images/08-group-meal.svg"
+        root = ET.parse(path).getroot()
+        ns = "{http://www.w3.org/2000/svg}"
+        self.assertEqual(root.get("role"), "img")
+        self.assertTrue((root.find(ns + "title").text or "").strip())
+        self.assertTrue((root.find(ns + "desc").text or "").strip())
+        raw = path.read_text(encoding="utf-8")
+        for text in ("模拟数据", "团餐真实下单未开放"):
+            self.assertIn(text, raw)
+    def test_mcp_integration_tools(self):
+        text = self.read("MCP_INTEGRATION.md")
+        for needle in ("12 个只读", "query-promotions", "query-meal-assistance"):
+            self.assertIn(needle, text)
 if __name__ == "__main__":
     unittest.main()

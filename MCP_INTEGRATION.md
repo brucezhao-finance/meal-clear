@@ -37,6 +37,14 @@
 其余写类工具（取消订单、新建地址、抽奖、积分商城下单、团餐下单、买卡、积分兑换等）**永久拒绝**：不在任何白名单内，客户端在发出网络请求之前就抛错，相关测试断言模拟服务器上的禁止工具尝试为空。受控写工具见下一节。
 另外，`inspect-tools` 子命令和 `live-plan` 会通过 `tools/list`（含分页，最多 10 页）读取服务端工具清单：前者只列出清单中属于白名单的工具名与总数，后者用于校验所需工具存在且必填字段未变化。
 
+### 团餐专用只读工具（另 2 个，不计入上述 12 个只读）
+`mcp.py` 的 `GROUP_READ_ONLY` 另有 2 个团餐专用只读工具（12 个只读 + 2 个团餐专用只读 = 全部可调用只读工具）：
+| 工具 | 命令 | 用途 | 参数 |
+| --- | --- | --- | --- |
+| `query-promotions` | `group-info`、团餐 `live-plan` | 查询门店促销规则（满减、满折），只作提示 | 门店上下文 `storeCode`、`orderType`、`beType` |
+| `query-meal-assistance` | `group-info`、团餐 `live-plan` | 查询助餐服务与 `gmServiceCode`；用户从中选定，程序不采用官方默认项 | `storeCode` |
+
+团餐的 `create-order` 需带用户选定的 `gmServiceCode`，有预约时带 `reservationDate`（`yyyy-MM-dd HH:mm`）；官方端点上 `beType=6` 的 `create-order` 与团餐领券在传输层、命令层均被拒绝（退出码 4），只在本机回环模拟服务上可演练。
 ### 受控写工具（官方端点默认关闭，未经真实验证）
 `mcp.py` 的 `CONTROLLED_WRITE` 只有 2 个工具，只能经 `gate.py` 的 `WriteGate` 调用（`McpClient.call_write`，需要门签发的授权，单次尝试，**永不自动重试**）：
 | 工具 | 命令 | 用途 | 参数映射 |
@@ -65,7 +73,7 @@ v2 多人流程（`live-plan` 带 `schema_version=2` 请求）按取餐方式使
 | 到店自取 | 1 | 1 | 不传 | 菜单/详情/券/核价 |
 | 得来速 | 5 | 1 | 必填 | 同上，带 beCode；门店来自 `stores --be-type 5` |
 | 外送 | 2 | 2 | 必填 | `delivery-query-addresses` 取序号 → `delivery-query-stores` 校验所选门店与 beCode 在可配送列表内 → 菜单/详情/券/核价（核价含配送费、包装费） |
-| 团餐 | 6 | 2 | 必填 | **未实现**：请求直接报错 |
+| 团餐 | 6 | 2 | 必填 | `delivery-query-addresses` → `delivery-query-stores`（`beType=6`）→ `query-meal-assistance` 取助餐服务、`query-promotions` 取促销规则（仅提示）→ 菜单/详情/券 → `calculate-price`（带用户选定的 `gmServiceCode`，有预约时带 `reservationDate`）；**真实团餐写被代码拒绝** |
 券预览另调用 `available-coupons`、`query-my-coupons`，任一类失败只在说明里记录，不影响排名；预览不领取任何券。
 确认式下单：`order-summary`（只读联网 + 写本地账本）→ `order-claim`（预演或 `--execute`）→ `order-place`（预演或 `--execute`）→ `order-status`（只读）。
 
@@ -96,5 +104,5 @@ v2 多人流程（`live-plan` 带 `schema_version=2` 请求）按取餐方式使
 ## 7. 验证状态
 
 - 离线行为回归可复现：`python3 -m unittest discover -s tests`，不需要网络或账户；其中包含本地模拟 MCP 服务器上的多人、取餐方式、券预览端到端用例。
-- **验证分级（三档）：** ① 模拟已验证：多人（至 50 人）、取餐方式、排名、券预览、订单摘要、受控领券与下单、订单查询、重复与未知结果保护，均在本机回环模拟服务与合成数据上通过自动测试；② 真实只读待用户验证：上述只读能力在真实账户上的行为作者尚未用真实 Token 验证；③ 真实领券下单代码已具备但默认关闭、未经真实验证：官方端点写通道须用户自己打开开关并在终端亲手确认，官方真实返回结构与超时后的真实状态均未验证。团餐未实现。
+- **验证分级（三档）：** ① 模拟已验证：多人（至 50 人）、取餐方式、排名、券预览、订单摘要、受控领券与下单、订单查询、重复与未知结果保护，均在本机回环模拟服务与合成数据上通过自动测试；② 真实只读待用户验证：上述只读能力在真实账户上的行为作者尚未用真实 Token 验证；③ 真实领券下单代码已具备但默认关闭、未经真实验证：官方端点写通道须用户自己打开开关并在终端亲手确认，官方真实返回结构与超时后的真实状态均未验证。团餐：模拟已验证、真实只读待用户验证；团餐真实领券/下单未开放，官方端点上被代码拒绝。
 - 真实联调为作者自述记录，未经第三方复现：见 [verification/真实联调记录.md](https://github.com/brucezhao-finance/meal-clear/blob/main/verification/真实联调记录.md) 与 [verification/2026-10-19-acceptance/测试报告.md](https://github.com/brucezhao-finance/meal-clear/blob/main/verification/2026-10-19-acceptance/测试报告.md)。报价仅对应当时的时间、门店与账户，不代表当前价格。
