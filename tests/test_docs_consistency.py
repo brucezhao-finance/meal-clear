@@ -10,6 +10,8 @@ DOCS = [
     "SKILL.md",
     "MCP_INTEGRATION.md",
     "CONTEST_DECLARATION.md",
+    "docs/参赛补充说明.md",
+    "docs/性能记录.md",
     "AGENTS.md",
     "references/data-contract.md",
     "references/evaluation-cases.md",
@@ -29,6 +31,8 @@ FORBIDDEN_CLAIMS = (
 TIER3 = "模拟已验证 / 真实只读待用户验证 / 真实领券下单代码已具备但默认关闭、未经真实验证"
 
 
+# 官方 CONTEST_DECLARATION.md 原文（1522 字节）的 sha256；根目录文件必须与官方一字不差
+OFFICIAL_DECLARATION_SHA256 = "cd28101bcb29cc8fb24b372fe91ce6b42c4a1487a54e01f7ade0c8c6a84241b7"
 def read(rel: str) -> str:
     """读取仓库内文本。"""
     return (ROOT / rel).read_text(encoding="utf-8")
@@ -42,10 +46,22 @@ class DocsConsistencyTests(unittest.TestCase):
         for rel in ("README.md", "SKILL.md", "docs/使用与接入.md", "docs/真实验证与能力边界.md"):
             with self.subTest(doc=rel):
                 self.assertIn("50", read(rel))
-        for rel in ("README.md", "SKILL.md", "MCP_INTEGRATION.md", "CONTEST_DECLARATION.md", "docs/真实验证与能力边界.md"):
+        for rel in ("README.md", "SKILL.md", "MCP_INTEGRATION.md", "docs/参赛补充说明.md", "docs/真实验证与能力边界.md"):
             with self.subTest(doc=rel):
                 self.assertRegex(read(rel), "真实(环境|领券)[^。\n]{0,12}(未开放|默认关闭)")
 
+    def test_official_declaration_unchanged(self) -> None:
+        """根目录 CONTEST_DECLARATION.md 与官方原文字节一致（不联网，比对内置哈希）。"""
+        import hashlib
+        data = (ROOT / "CONTEST_DECLARATION.md").read_bytes()
+        self.assertEqual(hashlib.sha256(data).hexdigest(), OFFICIAL_DECLARATION_SHA256)
+        self.assertEqual(len(data), 1522)
+    def test_supplement_links_official_and_states_validation(self) -> None:
+        """补充说明指向官方声明，并如实区分 v1 作者自述记录与 v2/真实写未验证。"""
+        text = read("docs/参赛补充说明.md")
+        self.assertIn("(../CONTEST_DECLARATION.md)", text)
+        self.assertIn("未经第三方复现", text)
+        self.assertNotIn("真实账户的只读与领券/下单均未由作者验证", text)
     def test_no_overclaim(self) -> None:
         """不含已支持/已验证真实下单、全网最低价承诺。"""
         for rel in DOCS:
@@ -61,7 +77,7 @@ class DocsConsistencyTests(unittest.TestCase):
     def test_tool_counts_and_confirm_flow(self) -> None:
         """工具数量与确认式流程的关键要求在文档中。"""
         self.assertIn("12 个只读", read("MCP_INTEGRATION.md"))
-        self.assertIn("2 个受控写", read("CONTEST_DECLARATION.md"))
+        self.assertIn("2 个受控写", read("docs/参赛补充说明.md"))
         skill = read("SKILL.md")
         for phrase in ("不得代用户确认", "等待用户明确同意", "不得重试", "摘要过期", "--confirm-digest"):
             with self.subTest(phrase=phrase):
@@ -98,12 +114,12 @@ class DocsConsistencyTests(unittest.TestCase):
     def test_real_write_default_off_wording(self) -> None:
         """真实写通道文档如实写明默认关闭、未经真实验证与终端检查局限；README 含三档原文。"""
         self.assertIn(TIER3, read("README.md"))
-        for rel in ("README.md", "SKILL.md", "MCP_INTEGRATION.md", "CONTEST_DECLARATION.md", "docs/真实写操作启用指南.md"):
+        for rel in ("README.md", "SKILL.md", "MCP_INTEGRATION.md", "docs/参赛补充说明.md", "docs/真实写操作启用指南.md"):
             text = read(rel)
             with self.subTest(doc=rel):
                 self.assertIn("默认关闭", text)
                 self.assertIn("未经真实验证", text)
-        for rel in ("README.md", "MCP_INTEGRATION.md", "CONTEST_DECLARATION.md", "docs/真实写操作启用指南.md", "docs/真实验证与能力边界.md"):
+        for rel in ("README.md", "MCP_INTEGRATION.md", "docs/参赛补充说明.md", "docs/真实写操作启用指南.md", "docs/真实验证与能力边界.md"):
             with self.subTest(doc=rel, topic="tty"):
                 self.assertIn("无法区分", read(rel))
 
