@@ -17,13 +17,15 @@ class Fulfillment:
     be_code: str  # "none" 不传 / "required" 必传
     needs_address: bool
     implemented: bool
+    needs_gm_service: bool = False  # 团餐核价/下单必须带助餐服务编码
+    supports_reservation: bool = False  # 可带预约时间 reservationDate
 
 
 FULFILLMENTS: Dict[str, Fulfillment] = {
     "pickup": Fulfillment("pickup", "到店自取", 1, 1, "none", False, True),
     "drive_thru": Fulfillment("drive_thru", "得来速", 5, 1, "required", False, True),
     "delivery": Fulfillment("delivery", "外送", 2, 2, "required", True, True),
-    "group": Fulfillment("group", "团餐", 6, 2, "required", True, False),
+    "group": Fulfillment("group", "团餐", 6, 2, "required", True, True, True, True),
 }
 DEFAULT_FULFILLMENT = "pickup"
 PRIORITIES: Tuple[str, ...] = ("price", "preference")
@@ -137,6 +139,7 @@ RESOLVE_CHOICES: Dict[Tuple[str, str], str] = {
     ("order", "created"): "created",
     ("order", "not-created"): "failed",
 }
+GROUP_REFUSAL_REASON = "group_closed"  # 团餐真实写拒绝原因（退出码 4）
 REAL_REFUSAL_REASONS: Tuple[str, ...] = (
     "switch_off",
     "config_invalid",
@@ -150,4 +153,25 @@ REAL_REFUSAL_REASONS: Tuple[str, ...] = (
     "bad_endpoint",
     "token_source",
     "bad_tool",
+    GROUP_REFUSAL_REASON,
+)
+
+# --- P3 团餐（唯一定义处） ---
+TOOL_QUERY_PROMOTIONS = "query-promotions"
+TOOL_QUERY_MEAL_ASSISTANCE = "query-meal-assistance"
+GROUP_READ_ONLY_TOOLS: Tuple[str, ...] = (TOOL_QUERY_PROMOTIONS, TOOL_QUERY_MEAL_ASSISTANCE)
+RESERVATION_FORMAT = "%Y-%m-%d %H:%M"  # 官方 reservationDate 格式，不含秒
+GROUP_PROMO_RULE_CAP = 20  # 最多展示的促销规则条数
+GROUP_BAND_ENABLED = True  # 搭配启发开关（仅影响送核价的候选顺序与理由）
+# 官方 query-meals 描述中的团餐搭配建议；区间 [下限分, 上限分)（按人均预算划分属推测）
+# (下限分, 上限分|None, 标签, 建议角色组合)
+GROUP_BAND_TABLE: Tuple[Tuple[int, Optional[int], str, Tuple[Tuple[str, ...], ...]], ...] = (
+    (0, 2000, "20元以下", (("side",),)),
+    (2000, 3000, "20-30元", (("main", "side"), ("main", "drink"))),
+    (3000, 4000, "30-40元", (("main", "side", "drink"),)),
+    (4000, 5000, "40-50元", (("main", "side", "side", "drink"),)),
+    (5000, None, "50元以上", (("main", "side", "side", "drink"),)),
+)
+MSG_GROUP_REAL_WRITE_CLOSED = (
+    "团餐真实下单尚未开放，待你在真实环境验证只读流程后再决定。本次未发出任何请求。"
 )

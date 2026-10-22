@@ -1047,7 +1047,7 @@ def parse_created_order(payload: Any, payable_cents: int) -> Dict[str, Any]:
 def build_create_order_args(
     record: Dict[str, Any], wire_items: List[Dict[str, Any]], address_id: Optional[str]
 ) -> Dict[str, Any]:
-    """计划 §5.3：严格按 tools-schema 映射；不发送 remark/reservationDate/withOrder/gmServiceCode。"""
+    """计划 §5.3：严格按 tools-schema 映射；不发送 remark/withOrder；仅团餐追加 gmServiceCode/reservationDate。"""
     material = record["material"]
     ful = material["fulfillment"]
     spec = FULFILLMENTS.get(ful.get("type"))
@@ -1062,6 +1062,12 @@ def build_create_order_args(
         if not ful.get("be_code"):
             raise InputError("摘要缺少 beCode，不能下单")
         args["beCode"] = ful["be_code"]
+    if spec.needs_gm_service:
+        if not ful.get("gm_service_code"):
+            raise InputError("团餐摘要缺少助餐服务编码（gm_service_code），不能下单")
+        args["gmServiceCode"] = ful["gm_service_code"]
+        if ful.get("reservation_date"):
+            args["reservationDate"] = ful["reservation_date"]
     if spec.order_type == 1:
         code = (material.get("take_way") or {}).get("code")
         if not code:

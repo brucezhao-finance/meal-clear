@@ -209,13 +209,16 @@ class MultiE2ETests(unittest.TestCase):
             self.assertTrue(only_read_tools(sim))
 
     def test_group_not_implemented_no_network(self):
-        """团餐未实现：校验阶段报错，服务端零调用。"""
+        """团餐已实现：合法请求不再报尚未实现；非法请求（缺 be_code）校验阶段报错，服务端零调用。"""
         with SimMcpServer() as sim:
-            req = request(fulfillment={"type": "group", "be_code": "X", "address_index": 1})
+            req = request(fulfillment={"type": "group", "address_index": 1})
             code, out = self.plan(sim, req)
             self.assertEqual(code, 1)
-            self.assertIn("尚未实现", out)
+            self.assertNotIn("尚未实现", out)
             self.assertEqual(sim.calls, [])
+            req = request(fulfillment={"type": "group", "be_code": "X", "address_index": 1})
+            code, out = self.plan(sim, req)
+            self.assertNotIn("尚未实现", out)
 
     def test_run_call_cap(self):
         """BudgetedClient 超限：在发请求前抛出明确错误。"""

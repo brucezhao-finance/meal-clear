@@ -18,12 +18,14 @@ from .config import (
 )
 from .core import InputError, integer, validate_people
 from .fulfillment import validate_fulfillment
+from .group_meal import split_budget
 
 TOP_FIELDS = {
     "schema_version",
     "context",
     "fulfillment",
     "budget_cents",
+    "per_person_budget_cents",
     "people",
     "ranking",
     "limits",
@@ -51,10 +53,27 @@ def validate_request_v2(request: Dict[str, Any]) -> Dict[str, Any]:
     ):
         raise InputError("上下文必须包含非空 store_code、meal_time")
     req["fulfillment"] = validate_fulfillment(req.get("fulfillment"))
-    integer(req.get("budget_cents"), "预算", 1)
     validate_people(
         req.get("people"), MAX_PEOPLE, f"支持1至{MAX_PEOPLE}位用餐者"
     )
+    is_group = req["fulfillment"]["type"] == "group"
+    if not is_group and "per_person_budget_cents" in req:
+        raise InputError("仅团餐支持 per_person_budget_cents，请使用 budget_cents")
+    if is_group:
+        per = req.get("per_person_budget_cents")
+        if per is None and "budget_cents" not in req:
+            raise InputError("团餐需要 budget_cents（总预算）或 per_person_budget_cents（人均预算）")
+        if per is not None:
+            integer(per, "人均预算", 1)
+            if "budget_cents" in req and req["budget_cents"] != per * len(req["people"]):
+                raise InputError("budget_cents 与 per_person_budget_cents×人数 不一致，请只给其一")
+            req["budget_cents"] = per * len(req["people"])
+        elif req.get("per_person_budget_cents", ...) is None:
+            req.pop("per_person_budget_cents")
+        integer(req.get("budget_cents"), "预算", 1)
+        split_budget(req)  # 总预算不足以每人 1 分时报错
+    else:
+        integer(req.get("budget_cents"), "预算", 1)
     ranking = req.get("ranking", {})
     if not isinstance(ranking, dict) or set(ranking) - {"top_n", "priority"}:
         raise InputError("ranking 仅支持 top_n、priority")
@@ -87,7 +106,15 @@ def fingerprint_v2(request: Dict[str, Any]) -> str:
 def amend_request_v2(request: Dict[str, Any], patch: Dict[str, Any]) -> Dict[str, Any]:
     """仅改变显式指定字段；people 内 null 删除一个约束。"""
     result = validate_request_v2(request)
-    allowed = {"context", "fulfillment", "budget_cents", "people", "ranking", "limits"}
+    allowed = {
+        "context",
+        "fulfillment",
+        "budget_cents",
+        "per_person_budget_cents",
+        "people",
+        "ranking",
+        "limits",
+    }
     if not isinstance(patch, dict) or set(patch) - allowed:
         raise InputError("修改只支持 " + "、".join(sorted(allowed)))
     for key in ("context", "ranking", "limits"):
@@ -100,8 +127,14 @@ def amend_request_v2(request: Dict[str, Any], patch: Dict[str, Any]) -> Dict[str
             raise InputError("fulfillment修改必须为对象")
         # 整体替换，避免遗留旧取餐方式的 be_code/address_index
         result["fulfillment"] = patch["fulfillment"]
+    if "budget_cents" in patch and "per_person_budget_cents" in patch:
+        raise InputError("budget_cents 与 per_person_budget_cents 只能修改其一")
     if "budget_cents" in patch:
         result["budget_cents"] = patch["budget_cents"]
+        result.pop("per_person_budget_cents", None)  # 修改一个就清掉另一个
+    if "per_person_budget_cents" in patch:
+        result["per_person_budget_cents"] = patch["per_person_budget_cents"]
+        result.pop("budget_cents", None)
     updates = patch.get("people", {})
     if not isinstance(updates, dict):
         raise InputError("people修改为用餐者id到修改对象的映射")

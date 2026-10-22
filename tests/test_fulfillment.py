@@ -75,12 +75,15 @@ class FulfillmentTests(unittest.TestCase):
                 validate_fulfillment(bad)
 
     def test_B7_group_not_implemented(self) -> None:
-        """团餐明确未实现。"""
-        with self.assertRaises(InputError) as caught:
-            validate_fulfillment({"type": "group", "be_code": "B", "address_index": 1})
-        self.assertIn("尚未实现", str(caught.exception))
-        self.assertIn("beType=6", str(caught.exception))
-
+        """团餐已实现：beType=6/orderType=2，缺 be_code 或 address_index 报中文错误。"""
+        ful = validate_fulfillment({"type": "group", "be_code": "B", "address_index": 1})
+        self.assertEqual(ful, {"type": "group", "be_code": "B", "address_index": 1})
+        wire = wire_context(validate_request_v2(req(fulfillment=ful)))
+        self.assertEqual((wire["beType"], wire["orderType"], wire["beCode"]), (6, 2, "B"))
+        for bad in ({"type": "group", "address_index": 1}, {"type": "group", "be_code": "B"}):
+            with self.assertRaises(InputError) as caught:
+                validate_fulfillment(bad)
+            self.assertNotIn("尚未实现", str(caught.exception))
     def test_B8_default_is_pickup(self) -> None:
         """省略 fulfillment 等同 pickup。"""
         self.assertEqual(validate_request_v2(req())["fulfillment"], {"type": "pickup"})
